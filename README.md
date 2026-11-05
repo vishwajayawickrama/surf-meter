@@ -6,7 +6,7 @@
 
 A quiet place in your Mac’s menu bar for where your time goes.
 
-[Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
+[Setup guide](docs/SETUP.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
 </div>
 
@@ -71,7 +71,7 @@ cd ../..
 open .build/SurfMeter.app
 ```
 
-Requires macOS 14+, Swift 6, and Node/npm to build. Open **Browser setup** in the app, load its bundled Chrome extension, paste the extension ID, connect, and enable recording. Safari is not enabled yet. See the [complete setup guide](docs/DEVELOPMENT.md) and [tested capabilities and remaining gates](docs/VALIDATION.md).
+Requires macOS 14+, Swift 6, and Node/npm to build. Open **Browser setup** in the app, load its bundled Chrome extension, paste the extension ID, connect, and enable recording. Safari is not enabled yet. See the [annotated setup guide](docs/SETUP.md) and [tested capabilities and remaining gates](docs/VALIDATION.md).
 
 The native app includes Daily/Weekly views, Yesterday, website details, green/red comparisons, pause/resume, exclusions, retention, confirmed deletion, and appearance preferences. Activity stays in a local aggregate store; there is no backend or account. A self-contained, ad hoc signed development archive can be built with `./scripts/package-app.sh`; it is not a notarized release.
 

@@ -2,7 +2,7 @@
 
 SurfMeter 0.2 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
 
-[Implementation tracker](IMPLEMENTATION.md) · [Architecture](ARCHITECTURE.md) · [Current validation](VALIDATION.md) · [Browser protocol](BROWSER-PROTOCOL.md)
+[Annotated setup guide](SETUP.md) · [Implementation tracker](IMPLEMENTATION.md) · [Architecture](ARCHITECTURE.md) · [Current validation](VALIDATION.md) · [Browser protocol](BROWSER-PROTOCOL.md)
 
 ## Build the native app
 
@@ -25,6 +25,8 @@ The build bundles the compiled Chrome extension, native helper, and Public Suffi
 Click the waves icon in the menu bar. Recording is **off until setup is completed and explicitly enabled**. Daily, Yesterday, Weekly, website details, pause/resume, appearance, exclusions, retention, deletion, and browser setup use native views and actual aggregate data. The preview mode below is separate from recording.
 
 ## Connect Chrome
+
+For the full walkthrough with numbered screenshot callouts, expected results, and troubleshooting, see [Set up SurfMeter](SETUP.md).
 
 1. Open **Browser setup** using the globe icon in SurfMeter. Choose **Show Chrome extension folder**.
 2. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select that `ChromeExtension` folder. The repository's `extensions/chrome/dist` also works for iterative development.

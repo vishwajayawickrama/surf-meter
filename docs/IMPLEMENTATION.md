@@ -4,7 +4,7 @@ Updated: 2026-11-06
 
 This is the implementation tracker for the native macOS app. The five tasks retain their acceptance dependencies; each may span multiple sessions. On 2026-11-06 the user authorized whole-app development, so independent engine, storage, and UI work proceeded while real-browser feasibility gates stayed open. The web prototype remains the approved UI reference. A native development implementation now exists; it is not a certified release.
 
-Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.md) · Run the prototype: [Development guide](DEVELOPMENT.md)
+Setup: [annotated guide](SETUP.md) · Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.md) · Run the prototype: [Development guide](DEVELOPMENT.md)
 
 ## Progress
 
