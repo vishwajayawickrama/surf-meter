@@ -33,7 +33,7 @@ if destination.exists():
         parser.error(f'another registration exists at {destination}; inspect/remove it before replacing')
 directory.mkdir(mode=0o700, parents=True, exist_ok=True)
 shutil.copy2(source, helper)
-(directory / 'host-config.json').write_text(json.dumps({'allowedOrigin': origin}, indent=2) + '\n')
+(directory / 'host-config.json').write_text(json.dumps({'allowedOrigin': origin, 'appBundle': str(root / '.build/SurfMeter.app')}, indent=2) + '\n')
 prepared = directory / 'dev.surfmeter.bridge.json'
 prepared.write_text(json.dumps(manifest, indent=2) + '\n')
 print(f'Prepared: {prepared}')

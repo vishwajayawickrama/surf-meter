@@ -10,8 +10,9 @@ let package = Package(
         .executable(name: "SurfMeterNativeHost", targets: ["SurfMeterNativeHost"])
     ],
     targets: [
-        .target(name: "SurfMeterCore"),
+        .target(name: "SurfMeterCore", resources: [.copy("Resources/public_suffix_list.dat")]),
         .executableTarget(name: "SurfMeterApp", dependencies: ["SurfMeterCore"]),
+        .executableTarget(name: "SurfMeterVerification", dependencies: ["SurfMeterCore"]),
         .executableTarget(name: "SurfMeterNativeHost", dependencies: ["SurfMeterCore"]),
         .testTarget(name: "SurfMeterCoreTests", dependencies: ["SurfMeterCore"])
     ],

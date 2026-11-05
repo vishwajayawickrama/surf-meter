@@ -1,8 +1,8 @@
 # SurfMeter — Implementation
 
-Updated: 2026-11-05
+Updated: 2026-11-06
 
-This is the implementation tracker for the native macOS app. Work through the five tasks in order; a task may span multiple sessions. The existing web prototype is the approved UI reference, not a completed native implementation.
+This is the implementation tracker for the native macOS app. The five tasks retain their acceptance dependencies; each may span multiple sessions. On 2026-11-06 the user authorized whole-app development, so independent engine, storage, and UI work proceeded while real-browser feasibility gates stayed open. The web prototype remains the approved UI reference. A native development implementation now exists; it is not a certified release.
 
 Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.md) · Run the prototype: [Development guide](DEVELOPMENT.md)
 
@@ -11,12 +11,12 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 | Task | Deliverable | Status | Depends on |
 | --- | --- | --- | --- |
 | 1 | Native foundation and browser feasibility | In progress | — |
-| 2 | Accurate activity tracking engine | Not started | 1 |
-| 3 | Local storage and usage summaries | Not started | 2 |
-| 4 | Native UI and complete app integration | Not started | 3 |
-| 5 | Validation, packaging, and first release | Not started | 4 |
+| 2 | Accurate activity tracking engine | In progress | 1 |
+| 3 | Local storage and usage summaries | In progress | 2 |
+| 4 | Native UI and complete app integration | In progress | 3 |
+| 5 | Validation, packaging, and first release | In progress | 4 |
 
-**Next action:** Load the Chrome extension and register its actual extension ID, then record real-browser checks. Install full Xcode to package and validate Safari; finish native lifecycle and launch/recovery validation before Task 2.
+**Next action:** Run the native app, connect Chrome through Browser setup, and record the real-browser privacy/accuracy/lifecycle matrix in [Validation](VALIDATION.md). Install full Xcode for Safari packaging. Complete production identity/signing/notarization and clean-install/performance checks before calling this a release.
 
 ## Task 1 — Native foundation and browser feasibility
 
@@ -38,7 +38,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 - Safari and Chrome have a recorded pass/fail result for the required signals, private-window exclusion, and connection recovery. Any support reduction is explicitly resolved in the SRS before moving on.
 - The architecture and development guide describe the chosen bridge, permissions, support matrix, and reproducible integration checks. A dependency requiring user setup is recorded as pending, not as a passed check.
 
-**Evidence / handoff — 2026-11-05:** Native Swift Package foundation added: `SurfMeterCore`, `SurfMeterApp` (`MenuBarExtra`), and `SurfMeterNativeHost`. Strict TypeScript Chrome extension, versioned hostname-only contract, same-user Unix socket IPC, ad hoc app bundling, exact-origin registration preparation, and reproducible checks are implemented. Build succeeded on macOS 27.2 / Swift 6.4 CLT. Six Swift tests, three extension tests, and a real app/helper IPC test with synthetic data passed. See [validation record](FOUNDATION-VALIDATION.md), [protocol](BROWSER-PROTOCOL.md), and [setup](DEVELOPMENT.md). Real Chrome events, Safari packaging/IPC, minimum OS execution, screen lock, manual native UI/OS signals, and app-launch/recovery behavior remain pending. Full Xcode is absent. No accounting or database exists yet. Next: complete the real Chrome matrix with its installed extension ID; then Safari and OS feasibility. This task is not Done.
+**Evidence / handoff — 2026-11-06:** Buildable app, shared core, exact-origin Chrome helper/extension, bundled resources, same-user socket, GUI registration, reconnect action, and app launch attempt on a new helper session are implemented. The expanded app/helper synthetic tests pass. Native foreground/idle/screen/session signals are connected, with lock-specific supplemental signals still requiring validation. Real Chrome privacy/focus/recovery, multiple profiles, Safari packaging/sandbox IPC, production identities, and supported OS execution remain pending. Full Xcode is absent. See [current validation](VALIDATION.md), [historical foundation checks](FOUNDATION-VALIDATION.md), and [setup](DEVELOPMENT.md).
 
 ## Task 2 — Accurate activity tracking engine
 
@@ -58,7 +58,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 - Domain checks distinguish platform subdomains from lookalikes and unrelated sites under public suffixes.
 - A controlled real-browser session demonstrates attribution within the SRS accuracy target. Record any failing case rather than relaxing the target silently.
 
-**Evidence / handoff:** Not started. Record test commands, observed accuracy, and remaining edge cases here.
+**Evidence / handoff — 2026-11-06:** `TrackingEngine`, `TrackingEligibility`, `DomainClassifier`, and `UsageLedger` are implemented and wired into the native app. Monotonic samples, idle/freshness cutoff, generation-based invalidation, pause/system/exclusion gates, domain aliases and bundled PSL, hour/midnight/DST splitting, and clock/gap resets have automated checks. A real app/helper synthetic recording test verifies accounting and database updates. Actual browser accuracy, multiple profiles, lock/session behavior, and recovery timing remain pending. See [validation](VALIDATION.md).
 
 ## Task 3 — Local storage and usage summaries
 
@@ -67,7 +67,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 **Scope**
 
 - Resolve the hourly aggregate decision identified in the architecture: update FR-33, the data model, and retention requirements to permit the minimum aggregate data needed for FR-39, or explicitly revise that chart requirement before implementing storage. Do not store raw browsing-event history.
-- Add local SwiftData models behind a repository boundary. Keep the main app as the single writer and leave cloud synchronization disabled.
+- Add local aggregate models behind a repository boundary (implemented using Core Data; see architecture decision). Keep the main app as the single writer and leave cloud synchronization disabled.
 - Persist duration totals and minimal coverage metadata with explicit checkpoints. Handle write failures and satisfy the SRS crash-loss target.
 - Build queries for today's total, yesterday's full day, the last seven local calendar days, daily averages, and per-platform details. Derive the weekly view from the same recorded data as Daily.
 - Implement retention, delete-all activity, empty states, and incomplete-coverage explanations. Persist small settings through the preferences layer.
@@ -79,7 +79,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 - Daily totals, weekly totals, charts, and platform details agree for the same seeded records.
 - Inspecting stored data and diagnostics confirms that paths, queries, page titles, content, and raw browsing history are absent.
 
-**Evidence / handoff:** Not started. Record schema decisions, query/storage checks, and recovery results here.
+**Evidence / handoff — 2026-11-06:** FR-33 now permits hourly aggregates; FR-39 is retained. `UsageStore` uses a programmatic Core Data/SQLite schema because CLT lacks the SwiftData macro plugin. Explicit transactions, checkpointing, retention, reopen, coverage metadata, aggregate queries, deletion, and visible storage failure/retry are implemented. Disk/reopen/retention/deletion and invalid-location checks pass; forced crash-loss and runtime disk-full recovery still need validation. No browsing-event history is persisted.
 
 ## Task 4 — Native UI and complete app integration
 
@@ -100,7 +100,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 - The native screens have been visually reviewed against the prototype in light and dark appearances; accessibility and material fallbacks have been exercised.
 - Launch-at-login and connection/permission recovery have been verified on the chosen support matrix, with reproducible steps documented.
 
-**Evidence / handoff:** Not started. Record end-to-end steps, native screenshots, and outstanding UI or permission issues here.
+**Evidence / handoff — 2026-11-06:** Native Daily/Weekly tabs, Yesterday toggle, comparisons, charts/details, pause/resume, setup, exclusions, appearance, retention, confirmed deletion, login service control, and menu bar today total are implemented. A bundled Chrome extension/helper and GUI exact-origin registration remove checkout dependencies from the app path. SwiftUI renders were inspected in light/dark at 2×; captures use labeled sample data and opaque backgrounds. Actual keyboard/VoiceOver/material/contrast, login approval, and clean browser onboarding checks remain pending. Safari is explicitly shown unavailable.
 
 ## Task 5 — Validation, packaging, and first release
 
@@ -122,7 +122,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 - Release documentation represents the native app's verified capabilities and distinguishes any remaining prototype-only behavior.
 - The release version, commit, artifact location, and validation results are recorded below.
 
-**Evidence / handoff:** Not started. Record the acceptance report, performance results, installation evidence, and release links here.
+**Evidence / handoff — 2026-11-06:** Automated core/extension checks, actual app/helper tests, native preview rendering, ad hoc signature verification, and `.build/SurfMeter-0.2.0-development.zip` packaging are available. [Validation](VALIDATION.md) separates simulated checks from outstanding real-browser acceptance. No public release, notarization, Safari package, minimum-OS/Intel guarantee, performance certification, or clean-install certification is claimed. Next: complete the manual matrix and signing prerequisites; do not mark the release Done based on development packaging.
 
 ## Continuing across sessions
 
@@ -141,3 +141,7 @@ Exact next action:
 ```
 
 Keep the five task IDs stable. Add detail within the appropriate task rather than creating another top-level task. Update the SRS or architecture when implementation evidence changes a requirement or technical decision.
+
+## Latest session handoff — 2026-11-06
+
+Implemented the native development app through accounting, persistence, and interface integration. Run commands and data/setup/removal locations are in [Development](DEVELOPMENT.md). Current automated and pending manual evidence is in [Validation](VALIDATION.md). All five tasks retain open acceptance gates rather than claiming Done from synthetic tests. The current checkpoint is identifiable by the Git commit titled “Build native tracking, storage, and dashboard”.

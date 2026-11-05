@@ -1,6 +1,6 @@
 # Native foundation validation
 
-Session: 2026-11-05. Task 1 remains **In progress**. Synthetic tests prove the native path works; they do not certify Safari/Chrome integration or accurate time accounting.
+Historical foundation session: 2026-11-05. For the expanded 2026-11-06 app, see [Current validation](VALIDATION.md). Task 1 remains **In progress**. Synthetic tests prove the native path works; they do not certify Safari/Chrome integration or accurate time accounting.
 
 ## Environment
 
@@ -39,4 +39,4 @@ Swift 6.4 CLT's default build system omitted the Swift Testing macro plugin. `sc
 1. Load the unpacked Chrome extension and use its actual ID to register the host. Start SurfMeter, click the extension action, and verify a real hostname appears.
 2. Exercise tab switches, two windows, minimized windows, private windows, internal pages, browser/app restart, permission revocation, and worker suspension. Record observed states and recovery times here.
 3. Install full Xcode, package Safari, prove the sandbox-safe handler-to-app path, and run the same browser matrix.
-4. Inspect native UI and validate foreground, idle, sleep/wake, lock/session, app-launch behavior, and minimum macOS version. Resolve failures before marking Task 1 Done or starting the accounting engine.
+4. Inspect native UI and validate foreground, idle, sleep/wake, lock/session, app-launch behavior, and minimum macOS version. Resolve failures before marking Task 1 Done or releasing browser support. Independent engine/storage/UI work was subsequently authorized on 2026-11-06.

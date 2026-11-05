@@ -1,68 +1,98 @@
 # Developing SurfMeter
 
-A macOS menu bar app in development that tracks active browser time by website or platform and compares today's usage with yesterday's.
+SurfMeter 0.2 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
 
-## Project status
+[Implementation tracker](IMPLEMENTATION.md) · [Architecture](ARCHITECTURE.md) · [Current validation](VALIDATION.md) · [Browser protocol](BROWSER-PROTOCOL.md)
 
-Native foundation plus the approved interactive UI prototype. The Swift menu bar app and Chrome bridge are implemented for development; time accounting, storage, and the complete native UI are not implemented yet.
+## Build the native app
 
-See the [Software Requirements Specification](SRS.md) for the proposed MVP, tracking rules, privacy requirements, and acceptance criteria.
-
-## Native implementation direction
-
-The proposed production stack is **Swift + SwiftUI**, `MenuBarExtra`, native Liquid Glass materials, **TypeScript browser extensions**, browser native messaging, and **local SwiftData persistence**. Xcode and Swift Package Manager will support the native app and helper targets. The MVP does not require a backend or account.
-
-See [Technology stack and architecture](ARCHITECTURE.md) for the component flow, browser-specific adapters, tracking engine, storage boundaries, and integration decisions still to validate. The native foundation uses Swift Package Manager; full Xcode is required for Safari extension packaging. See the verified and pending checks in [Foundation validation](FOUNDATION-VALIDATION.md).
-
-Follow the [five-task implementation tracker](IMPLEMENTATION.md) for delivery order, completion criteria, current progress, and handoff notes between sessions. Task 1 is in progress. See [Browser protocol](BROWSER-PROTOCOL.md) for the implemented bridge contract.
-
-## Native foundation
-
-Prerequisites: macOS 14 or later, Swift 6 toolchain (`xcode-select --install` for Command Line Tools), Python 3, and Node.js with npm for the Chrome extension. Only Apple Silicon/macOS 27.2 has been exercised so far. No Apple Developer account is required for the local ad hoc build; distribution and Safari need additional signing/setup.
+Prerequisites: macOS 14+, Swift 6 toolchain (Command Line Tools or Xcode), Node.js with npm, and Python 3 for verification scripts. The exercised environment is Apple Silicon/macOS 27.2 with Swift 6.4 CLT. Full Xcode is still absent and is required for Safari packaging. Intel and macOS 14 execution remain unverified.
 
 From the repository root:
-
-```sh
-./scripts/build-native.sh
-./scripts/test-native.sh
-python3 scripts/verify-native-bridge.py
-open .build/SurfMeter.app
-```
-
-Click the waves icon in the menu bar. This is a small connection diagnostic shell; the Daily/Weekly design remains in the prototype until Task 4. It shows hostname snapshots and native signals, with no usage timer or database. The integration test launches a separate app with a temporary bridge directory and exits it after synthetic checks.
-
-The build script creates a local `.app` bundle and ad hoc signs it. Build products, helper registration previews, dependencies, and caches are excluded from Git. It disables SwiftPM's nested build sandbox to work in the coding sandbox; the package has no external Swift dependencies. A second instance using the same socket directory reports an unavailable bridge; quit the older instance first.
-
-### Chrome development setup
 
 ```sh
 cd extensions/chrome
 npm ci
 npm test
 cd ../..
-```
-
-1. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select `extensions/chrome/dist` from this checkout. Chrome's permission prompt is expected: tabs allows reading the active tab URL; nativeMessaging connects to the local helper; alarms retries a suspended worker. No content script, history API, remote host permission, or browser storage is used.
-2. Copy the extension's actual ID from Chrome. Generate and inspect the host registration, then install that exact registration:
-
-```sh
-python3 scripts/prepare-chrome-host.py --extension-id YOUR_32_CHARACTER_EXTENSION_ID
-python3 scripts/prepare-chrome-host.py --extension-id YOUR_32_CHARACTER_EXTENSION_ID --install
+./scripts/build-native.sh
+./scripts/test-native.sh
 open .build/SurfMeter.app
 ```
 
-3. Click the extension toolbar action to reconnect, then focus a normal HTTP/HTTPS tab and inspect SurfMeter's Chrome row. The helper is named `dev.surfmeter.bridge`. Its registration allows only the specified extension origin and points to the helper copy in this checkout's `.build/chrome-native-host` directory. Keep the checkout in place while using it. Rebuild and rerun preparation/installation after helper changes or moving the checkout.
-4. Use [Foundation validation](FOUNDATION-VALIDATION.md) to record real-browser results. Chrome incognito access is disabled by the manifest, and private/unsupported snapshots contain no hostname. Verify actual private-window focus behavior before accepting the integration.
+The build bundles the compiled Chrome extension, native helper, and Public Suffix List into the app and ad hoc signs it. The build has no external Swift dependencies. It disables nested SwiftPM sandboxing for this coding environment; the Swift 6.4 CLT testing script also supplies the installed Testing macro plugin path. `ViewState` is a type alias for the existing SwiftUI property wrapper, avoiding macOS 27 SDK's new `State` macro dependency under CLT.
 
-The installer refuses to replace a different existing registration. It writes only the per-user Chrome host file when `--install` is supplied; running without that option prepares a preview inside `.build`. The helper does not launch SurfMeter automatically. A missing app produces a negative acknowledgement; clicking the toolbar action reconnects. Automatic recovery and launch behavior remain Task 1 validation items.
+Click the waves icon in the menu bar. Recording is **off until setup is completed and explicitly enabled**. Daily, Yesterday, Weekly, website details, pause/resume, appearance, exclusions, retention, deletion, and browser setup use native views and actual aggregate data. The preview mode below is separate from recording.
 
-To remove the development integration: remove SurfMeter from `chrome://extensions`, quit SurfMeter, and remove the generated registration:
+## Connect Chrome
+
+1. Open **Browser setup** using the globe icon in SurfMeter. Choose **Show Chrome extension folder**.
+2. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select that `ChromeExtension` folder. The repository's `extensions/chrome/dist` also works for iterative development.
+3. Copy Chrome's 32-letter extension ID into SurfMeter and choose **Connect Chrome**. This installs the per-user native helper registration with that exact allowed origin. No wildcard origins or administrator access are used.
+4. Open a normal web page in Chrome and click the SurfMeter extension button. Once connected, enable **Record eligible Chrome activity** in SurfMeter. This development path is intended for a single Chrome profile until multi-profile arbitration is validated.
+
+Permission use: `tabs` reads the selected tab URL, `nativeMessaging` connects to the local helper, and `alarms` retries a suspended worker. The extension reduces URLs to hostnames before native messaging; no content scripts, history API, browser storage, or remote host permissions are used. Incognito access is disabled. Real private-window focus and permission-loss behavior remain release validation gates.
+
+The GUI installer copies the helper into `~/Library/Application Support/SurfMeter/NativeHost`, creates adjacent `host-config.json`, and writes `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/dev.surfmeter.bridge.json`. On a new native-host session, the helper can reopen the configured app when a validated Chrome message arrives. Once that host has connected, later app loss returns a negative reply instead of immediately undoing Quit. Clicking the extension button creates a new host connection. App relaunch from real Chrome is not yet certified. Move SurfMeter to its final location before setup; reconnect after moving it.
+
+An existing different native registration is left intact. To replace an old development registration, inspect/remove that SurfMeter-specific JSON file and reconnect. The optional CLI installer is still available:
+
+```sh
+python3 scripts/prepare-chrome-host.py --extension-id YOUR_32_CHARACTER_EXTENSION_ID
+# Inspect the generated preview before registering it:
+python3 scripts/prepare-chrome-host.py --extension-id YOUR_32_CHARACTER_EXTENSION_ID --install
+```
+
+The CLI path points to `.build/chrome-native-host` in this checkout. The GUI installer is the self-contained app path. Neither path enables recording automatically.
+
+## Data and tracking behavior
+
+- The main app is the sole writer of Core Data/SQLite hourly platform aggregates under `~/Library/Application Support/SurfMeter/Data/activity.sqlite`. Daily and weekly totals are derived from them. No raw browsing-event history is stored.
+- Settings persist through UserDefaults. Retention is 30 calendar days by default, with 7/30/90-day choices. A day is a fixed local date key; later time-zone changes do not rewrite old keys. Repeated daylight-saving clock hours share a bucket.
+- Foreground Chrome, eligible fresh browser state, active system/session, input within 60 seconds, enabled collection, no pause, and no matching exclusion are required. The initial 60 idle seconds count. Unknown/stale states, long scheduling gaps, clock jumps, and reconnect gaps are not backfilled.
+- Native foreground changes invalidate old snapshots. Browser heartbeats run once a second, with a two-second accounting freshness deadline. Thirty-second alarms help recover suspended extension workers. Measured CPU and recovery performance are still pending.
+- Ten-second checkpoints, sleep/session notifications, and quit save the aggregate ledger. Save failures stop recording, retain unsaved totals in memory, and offer retry. Successful deletion clears the store before the UI updates and invalidates transient tracking state.
+- Login items use `SMAppService` and are opt-in. The GUI reports registration/approval errors. Signed Applications-folder behavior needs manual validation.
+- Screen sleep, session changes, and lock notifications close eligibility. The lock implementation also reads the supplemental `CGSSessionScreenIsLocked` dictionary key. This key and the distributed notification names are not a certified public lock API contract; lock/startup/unlock/session behavior must be tested before release.
+
+## Verify and preview
+
+```sh
+./scripts/test-native.sh
+python3 scripts/verify-native-bridge.py
+python3 scripts/verify-recording.py
+```
+
+`verify-recording.py` runs about 22 seconds. It starts the real app and helper with **synthetic browser input in a temporary directory**, verifies native accounting and SQLite totals, and verifies that unavailable input adds no time. It does not inspect your browser or alter normal preferences. `--simulate-chrome` is honored only with an explicit `--bridge-directory`; the app labels this mode Simulation.
+
+For the accelerated ten-minute deterministic accounting/disk/reopen/retention/deletion check, run the built `SurfMeterVerification` executable at the bin directory reported by `swift build --show-bin-path`. This is a simulated timeline, not a real-browser accuracy certification.
+
+Preview sample data without reading/writing the real database or opening the browser bridge:
+
+```sh
+open -n .build/SurfMeter.app --args --demo
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --render-previews /private/tmp/surfmeter-native-previews
+```
+
+The exporter renders native AppKit-hosted SwiftUI views at 828×1320 (2×), in both appearances. Sample data is labeled Preview. Transparency is disabled for reproducible layout captures; inspect the running app for live system glass and accessibility behavior.
+
+Create a local development archive after a successful build:
+
+```sh
+./scripts/package-app.sh
+```
+
+This verifies the ad hoc signature and creates `.build/SurfMeter-0.2.0-development.zip`. It is not notarized or a production release. Signing, real-browser accuracy/privacy, supported OS versions, login items, lifecycle, resource limits, and clean installation remain open gates in [Validation](VALIDATION.md). Safari does not record anything in this build; see [its prerequisites](../extensions/safari/README.md).
+
+## Remove the development integration
+
+Remove the SurfMeter extension from Chrome and quit the Mac app. Remove only SurfMeter's native registration:
 
 ```sh
 rm "$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts/dev.surfmeter.bridge.json"
 ```
 
-This removal command is for the SurfMeter development registration only. The socket/lock live in `~/Library/Application Support/SurfMeter`; no activity is stored there by this foundation. Safari is **not installed or supported yet**; see [Safari adapter prerequisites](../extensions/safari/README.md).
+Disable launch at login in SurfMeter or macOS Login Items if enabled. Use **Delete all activity** before uninstalling if you want to clear recorded totals. Removing the app alone does not delete its local data/settings.
 
 ## UI prototype
 

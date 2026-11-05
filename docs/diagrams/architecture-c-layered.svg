@@ -40,7 +40,7 @@
 <text x="616.0" y="657.0" font-family="Helvetica, Arial, sans-serif" font-size="13.0" font-weight="400" fill="#667484" text-anchor="start">AppKit / macOS APIs</text>
 <path d="M950.0 573.0 C950.0 549.0,1200.0 549.0,1200.0 573.0 L1200.0 657.0 C1200.0 681.0,950.0 681.0,950.0 657.0 Z" fill="white" stroke="#7f8c9c" stroke-width="1.4"/><ellipse cx="1075.0" cy="573.0" rx="125.0" ry="18" fill="none" stroke="#7f8c9c" stroke-width="1.4"/>
 <text x="1075.0" y="612.0" font-family="Helvetica, Arial, sans-serif" font-size="18.0" font-weight="700" fill="#293442" text-anchor="middle">Usage repository</text>
-<text x="1075.0" y="642.0" font-family="Helvetica, Arial, sans-serif" font-size="14.0" font-weight="400" fill="#526171" text-anchor="middle">SwiftData · local store</text>
+<text x="1075.0" y="642.0" font-family="Helvetica, Arial, sans-serif" font-size="14.0" font-weight="400" fill="#526171" text-anchor="middle">Core Data · local store</text>
 <path d="M640.0 280.0 L640.0 330.0" fill="none" stroke="#526171" stroke-width="1.5" marker-end="url(#arrow)"/>
 <text x="654.0" y="307.0" font-family="Helvetica, Arial, sans-serif" font-size="12.0" font-weight="400" fill="#526171" text-anchor="start">Commands / queries</text>
 <path d="M640.0 480.0 L640.0 530.0" fill="none" stroke="#526171" stroke-width="1.5" marker-end="url(#arrow)"/>

@@ -1,12 +1,12 @@
 # SurfMeter — Technology stack and architecture
 
-Date: 2026-11-05
+Date: 2026-11-06
 
-Status: Native foundation implemented; real-browser and OS feasibility checks remain in progress. The diagram shows the intended complete architecture, including components not implemented yet.
+Status: Native Chrome development app implemented; real-browser, Safari, OS, and distribution validation gates remain open. The diagram includes the still-pending Safari adapter.
 
 ## Current implementation
 
-The repository contains a Swift Package with a SwiftUI menu bar shell, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. There is no accounting engine or persistent usage store yet.
+The repository contains a Swift Package with a SwiftUI menu bar shell, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. The deterministic accounting engine, local hourly aggregate store, and native Daily/Weekly/detail/preferences/setup UI are now implemented. See [validation](VALIDATION.md) for tested behavior and remaining gates.
 
 The approved interactive UI prototype is built with HTML, CSS, and vanilla JavaScript. It runs with a local Python HTTP server, uses sample activity, and stores preview preferences in browser local storage. Browser connections and system settings are simulated.
 
@@ -22,7 +22,7 @@ The production direction is a native macOS app. The approved prototype provides 
 | Browser extensions | TypeScript and WebExtensions | Observe the active website, selected tab, and browser-window focus. Share browser-independent logic and keep browser-specific adapters small. |
 | Extension/app communication | Browser native messaging and a local Swift bridge | Deliver browser state to the app without a remote service. Safari and Chrome use different native integration mechanisms. |
 | Tracking engine | Swift concurrency, AppKit, and macOS system APIs | Combine browser state with foreground-app, idle, sleep, lock, pause, and permission state; accumulate eligible time once. |
-| Persistence | SwiftData, configured for local storage | Persist daily platform totals and minimal coverage metadata. The native app owns writes. |
+| Persistence | Core Data, programmatic schema with local SQLite storage | Persist daily platform totals and minimal coverage metadata. The native app owns writes. |
 | Preferences | SwiftUI `@AppStorage` / `UserDefaults` | Small settings such as pause state, appearance preference, and exclusions. No secrets belong here. |
 | Build and dependencies | Xcode and Swift Package Manager; TypeScript compiler for extensions | Build the app, extension targets, and native messaging helper. Use dependencies only when needed. |
 | Validation | Swift Testing / XCTest and browser integration checks | Verify duration accounting, grouping, rollover, persistence, and real browser behavior. |
@@ -38,7 +38,7 @@ The icon-led reference view (A) is the selected direction. It uses IBM Plex Sans
 
 A high-level view of the main components and primary information flow. Short labels sit below icons; browser adapters remain outside the main app boundary. This is the lightest overview for the README or an introduction to the system.
 
-![Option A: Icon-led SurfMeter reference architecture with Safari and Chrome extensions, native adapters, a local bridge, Swift tracking engine, macOS signals, preferences, SwiftData storage, and menu bar UI.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-a-reference.png?v=2)
+![Option A: Icon-led SurfMeter reference architecture with Safari and Chrome extensions, native adapters, a local bridge, Swift tracking engine, macOS signals, preferences, Core Data storage, and menu bar UI.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-a-reference.png?v=3)
 
 [Full-resolution PNG](diagrams/architecture-a-reference.png) · [SVG](diagrams/architecture-a-reference.svg) · [Editable diagram](diagrams/architecture-a-reference.drawio)
 
@@ -74,7 +74,7 @@ The extension reports browser state. The native engine determines whether that s
 - **Shared contract:** v1 carries browser, worker session UUID, sequence, eligibility state, and optional normalized hostname. Tab/window identifiers are unnecessary for the current snapshot path and are omitted. See [protocol](BROWSER-PROTOCOL.md).
 - **Connection lifecycle:** on startup or reconnection, request a current-state snapshot. Do not replay disconnected intervals as measured usage. Detect stale or disconnected integrations and stop affected attribution.
 
-Native messaging is the extension-to-native boundary. The development Chrome host relays to the app using a private same-user Unix domain socket with framed JSON, restrictive filesystem permissions, peer UID validation, and an exclusive server lock. This path is tested with the actual app/helper and synthetic snapshots. Exact origin registration restricts extension access, but UID checks do not authenticate same-user processes by code signature. Safari sandbox compatibility, production authentication, packaging, and launch behavior remain unverified. The helper currently requires the app to be open. See [validation](FOUNDATION-VALIDATION.md).
+Native messaging is the extension-to-native boundary. The development Chrome host relays to the app using a private same-user Unix domain socket with framed JSON, restrictive filesystem permissions, peer UID validation, and an exclusive server lock. This path is tested with the actual app/helper and synthetic snapshots. Exact origin registration restricts extension access, but UID checks do not authenticate same-user processes by code signature. Safari sandbox compatibility, production authentication, packaging, and launch behavior remain unverified. An installed helper can reopen its configured app; real-Chrome launch/recovery remains to be validated. See [validation](FOUNDATION-VALIDATION.md).
 
 Only the main app should write usage records. Browser adapters should not independently open and mutate the same model store. Limit native messaging access to the intended extension and validate incoming messages before accepting them.
 
@@ -93,14 +93,14 @@ Use AppKit workspace notifications for app activation and relevant lifecycle sig
 
 ### Storage and aggregation
 
-- Persist local daily duration per normalized platform/domain and minimal coverage metadata, following the SRS retention policy.
+- Persist local hourly duration buckets (date, hour, platform/domain, seconds) and minimal daily coverage metadata. Derive daily and weekly totals and apply one retention policy to all buckets. FR-33 now permits these aggregates.
 - Compute Weekly from seven daily aggregates, including today so far. Keep today's menu bar total independent of the selected dashboard period.
 - Store timestamps/day attribution consistently with the SRS time-zone policy. Preserve previously attributed days when the time zone changes.
 - Keep full URLs, query strings, page titles, and browsing content out of persistent records and logs. Normalize to the required hostname/domain as early as possible.
-- Configure SwiftData for local persistence without CloudKit synchronization. Save explicitly at accounting checkpoints and handle persistence failures visibly.
+- Use a programmatic Core Data schema and local SQLite store, without a cloud container. Save explicitly at ten-second checkpoints, sleep/session transitions, and quit. Roll back failed transactions, retain the unsaved ledger, and stop recording until a successful retry.
 - Use a repository boundary around persistence so the engine can run against an in-memory store for validation.
 
-The hourly detail shown in the prototype will require hourly aggregate data in the native implementation. Its schema and retention must be reconciled with the SRS's current daily-only persisted-data rule before implementation. Do not introduce raw browsing-event history to reproduce that chart.
+FR-33 was revised on 2026-11-06 to allow the minimum hourly aggregates required by FR-39. No raw browsing-event history is stored. The original SwiftData proposal was replaced by programmatic Core Data after the CLT failed to provide its model macro plugin; transaction and query boundaries remain in `UsageStore`.
 
 ## Native interface
 
@@ -108,7 +108,7 @@ Use `MenuBarExtra` as the starting point for the menu bar application and evalua
 
 Adopt system Liquid Glass for supported controls and navigation. Keep the content layer readable, and use a compatible material fallback on older supported macOS versions. The CSS material and 2× capture mode belong to the web prototype and documentation only.
 
-The foundation targets macOS 14 to accommodate the planned SwiftData layer. Only Apple Silicon/macOS 27.2 has been exercised; the minimum-version and Intel validation gates remain open. The minimal shell uses system presentation; explicit Liquid Glass treatment and accessibility review belong to Task 4.
+The foundation targets macOS 14 to accommodate the planned Core Data layer. Only Apple Silicon/macOS 27.2 has been exercised; the minimum-version and Intel validation gates remain open. The minimal shell uses system presentation; explicit Liquid Glass treatment and accessibility review belong to Task 4.
 
 ## Validation and release gates
 
@@ -135,7 +135,19 @@ The [implementation tracker](IMPLEMENTATION.md) is the source of truth for deliv
 - [Apple Human Interface Guidelines: Materials](https://developer.apple.com/design/human-interface-guidelines/materials)
 - [Messaging between a Safari Web Extension and its app](https://developer.apple.com/documentation/safariservices/messaging-between-the-app-and-javascript-in-a-safari-web-extension)
 - [Chrome native messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging)
-- [Persisting model data with SwiftData](https://developer.apple.com/documentation/swiftdata/preserving-your-apps-model-data-across-launches)
+- [Persisting model data with Core Data](https://developer.apple.com/documentation/swiftdata/preserving-your-apps-model-data-across-launches)
 - [App activation notifications](https://developer.apple.com/documentation/appkit/nsworkspace/didactivateapplicationnotification)
 
 See the [SRS](SRS.md) for product requirements and the [development guide](DEVELOPMENT.md) to run the current prototype.
+
+## Implemented development flow
+
+`BrowserState` → Chrome native host → same-user Unix socket → main-actor `AppModel` → `TrackingEligibility` + `TrackingEngine` → in-memory `UsageLedger` → explicit `UsageStore` transaction → native views. Only the main app opens the database.
+
+The engine receives monotonic/wall/calendar samples and admits one platform at a time. Native foreground generation, pause, exclusions, idle, system/session state, and snapshot freshness gate eligibility. It clips the old sample at its idle/freshness cutoff, splits credited elapsed time into local hour/day buckets, and never backfills unknown gaps. Time-zone or wall-clock discontinuities reset transient state rather than reallocating historical buckets.
+
+The bundled Public Suffix List includes private suffixes, wildcards, and exceptions. Known platform aliases map explicitly; unknown sites use registrable domains. This data is used offline and ships with upstream notices.
+
+The app bundles its Chrome extension and helper; GUI setup installs an exact-origin per-user registration. User settings are separate from usage records. Demo rendering and test simulation never access the normal store. `SMAppService` provides opt-in login registration; the UI reports failures or required system approval.
+
+Lock detection combines workspace/session/screen notifications with distributed lock notifications and a supplemental CGSession dictionary key. The latter signals are not a certified public API contract; actual lock/unlock/startup behavior is a release gate. The same-user socket is still development IPC, not code-signature authentication. Safari sandbox IPC, production identities, notarization, and the real-browser accuracy/privacy matrix remain unfinished.

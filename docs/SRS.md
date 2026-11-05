@@ -1,10 +1,10 @@
 # Software Requirements Specification — SurfMeter
 
-Version: 0.2 (UI and proposed architecture)
+Version: 0.3 (native development build and hourly aggregates)
 
-Date: 2026-11-05
+Date: 2026-11-06
 
-Status: Interactive web prototype implemented; native app and browser tracking not yet implemented
+Status: Native Chrome development implementation available; real-browser acceptance, Safari, and release gates pending
 
 ## 1. Purpose
 
@@ -54,7 +54,7 @@ The following defaults make the initial requirements implementable. They are pro
 | Browser coverage | Target Safari and Google Chrome for the initial release, subject to a technical feasibility check. Identify supported browsers explicitly in setup. |
 | Idle threshold | Stop counting after 60 seconds without keyboard or pointer input; make this configurable later. |
 | Storage | Local-only, with no account or server required. |
-| Retention | Retain daily totals for 30 calendar days by default; retain only transient data needed to calculate them. |
+| Retention | Retain hourly per-platform aggregates and minimal daily coverage metadata for 30 calendar days by default; derive daily totals from those buckets. |
 | Platform mapping | Use hostname-based rules to group recognized services; show unmatched websites by registrable domain. |
 | Time zone | Use the Mac's local time zone for daily boundaries; preserve the day attribution of previously recorded activity. |
 
@@ -130,7 +130,7 @@ Pause tracking · Settings · Quit
 | ID | Requirement |
 | --- | --- |
 | FR-32 | The app shall persist daily per-platform totals across restarts and enforce the retention period automatically. |
-| FR-33 | Persisted usage shall contain only the local calendar date, platform/domain identifier, accumulated duration, and minimal coverage/settings metadata. Full URLs, paths, queries, page content, and page titles shall not be persisted or logged. |
+| FR-33 | Persisted usage shall contain only the local calendar date, local hour (0–23), platform/domain identifier, accumulated duration, and minimal coverage/settings metadata. Hourly aggregates enable FR-39; daily totals are derived. Repeated local hours during a daylight-saving fallback share one bucket. Full URLs, paths, queries, page content, and page titles shall not be persisted or logged. |
 | FR-34 | The app shall provide a delete-all-activity action with an explicit confirmation. Deletion shall clear stored activity and refresh visible totals; tracking may then start accumulating new usage. |
 | FR-35 | Collection and comparison shall work offline. No browsing activity shall be sent to external services. |
 | FR-36 | Permission loss or integration failure shall stop affected tracking promptly and mark the affected period as incomplete rather than recording assumed usage. |
@@ -160,7 +160,7 @@ Pause tracking · Settings · Quit
 
 | Entity | Key fields | Purpose |
 | --- | --- | --- |
-| Daily usage | Local date, platform/domain ID, duration in seconds | Persist accumulated time by platform and day. |
+| Hourly usage aggregate | Local date, local hour, platform/domain ID, duration in seconds | Persist aggregate time by platform/hour; derive daily and weekly summaries. |
 | Platform rule | Platform ID, display name, allowed hostnames/domain rules | Normalize website hosts into platform names. |
 | Settings | Pause state, excluded domains, login preference, retention | Store user tracking preferences. |
 | Coverage metadata | Day, tracking start/stop or incomplete status, reason | Explain first-run, paused, or unavailable coverage without recording URL history. |
@@ -170,16 +170,16 @@ Persist only the minimum coverage detail needed to describe incomplete days. Thi
 
 ## 8. Technical discovery and release gates
 
-The proposed implementation direction is Swift and SwiftUI, `MenuBarExtra`, system Liquid Glass where supported, TypeScript browser extensions with native messaging, and local SwiftData persistence. See [Technology stack and architecture](ARCHITECTURE.md) for component responsibilities, data flow, and validation gates. The macOS deployment target, exact browser support matrix, local IPC mechanism, and distribution details remain subject to technical discovery.
+The proposed implementation direction is Swift and SwiftUI, `MenuBarExtra`, system Liquid Glass where supported, TypeScript browser extensions with native messaging, and local Core Data/SQLite persistence. See [Technology stack and architecture](ARCHITECTURE.md) for component responsibilities, data flow, and validation gates. The macOS deployment target, exact browser support matrix, local IPC mechanism, and distribution details remain subject to technical discovery.
 
-Before implementing the full MVP:
+Before accepting the MVP for release:
 
 1. Verify how Safari and Chrome expose the active hostname, selected tab, focused window, and private-browsing state with user-authorized access.
 2. Validate focus, idle, sleep, lock, and resume detection on the proposed minimum macOS version.
 3. Validate the proposed extension/native messaging approach for accuracy, privacy, permissions, reliability, installation, and connection recovery. Document any change of approach before implementation; include extension installation and connection state in setup.
 4. Decide the exact supported browser versions and minimum macOS version and publish that support matrix before release.
 5. Verify the private-browsing exclusion requirement for every supported integration. If a target browser cannot meet it, document the constraint and revise release scope before shipping support for that browser.
-6. Reconcile FR-39's hourly platform detail with FR-33's daily-only persisted-data rule. Specify the minimum hourly aggregate schema and retention, or revise that detail view, before implementing native storage. Raw browsing-event history remains outside scope.
+6. FR-33 was revised on 2026-11-06 to permit hourly aggregates with the same retention as daily coverage. Verify storage contains only the approved aggregate fields. Raw browsing-event history remains outside scope.
 
 ## 9. Acceptance criteria
 
@@ -217,3 +217,9 @@ See the [five-task implementation tracker](IMPLEMENTATION.md) for delivery order
 - Whether comparison against yesterday's full day is sufficient; a same-time-of-day comparison would require additional time-bucket data and a revised storage specification.
 
 These decisions do not block the initial repository or requirements draft.
+
+## 12. Implementation decisions — 2026-11-06
+
+The user authorized continued whole-app development while integration feasibility remains open. Independent engine/storage/UI work may proceed; release acceptance still requires the browser and OS gates above. Chrome is the only implemented development adapter. Safari remains a target, not a claim of available support; FR-15 must be verified before either browser is advertised as release-supported.
+
+Core Data with a programmatic SQLite-backed schema replaces the proposed SwiftData layer. The installed CLT lacks the SwiftData macro plugin; Core Data provides explicit transactions, offline local storage, and a buildable Apple-native implementation without an Xcode model compilation step. This is a storage-layer change, not permission to collect additional data.

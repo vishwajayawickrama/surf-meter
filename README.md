@@ -6,13 +6,13 @@
 
 A quiet place in your Mac’s menu bar for where your time goes.
 
-[Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
+[Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
 </div>
 
 ![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
 
-> **First-look prototype.** Explore the interface with sample activity today. The native menu bar foundation and development Chrome bridge are now available; automatic time recording is still to come. Everything pictured below is captured from the interactive prototype.
+> **Native development build available.** SurfMeter now has a SwiftUI dashboard, Chrome tracking engine, and local aggregate storage. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The original hero and GIFs show the interactive UI prototype; native previews below use labeled sample data.
 
 ## Know where the hours went
 
@@ -58,6 +58,31 @@ The visual direction takes inspiration from Apple’s Liquid Glass: a floating t
 
 The planned native app puts privacy at the center: active-tab timing, local storage, private-window exclusions, and no account required. These are implementation requirements, not claims of tracking functionality in this first look.
 
+## Try the native development build
+
+Build the Chrome extension, then the Mac app:
+
+```sh
+cd extensions/chrome
+npm ci
+npm run build
+cd ../..
+./scripts/build-native.sh
+open .build/SurfMeter.app
+```
+
+Requires macOS 14+, Swift 6, and Node/npm to build. Open **Browser setup** in the app, load its bundled Chrome extension, paste the extension ID, connect, and enable recording. Safari is not enabled yet. See the [complete setup guide](docs/DEVELOPMENT.md) and [tested capabilities and remaining gates](docs/VALIDATION.md).
+
+The native app includes Daily/Weekly views, Yesterday, website details, green/red comparisons, pause/resume, exclusions, retention, confirmed deletion, and appearance preferences. Activity stays in a local aggregate store; there is no backend or account. A self-contained, ad hoc signed development archive can be built with `./scripts/package-app.sh`; it is not a notarized release.
+
+<p align="center">
+  <img src="docs/media/native/native-daily-light@2x.png" alt="Native SwiftUI daily dashboard using labeled preview data" width="42%">
+  &nbsp;
+  <img src="docs/media/native/native-weekly-dark@2x.png" alt="Native SwiftUI weekly dashboard in dark appearance using labeled preview data" width="42%">
+</p>
+
+*Native SwiftUI previews at 2× resolution. Sample activity, with transparency disabled for reproducible captures. Live system materials appear in the running Mac app.*
+
 ## Try the first look
 
 You only need Python 3 and a browser. No packages, account, or build step.
@@ -74,7 +99,7 @@ The browser connections, activity, and system settings are simulated. Preview pr
 
 ## What’s next
 
-Try the [native development build](docs/DEVELOPMENT.md#native-foundation), or read the [current validation results](docs/FOUNDATION-VALIDATION.md). The native shell shows connection diagnostics; the screenshots above remain the UI prototype.
+Try the [native development build](docs/DEVELOPMENT.md#native-foundation), or read the [current validation results](docs/FOUNDATION-VALIDATION.md). The native app now includes accounting, persistence, and the dashboard. Original marketing GIFs remain the web prototype; the native previews are labeled separately.
 
 Native implementation is organized into [five tasks](docs/IMPLEMENTATION.md), with completion criteria and handoff notes for work across sessions.
 

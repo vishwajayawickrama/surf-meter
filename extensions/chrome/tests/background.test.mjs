@@ -17,7 +17,7 @@ test('worker reports changes, excludes private windows, reconnects, and drops st
       assert.equal(name, 'dev.surfmeter.bridge');
       connectedCount++;
       disconnected = event();
-      return { postMessage: message => sent.push(message), onDisconnect:disconnected, onMessage:event() };
+      return { disconnect: () => disconnected.fire(), postMessage: message => sent.push(message), onDisconnect:disconnected, onMessage:event() };
     }, onStartup:events.startup, onInstalled:events.installed },
     tabs: { query: async () => [{incognito:false, url:'https://example.com/path?secret=1'}], onActivated:events.activated, onUpdated:events.updated, onRemoved:events.removed },
     windows: { getLastFocused: () => queryWindow(), onFocusChanged:events.focus, onRemoved:events.closed },

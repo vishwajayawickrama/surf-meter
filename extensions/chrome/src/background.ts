@@ -19,11 +19,13 @@ function connection(): NativePort | undefined {
     port = candidate;
     candidate.onDisconnect.addListener(() => {
       void chrome.runtime.lastError; // Consume diagnostics without logging browsing data.
-      if (port === candidate) port = undefined;
+      if (port !== candidate) return;
+      port = undefined;
       retryAfter = Date.now() + 5000;
       void badge(false);
     });
     candidate.onMessage.addListener((reply: unknown) => {
+      if (port !== candidate) return;
       const valid = typeof reply === "object" && reply !== null &&
         "protocolVersion" in reply && reply.protocolVersion === 1 &&
         "accepted" in reply && reply.accepted === true;
@@ -52,8 +54,8 @@ async function refresh(): Promise<void> {
 for (const event of [chrome.tabs.onActivated, chrome.tabs.onUpdated, chrome.tabs.onRemoved,
   chrome.windows.onFocusChanged, chrome.windows.onRemoved, chrome.runtime.onStartup,
   chrome.runtime.onInstalled, chrome.alarms.onAlarm]) event.addListener(() => { void refresh(); });
-chrome.action.onClicked.addListener(() => { retryAfter = 0; void refresh(); });
+chrome.action.onClicked.addListener(() => { port?.disconnect(); port = undefined; retryAfter = 0; void refresh(); });
 // A heartbeat establishes freshness, never duration. Alarms recover a suspended worker.
-void chrome.alarms.create("surfmeter-reconnect", { periodInMinutes: 1 });
-setInterval(() => { void refresh(); }, 5000);
+void chrome.alarms.create("surfmeter-reconnect", { periodInMinutes: 0.5 });
+setInterval(() => { void refresh(); }, 1000);
 void refresh();

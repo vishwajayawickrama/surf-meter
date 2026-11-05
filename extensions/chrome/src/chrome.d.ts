@@ -1,6 +1,7 @@
 // Narrow declarations for the APIs used here; no unchecked any at the browser boundary.
 interface ChromeEvent<T extends (...args: never[]) => void> { addListener(callback: T): void }
 interface NativePort {
+  disconnect(): void;
   postMessage(message: import("./state.js").BrowserState): void;
   onDisconnect: ChromeEvent<() => void>;
   onMessage: ChromeEvent<(message: unknown) => void>;
