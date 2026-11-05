@@ -1,3 +1,8 @@
+// Render the real interface at 2× for documentation, without scaling a bitmap.
+if (new URLSearchParams(location.search).get('capture') === 'retina') {
+  document.documentElement.classList.add('retina-capture');
+}
+
 const icons = {
   wave: '<path d="M3 16c3-7 5-9 8-9s3 7 6 7c1.5 0 2.5-2 4-5M3 20c3-7 5-9 8-9s3 7 6 7c1.5 0 2.5-2 4-5"/>',
   activity: '<path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/>',
@@ -159,7 +164,8 @@ function alignPopover() {
   if (popover.hidden) return;
   const trigger = document.querySelector('#menubar-trigger').getBoundingClientRect();
   const panel = popover.getBoundingClientRect();
-  const offset = Math.min(panel.width - 20, Math.max(20, trigger.left + trigger.width / 2 - panel.left));
+  const scale = panel.width / popover.offsetWidth;
+  const offset = Math.min(popover.offsetWidth - 20, Math.max(20, (trigger.left + trigger.width / 2 - panel.left) / scale));
   document.querySelector('.popover-notch').style.left = `${offset - 6.5}px`;
   document.querySelector('.popover-notch').style.right = 'auto';
 }

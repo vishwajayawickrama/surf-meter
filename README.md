@@ -10,7 +10,7 @@ A quiet place in your Mac’s menu bar for where your time goes.
 
 </div>
 
-![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover.png)
+![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
 
 > **First-look prototype.** Explore the interface with sample activity today. Automatic browser tracking and the native macOS app are still to come. Everything pictured below is captured from the interactive prototype.
 
@@ -26,18 +26,13 @@ A few minutes on YouTube. A quick scroll through Instagram. Another Reddit tab. 
 
 ## Take a look around
 
-<table>
-  <tr>
-    <th align="center">Daily → Yesterday → Weekly → Details</th>
-    <th align="center">Light when you want it. Dark when you need it.</th>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/activity-tour.gif" alt="Animated prototype walkthrough cycling through Daily, Yesterday, Weekly, and YouTube’s weekly detail" width="420"></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/appearance-tour.gif" alt="Animated comparison of SurfMeter’s light and dark appearances" width="420"></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/activity-tour-2x.gif" alt="Animated prototype walkthrough cycling through Daily, Yesterday, Weekly, and YouTube’s weekly detail" width="45%">
+  &nbsp;
+  <img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/appearance-tour-2x.gif" alt="Animated comparison of SurfMeter’s light and dark appearances" width="45%">
+</p>
 
-*Looping UI walkthroughs using sample data. Prefer still images? Open the screenshots below.*
+*Activity walkthrough (left) · Light and dark appearances (right). Rendered at 2× resolution using sample data. Prefer still images? Open the screenshots below.*
 
 ## A closer look
 
@@ -47,11 +42,11 @@ A few minutes on YouTube. A quick scroll through Instagram. Another Reddit tab. 
 
 | Daily | Weekly |
 | :---: | :---: |
-| [![Daily usage with a Yesterday button and platform comparisons](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/daily.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/daily.png) | [![Seven-day usage chart, platform totals, and daily averages](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/weekly.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/weekly.png) |
+| [![Daily usage with a Yesterday button and platform comparisons](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/daily-2x.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/daily-2x.png) | [![Seven-day usage chart, platform totals, and daily averages](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/weekly-2x.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/weekly-2x.png) |
 
 | Yesterday | Dark preferences |
 | :---: | :---: |
-| [![Yesterday’s full-day browsing totals](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/yesterday.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/yesterday.png) | [![SurfMeter preferences in dark appearance](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/preferences-dark.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/preferences-dark.png) |
+| [![Yesterday’s full-day browsing totals](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/yesterday-2x.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/yesterday-2x.png) | [![SurfMeter preferences in dark appearance](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/preferences-dark-2x.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/preferences-dark-2x.png) |
 
 Click any screenshot to view it at full size.
 

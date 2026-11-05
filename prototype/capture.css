@@ -1,0 +1,35 @@
+/* Documentation capture only: ?capture=retina.
+   Keep layout at 1280 CSS pixels and rasterize at twice the normal resolution.
+   The ordinary interactive preview is unaffected. */
+html.retina-capture {
+  width: 2560px;
+}
+
+.retina-capture body {
+  width: 1280px;
+  zoom: 2;
+}
+
+.retina-capture .studio {
+  width: 1280px;
+  max-width: none;
+  padding: 48px 42px 32px;
+  gap: 46px;
+  grid-template-columns: 305px minmax(0, 1fr);
+}
+
+/* Full-page capture can expand the viewport. Freeze the 1280px layout so
+   wide-screen media queries cannot move the panel during the capture. */
+.retina-capture .app-popover { width: 390px; margin-right: 22px; }
+.retina-capture .desktop { min-height: 764px; }
+.retina-capture .platform-row { padding: 10px 0; }
+.retina-capture .intro { margin-top: 88px; }
+.retina-capture .wallpaper-caption { left: 42px; bottom: 133px; }
+.retina-capture .mac-menubar { padding: 0 17px; }
+
+.retina-capture *,
+.retina-capture *::before,
+.retina-capture *::after {
+  transition: none !important;
+  animation: none !important;
+}

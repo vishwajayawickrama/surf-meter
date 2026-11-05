@@ -33,12 +33,12 @@ def main():
         temp = Path(tmp)
         for name in names:
             run('-i', args.capture_dir / f'{name}.jpg', '-vf',
-                'pad=1280:1042:0:0:color=0xf5f7fa,crop=450:900:788:88',
+                'pad=iw:ih+200:0:0:color=0xf5f7fa,crop=900:1800:1576:176',
                 '-frames:v', '1', temp / f'{name}.png')
         for source, target in [('01-daily', 'daily'), ('02-yesterday', 'yesterday'),
                                ('03-weekly', 'weekly'), ('05-daily-dark', 'daily-dark'),
                                ('06-preferences-dark', 'preferences-dark')]:
-            shutil.copyfile(temp / f'{source}.png', DEST / f'{target}.png')
+            shutil.copyfile(temp / f'{source}.png', DEST / f'{target}-2x.png')
 
         # Compose a sharp, typeset cover around an unscaled screenshot.
         labels = [
@@ -51,23 +51,23 @@ def main():
             ('DAILY  /  YESTERDAY  /  WEEKLY', 98, 715, 17, '#326df1'),
             ('FIRST LOOK  /  INTERACTIVE UI PROTOTYPE', 98, 845, 12, '#838c99'),
         ]
-        filters = ['[0:v][1:v]overlay=910:20']
+        filters = ['[0:v][1:v]overlay=1820:40']
         for i, (label, x, y, size, color) in enumerate(labels):
             path = temp / f'label-{i}.txt'
             path.write_text(label)
-            filters.append(f"drawtext=fontfile=/System/Library/Fonts/Supplemental/Arial.ttf:textfile={path}:x={x}:y={y}:fontsize={size}:fontcolor={color}")
-        run('-f', 'lavfi', '-i', 'color=c=0xf5f7fa:s=1400x940', '-i', temp / '01-daily.png',
-            '-filter_complex', ','.join(filters), '-frames:v', '1', DEST / 'cover.png')
+            filters.append(f"drawtext=fontfile=/System/Library/Fonts/Supplemental/Arial.ttf:textfile={path}:x={x*2}:y={y*2}:fontsize={size*2}:fontcolor={color}")
+        run('-f', 'lavfi', '-i', 'color=c=0xf5f7fa:s=2800x1880', '-i', temp / '01-daily.png',
+            '-filter_complex', ','.join(filters), '-frames:v', '1', DEST / 'cover-2x.png')
 
         for filename, frames in [
-            ('activity-tour.gif', names[:4]),
-            ('appearance-tour.gif', ['01-daily', '05-daily-dark']),
+            ('activity-tour-2x.gif', names[:4]),
+            ('appearance-tour-2x.gif', ['01-daily', '05-daily-dark']),
         ]:
             manifest = temp / f'{filename}.txt'
             manifest.write_text(''.join(f"file '{temp / (name + '.png')}'\nduration 3\n" for name in frames)
                                 + f"file '{temp / (frames[-1] + '.png')}'\n")
             run('-f', 'concat', '-safe', '0', '-i', manifest, '-t', len(frames) * 3,
-                '-vf', 'fps=8,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3',
+                '-vf', 'fps=8,split[a][b];[a]palettegen=stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a',
                 '-loop', '0', DEST / filename)
     print('Built cover, five screenshots, and two looping GIFs in docs/media.')
 
