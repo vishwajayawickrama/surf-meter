@@ -1,29 +1,41 @@
 #!/usr/bin/env swift
-// Generate the component diagram as PNG, SVG, and editable diagrams.net XML.
+// Three deliberately different architecture views, with PNG/SVG/draw.io exports.
 import AppKit
 import CoreGraphics
 import CoreText
 import Foundation
 
-let width = 1600.0, height = 1020.0, scale = 2.0
-let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-let output = root.appendingPathComponent("docs/diagrams")
+var width = 1400.0, height = 820.0
+let scale = 2.0
+let output = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("docs/diagrams")
 let iconDirectory = output.appendingPathComponent("icons")
 try FileManager.default.createDirectory(at: iconDirectory, withIntermediateDirectories: true)
-let cg = CGContext(data: nil, width: Int(width * scale), height: Int(height * scale),
-                   bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(),
-                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-cg.scaleBy(x: scale, y: scale)
-cg.translateBy(x: 0, y: height)
-cg.scaleBy(x: 1, y: -1)
-var svg = """
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1020" viewBox="0 0 1600 1020" role="img" aria-labelledby="title desc">
-<title id="title">SurfMeter component architecture</title>
-<desc id="desc">Browser extensions send state through separate native adapters into the Mac app. A tracking engine combines browser state, OS eligibility, and preferences. Usage is saved locally and presented through the menu bar interface.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#526171"/></marker></defs>
-"""
-var cells = ["<mxCell id=\"0\"/>", "<mxCell id=\"1\" parent=\"0\"/>"]
+var cg: CGContext!
+var svg = ""
+var cells: [String] = []
 var serial = 1
+var pages: [String] = []
+
+func begin(_ title: String, _ w: Double, _ h: Double) {
+    width=w; height=h; serial=1
+    cg=CGContext(data:nil,width:Int(w*scale),height:Int(h*scale),bitsPerComponent:8,bytesPerRow:0,
+                 space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue)!
+    cg.scaleBy(x:scale,y:scale);cg.translateBy(x:0,y:h);cg.scaleBy(x:1,y:-1)
+    cells=["<mxCell id=\"0\"/>","<mxCell id=\"1\" parent=\"0\"/>"]
+    svg="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(w)\" height=\"\(h)\" viewBox=\"0 0 \(w) \(h)\" role=\"img\"><title>\(xml(title))</title><defs><marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"10\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto\"><path d=\"M0 0 L10 5 L0 10 Z\" fill=\"#526171\"/></marker></defs>"
+    rect(0,0,w,h,fill:"#ffffff",stroke:"#ffffff")
+}
+func save(_ key: String, _ name: String) throws {
+    try (svg+"</svg>\n").write(to:output.appendingPathComponent(key+".svg"),atomically:true,encoding:.utf8)
+    let image=cg.makeImage()!
+    try NSBitmapImageRep(cgImage:image).representation(using:.png,properties:[:])!.write(to:output.appendingPathComponent(key+".png"))
+    let model="<mxGraphModel grid=\"1\" gridSize=\"10\" guides=\"1\" connect=\"1\" arrows=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"\(Int(width))\" pageHeight=\"\(Int(height))\" background=\"#ffffff\"><root>\(cells.joined())</root></mxGraphModel>"
+    let page="<diagram id=\"\(key)\" name=\"\(xml(name))\">\(model)</diagram>"
+    pages.append(page)
+    try ("<mxfile host=\"app.diagrams.net\" type=\"device\">"+page+"</mxfile>").write(to:output.appendingPathComponent(key+".drawio"),atomically:true,encoding:.utf8)
+    print("Rendered \(key): \(Int(width*scale)) × \(Int(height*scale))")
+}
+
 func nextID() -> String { serial += 1; return "c\(serial)" }
 func xml(_ s: String) -> String {
     s.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;")
@@ -84,7 +96,7 @@ func route(_ points: [(Double,Double)], dashed: Bool = false, arrow: Bool = true
 // Cached, recognizable icons. Browser icons are extracted from installed vendor apps.
 // Other symbols come from Apple's SF Symbols, rendered into independent PNG assets.
 let symbols = ["extension":"puzzlepiece.extension", "bridge":"cable.connector", "engine":"cpu",
-               "system":"desktopcomputer", "settings":"gearshape", "ui":"macwindow"]
+               "system":"desktopcomputer", "settings":"gearshape", "ui":"macwindow", "swift":"swift"]
 func cachedIcon(_ key: String) throws -> Data {
     let url=iconDirectory.appendingPathComponent("\(key).png")
     if FileManager.default.fileExists(atPath:url.path) { return try Data(contentsOf:url) }
@@ -97,7 +109,7 @@ func cachedIcon(_ key: String) throws -> Data {
     } else {
         image=NSImage(systemSymbolName:symbols[key]!,accessibilityDescription:nil)!
             .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize:80,weight:.regular)
-                .applying(NSImage.SymbolConfiguration(paletteColors:[NSColor(cgColor:color("#44546a"))!])))!
+                .applying(NSImage.SymbolConfiguration(paletteColors:[NSColor(cgColor:color(key == "swift" ? "#F05138":"#44546a"))!])))!
     }
     let bitmap=NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:160,pixelsHigh:160,bitsPerSample:8,
                                 samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:0,bitsPerPixel:0)!
@@ -139,88 +151,126 @@ func database(_ x:Double,_ y:Double,_ w:Double,_ h:Double) {
     vertex("","shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=18;fillColor=#ffffff;strokeColor=#7f8c9c;",x,y,w,h)
 }
 
-// Document title and host boundary.
-rect(0,0,width,height,fill:"#ffffff",stroke:"#ffffff")
-label("SurfMeter — component architecture",32,20,size:26,bold:true)
-label("Proposed native MVP",1370,29,size:14,ink:"#667484",center:false)
-label("Browser integrations and in-process application components",32,61,size:15,ink:"#667484")
-rect(24,102,1552,834,fill:"#ffffff",stroke:"#9da8b6",dashed:true)
-try icon("system",40,114,size:25)
-label("User's Mac",76,115,size:17,bold:true)
 
-// Distinct process boundaries.
-rect(46,164,302,674,fill:"#fafbfc",stroke:"#c4cbd4",dashed:true)
-label("Browser processes",62,178,size:15,bold:true)
-rect(380,164,260,674,fill:"#fafbfc",stroke:"#c4cbd4",dashed:true)
-label("Native adapter processes",396,178,size:15,bold:true)
-rect(680,164,860,732,fill:"#f9fbfd",stroke:"#6d849e",dashed:true)
-label("SurfMeter.app",702,180,size:18,bold:true)
-label("Swift / SwiftUI · main app process",702,208,size:13,ink:"#667484")
-
-// Extension components live inside their respective browsers.
-for (browser,key,y) in [("Safari","safari",228.0),("Google Chrome","chrome",588.0)] {
-    rect(62,y,270,174,stroke:"#9da8b6",radius:3)
-    try icon(key,78,y+16,size:40)
-    label(browser,130,y+21,size:20,bold:true)
-    label("Browser process",130,y+52,size:12,ink:"#667484")
-    rect(80,y+96,234,60,fill:"#ffffff",stroke:"#7f8c9c")
-    try icon("extension",92,y+111,size:28)
-    label("Web Extension",130,y+104,size:15,bold:true)
-    label("TypeScript",130,y+128,size:12,ink:"#667484")
+func title(_ primary: String, _ secondary: String) {
+    label(primary,40,25,size:26,bold:true)
+    label(secondary,40,65,size:15,ink:"#667484")
 }
-try component("Safari adapter","Native extension handler","Swift / extension target","extension",400,304,220,100)
-try component("Chrome host","Native messaging host","Swift / helper executable","extension",400,664,220,100)
-route([(314,354),(400,354)])
-route([(314,714),(400,714)])
-label("native",357,314,size:11,ink:"#526171",center:true)
-label("messaging",357,330,size:11,ink:"#526171",center:true)
-label("native",357,674,size:11,ink:"#526171",center:true)
-label("messaging",357,690,size:11,ink:"#526171",center:true)
+func tile(_ key:String, _ name:String, _ technology:String, _ x:Double,_ y:Double) throws {
+    try icon(key,x,y,size:64)
+    label(name,x+32,y+80,size:17,bold:true,center:true)
+    label(technology,x+32,y+108,size:13,ink:"#667484",center:true)
+}
+func note(_ s:String,_ x:Double,_ y:Double) { label(s,x,y,size:13,ink:"#526171",center:true) }
 
-// Native app components. Incoming IPC terminates at the local bridge.
-try component("Local bridge","Validate messages","Connection health","bridge",720,382,220)
-try component("Tracking engine","Eligibility + elapsed time","Domain grouping / day rollover","engine",1060,382,260,130,fill:"#edf4fc")
-try component("System state observer","AppKit / macOS APIs","Foreground · idle · sleep · lock","system",1020,238,300,100)
-try component("Menu bar UI","SwiftUI / MenuBarExtra","Daily · Yesterday · Weekly","ui",720,680,260)
-database(1060,680,260,130)
-label("Usage repository",1190,724,size:18,bold:true,center:true)
-label("SwiftData · local store",1190,757,size:14,ink:"#526171",center:true)
-label("Totals / coverage / retention",1190,781,size:12,ink:"#667484",center:true)
-rect(1360,382,144,130,stroke:"#7f8c9c")
-try icon("settings",1413,395,size:34)
-label("Preferences",1432,435,size:15,bold:true,center:true)
-label("UserDefaults",1432,461,size:12,ink:"#526171",center:true)
-label("Pause / exclusions",1432,484,size:12,ink:"#667484",center:true)
+// A: icon-first reference architecture. White space, short labels, one app group.
+begin("A — SurfMeter reference architecture",1400,820)
+title("SurfMeter — reference architecture","A · Icon-led overview · Primary information flows · Proposed native app")
+rect(454,128,898,575,fill:"#ffffff",stroke:"#aab6c4")
+label("SurfMeter.app",474,143,size:17,bold:true)
+label("Native Swift application",474,169,size:13,ink:"#667484")
+try tile("safari","Safari","Web Extension",90,210)
+try tile("chrome","Chrome","Web Extension",90,460)
+try tile("extension","Safari adapter","Swift extension handler",270,210)
+try tile("extension","Chrome adapter","Swift native host",270,460)
+try tile("bridge","Local bridge","Validate + reconnect",520,334)
+try tile("swift","Tracking engine","Swift · eligible time",800,334)
+try tile("settings","Preferences","Pause + exclusions",800,150)
+try tile("system","macOS signals","Focus · idle · lock · sleep",800,526)
+// Standard database symbol at the same visual scale as the service icons.
+database(1120,200,64,64)
+label("Local usage store",1152,280,size:17,bold:true,center:true)
+label("SwiftData",1152,308,size:13,ink:"#667484",center:true)
+try tile("ui","Menu bar UI","SwiftUI · Daily + Weekly",1120,470)
+route([(154,242),(270,242)]);note("Native messaging",212,219)
+route([(154,492),(270,492)]);note("Native messaging",212,469)
+route([(334,242),(414,242),(414,356),(520,356)])
+route([(334,492),(414,492),(414,386),(520,386)])
+note("Local IPC",468,333);note("Local IPC",468,402)
+route([(584,366),(800,366)]);note("Browser state",692,340)
+route([(832,280),(832,334)]);label("Rules",846,294,size:13,ink:"#526171")
+route([(832,526),(832,474)]);label("Eligibility",846,492,size:13,ink:"#526171")
+route([(864,350),(1000,350),(1000,232),(1120,232)]);note("Write totals",1060,210)
+route([(1152,338),(1152,470)]);label("Read summaries",1166,368,size:13,ink:"#526171")
+route([(864,386),(1000,386),(1000,502),(1120,502)],dashed:true);note("Live status",1060,478)
+route([(40,752),(90,752)]);label("State / usage data",104,741,size:13,ink:"#526171")
+route([(320,752),(370,752)],dashed:true);label("Live status",384,741,size:13,ink:"#526171")
+label("All components run on the user's Mac. No backend or account.",650,741,size:14,ink:"#526171")
+label("IPC = local inter-process communication. Exact transport and permissions are subject to feasibility validation.",40,787,size:12,ink:"#667484")
+try save("architecture-a-reference","A — Icon-led reference")
 
-route([(620,354),(660,354),(660,414),(720,414)])
-route([(620,714),(660,714),(660,478),(720,478)])
-label("IPC",688,395,size:11,ink:"#526171",center:true)
-label("IPC",688,460,size:11,ink:"#526171",center:true)
-route([(940,447),(1060,447)])
-label("Browser state",1000,420,size:12,ink:"#526171",center:true)
-route([(1190,338),(1190,382)])
-label("Eligibility",1202,350,size:11,ink:"#526171")
-route([(1360,447),(1320,447)],dashed:true)
-route([(1190,512),(1190,680)])
-label("Checkpoint usage",1204,586,size:13,ink:"#526171")
-route([(1060,745),(980,745)])
-label("Summaries",1020,719,size:11,ink:"#526171",center:true)
-route([(830,512),(830,680)],dashed:true)
-label("Live status",842,586,size:13,ink:"#526171")
-route([(980,784),(1000,784),(1000,852),(1432,852),(1432,512)],dashed:true)
-label("Update settings",1190,830,size:13,ink:"#526171",center:true)
+// B: C4 component notation: explicit type, technology, responsibility, scope.
+func c4(_ name:String,_ type:String,_ description:[String],_ key:String,
+        _ x:Double,_ y:Double,_ w:Double,_ h:Double=140,external:Bool=false) throws {
+    let fill=external ? "#777777":"#85bbf0", ink=external ? "#ffffff":"#102a43"
+    rect(x,y,w,h,fill:fill,stroke:external ? "#666666":"#5c9dd9")
+    try icon(key,x+12,y+12,size:26)
+    label(name,x+w/2+10,y+16,size:17,bold:true,ink:ink,center:true)
+    label(type,x+w/2,y+50,size:12,ink:ink,center:true)
+    for (i,line) in description.enumerated() { label(line,x+w/2,y+78+Double(i)*21,size:13,ink:ink,center:true) }
+}
+begin("B — SurfMeter C4 component view",1280,1060)
+title("SurfMeter — C4 component view","B · Scope: the native Mac application · Supporting native adapters shown outside the boundary")
+rect(350,126,890,716,fill:"#ffffff",stroke:"#1168bd",dashed:true)
+label("SurfMeter.app",370,138,size:17,bold:true,ink:"#08427b")
+label("[Container: Swift / SwiftUI]",370,164,size:12,ink:"#526171")
+try c4("Safari adapter","[Container: Swift]",["Receives state from the", "Safari Web Extension"],"safari",40,300,240,140,external:true)
+try c4("Chrome adapter","[Container: Swift]",["Native messaging host for", "the Chrome extension"],"chrome",40,570,240,140,external:true)
+try c4("Local bridge","[Component: Swift]",["Validates browser messages", "and monitors connections"],"bridge",390,390,250)
+try c4("Tracking engine","[Component: Swift]",["Counts eligible intervals", "and classifies domains"],"swift",700,390,250)
+try c4("OS observer","[Component: AppKit]",["Reports focus, idle,", "sleep and lock state"],"system",700,190,250)
+try c4("Preferences","[Component: UserDefaults]",["Stores pause state", "and excluded sites"],"settings",1010,390,190)
+try c4("Menu bar UI","[Component: SwiftUI]",["Presents Daily, Yesterday", "and Weekly summaries"],"ui",390,660,250)
+try c4("Usage repository","[Component: SwiftData]",["Persists totals and coverage", "and provides summaries"],"extension",700,660,250)
+database(1000,890,220,120)
+label("Local usage data",1110,930,size:17,bold:true,center:true)
+label("[Data store: local SwiftData]",1110,960,size:12,ink:"#526171",center:true)
+route([(280,370),(320,370),(320,425),(390,425)]);note("State [local IPC]",333,344)
+route([(280,640),(320,640),(320,495),(390,495)]);label("State",326,554,size:11,ink:"#526171");label("[local IPC]",326,572,size:11,ink:"#526171")
+route([(640,460),(700,460)]);note("Valid state",670,438)
+route([(825,330),(825,390)]);label("Eligibility [Swift]",841,350,size:12,ink:"#526171")
+route([(1010,460),(950,460)]);note("Rules",980,438)
+route([(515,530),(515,660)]);label("Publishes status [Swift]",529,585,size:12,ink:"#526171")
+route([(825,530),(825,660)]);label("Records time [Swift]",841,585,size:12,ink:"#526171")
+route([(700,730),(640,730)]);note("Totals",670,708)
+route([(950,760),(1110,760),(1110,890)]);label("Reads / writes",1124,822,size:12,ink:"#526171")
+rect(40,876,22,18,fill:"#85bbf0",stroke:"#5c9dd9");label("Component in the native app",76,875,size:13)
+rect(40,910,22,18,fill:"#777777",stroke:"#666666");label("Supporting container",76,909,size:13)
+label("Each arrow describes an information flow. All storage is local.",40,965,size:13,ink:"#526171")
+label("IPC = inter-process communication. Integrations and the deployment target remain subject to validation.",40,1015,size:12,ink:"#667484")
+try save("architecture-b-c4","B — C4 component view")
 
-// Legend and architectural constraints, rather than decorative footer slogans.
-route([(48,966),(100,966)])
-label("State / usage data",112,954,size:13,ink:"#526171")
-route([(300,966),(352,966)],dashed:true)
-label("Status / control",364,954,size:13,ink:"#526171")
-label("Local storage only · No backend · Main app is the sole usage writer",714,954,size:13,ink:"#526171")
+// C: layered architecture, a dependency view rather than a process deployment map.
+begin("C — SurfMeter layered architecture",1280,980)
+title("SurfMeter — layered architecture","C · Logical responsibilities · Layers do not represent process or deployment boundaries")
+func band(_ y:Double,_ h:Double,_ name:String,_ tech:String,_ fill:String) {
+    rect(40,y,1200,h,fill:"#ffffff",stroke:"#aab6c4")
+    rect(40,y,190,h,fill:fill,stroke:fill)
+    label(name,60,y+45,size:18,bold:true,ink:"#ffffff")
+    label(tech,60,y+79,size:13,ink:"#ffffff")
+}
+band(130,150,"Presentation","SwiftUI", "#203955")
+band(330,150,"Application","Swift", "#3b526b")
+band(530,170,"Integration + data","macOS / persistence", "#60768d")
+try component("Menu bar UI","Daily · Yesterday · Weekly","Platform details + setup","ui",270,155,410,100)
+try component("Preferences","Pause + excluded sites","UserDefaults / @AppStorage","settings",790,155,380,100)
+try component("Tracking engine","Eligibility, domain grouping, elapsed time and day boundaries", "Coordinates platform state and usage persistence","swift",270,355,900,100)
+try component("Browser bridge","Safari handler / Chrome host","Native messaging + local IPC","bridge",270,555,280,120)
+try component("System observer","Foreground, idle, lock, sleep","AppKit / macOS APIs","system",600,555,280,120)
+database(950,555,250,120)
+label("Usage repository",1075,594,size:18,bold:true,center:true)
+label("SwiftData · local store",1075,628,size:14,ink:"#526171",center:true)
+route([(640,280),(640,330)]);label("Commands / queries",654,295,size:12,ink:"#526171")
+route([(640,480),(640,530)]);label("Calls platform and persistence interfaces",654,495,size:12,ink:"#526171")
+try tile("safari","Safari extension","TypeScript",300,785)
+try tile("chrome","Chrome extension","TypeScript",550,785)
+route([(332,785),(332,744),(410,744),(410,675)],dashed:true)
+route([(582,785),(582,744),(410,744)],dashed:true,arrow:false)
+label("Native messaging",605,728,size:13,ink:"#526171")
+route([(810,816),(860,816)]);label("Layer dependency / call",874,805,size:13,ink:"#526171")
+route([(810,852),(860,852)],dashed:true);label("Incoming browser state",874,841,size:13,ink:"#526171")
+label("The app remains the sole writer of usage totals. No backend or account is needed.",40,943,size:13,ink:"#526171")
+try save("architecture-c-layered","C — Layered architecture")
 
-svg += "</svg>\n"
-try svg.write(to:output.appendingPathComponent("component-architecture.svg"),atomically:true,encoding:.utf8)
-let image=cg.makeImage()!
-try NSBitmapImageRep(cgImage:image).representation(using:.png,properties:[:])!.write(to:output.appendingPathComponent("component-architecture.png"))
-let model="<mxfile host=\"app.diagrams.net\" type=\"device\"><diagram id=\"surfmeter-components\" name=\"Component architecture\"><mxGraphModel dx=\"1600\" dy=\"1020\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"1600\" pageHeight=\"1020\" math=\"0\" shadow=\"0\"><root>\(cells.joined())</root></mxGraphModel></diagram></mxfile>"
-try model.write(to:output.appendingPathComponent("component-architecture.drawio"),atomically:true,encoding:.utf8)
-print("Rendered PNG (3200 × 2040), SVG, and editable diagrams.net source.")
+try ("<mxfile host=\"app.diagrams.net\" type=\"device\">"+pages.joined()+"</mxfile>").write(to:output.appendingPathComponent("architecture-alternatives.drawio"),atomically:true,encoding:.utf8)
+print("Saved a three-page editable diagrams.net document.")

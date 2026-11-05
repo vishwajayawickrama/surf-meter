@@ -28,13 +28,35 @@ The production direction is a native macOS app. The approved prototype provides 
 
 No backend, account system, cloud database, or cloud synchronization is planned for the MVP.
 
-## Main components
+## Architecture diagram alternatives
 
-![SurfMeter component architecture: Safari and Chrome extensions communicate through native adapters and a local app bridge. The Swift tracking engine combines browser state, macOS eligibility signals, and preferences; a local SwiftData repository supplies the SwiftUI menu bar interface.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/component-architecture.png)
+These are three distinct views of the proposed native architecture. No visual direction has been selected yet. Each export includes recognizable browser icons and a notation key; the scope and arrow meaning are stated within the image.
 
-[Open full-resolution PNG](diagrams/component-architecture.png) · [Open vector SVG](diagrams/component-architecture.svg) · [Editable diagrams.net file](diagrams/component-architecture.drawio) · [Diagram source and regeneration](diagrams/README.md)
+### A — Icon-led reference architecture
 
-Dashed enclosures identify the Mac, browser processes, native adapter processes, and the main app process. Solid arrows carry browser state and usage data; dashed arrows carry live status and control/settings changes. Browser app icons identify Safari and Chrome, component icons identify application services, and the cylinder represents local persistence. The diagram shows the main connections rather than every method call.
+A high-level view of the main components and primary information flow. Short labels sit below icons; browser adapters remain outside the main app boundary. This is the lightest overview for the README or an introduction to the system.
+
+![Option A: Icon-led SurfMeter reference architecture with Safari and Chrome extensions, native adapters, a local bridge, Swift tracking engine, macOS signals, preferences, SwiftData storage, and menu bar UI.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-a-reference.png)
+
+[Full-resolution PNG](diagrams/architecture-a-reference.png) · [SVG](diagrams/architecture-a-reference.svg) · [Editable diagram](diagrams/architecture-a-reference.drawio)
+
+### B — C4 component view
+
+A formal component view scoped to `SurfMeter.app`. Internal components include their type, technology, and responsibility. Supporting native adapters and the local data store appear outside the application boundary. Browser extensions are described by their corresponding adapter rather than expanded at this level.
+
+![Option B: C4 component view of SurfMeter with typed components, supporting native adapter containers, labeled relationships, and a local data store.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-b-c4.png)
+
+[Full-resolution PNG](diagrams/architecture-b-c4.png) · [SVG](diagrams/architecture-b-c4.svg) · [Editable diagram](diagrams/architecture-b-c4.drawio)
+
+### C — Layered architecture
+
+A logical view organized into Presentation, Application, and Integration/data responsibilities. It emphasizes dependency direction and ownership. These layers are not process boundaries: the browser handlers/host still execute separately from the main app as described below.
+
+![Option C: Layered SurfMeter architecture showing presentation, tracking logic, platform integration, persistence, and browser extensions.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-c-layered.png)
+
+[Full-resolution PNG](diagrams/architecture-c-layered.png) · [SVG](diagrams/architecture-c-layered.svg) · [Editable diagram](diagrams/architecture-c-layered.drawio)
+
+[All three pages in one diagrams.net file](diagrams/architecture-alternatives.drawio) · [Research, conventions, and regeneration](diagrams/README.md)
 
 The extension reports browser state. The native engine determines whether that state qualifies for tracking. The extension does not independently run a second usage timer.
 
