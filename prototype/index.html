@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>SurfMeter — UI prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="liquid-glass.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="studio">
+    <aside class="studio-sidebar" aria-label="Prototype controls">
+      <a class="wordmark" href="./" aria-label="SurfMeter home"><span class="brand-icon" data-icon="wave"></span>SurfMeter<span class="version">/ 01</span></a>
+      <div class="intro"><span class="eyebrow">A LITTLE AWARENESS</span><h1>Your browsing. <br>A little clearer.</h1><p>A quiet place in your menu bar<br>for where your time goes.</p></div>
+      <nav class="screen-nav" aria-label="Preview screens">
+        <button class="screen-button active" data-screen="activity"><span data-icon="activity"></span><span>Activity</span><kbd>01</kbd></button>
+        <button class="screen-button" data-screen="settings"><span data-icon="settings"></span><span>Preferences</span><kbd>02</kbd></button>
+        <button class="screen-button" data-screen="setup"><span data-icon="browser"></span><span>Browser setup</span><kbd>03</kbd></button>
+      </nav>
+      <div class="studio-note"><span class="tiny-dot"></span>Interactive design preview<p>Sample activity. Click around and<br>make yourself at home.</p></div>
+      <div class="studio-footer"><button id="theme-toggle" class="quiet-button"><span data-icon="moon"></span><span>Dark appearance</span></button><button id="reset-demo" class="text-button">Reset demo</button></div>
+    </aside>
+
+    <main class="preview-area">
+      <div class="preview-heading"><span>MACOS MENU BAR</span><span>DESIGN PROTOTYPE <span class="preview-dot"></span></span></div>
+      <section class="desktop" aria-label="Simulated Mac desktop">
+        <div class="wallpaper"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><span class="wallpaper-caption">A little less scrolling.<br>A little more living.</span></div>
+        <header class="mac-menubar">
+          <div class="mac-menu-left"><svg width="15" height="18" viewBox="0 0 24 24" fill="currentColor" aria-label="Apple"><path d="M17 12.2c0-2.4 2-3.6 2.1-3.7-1.2-1.8-3-2-3.7-2-1.6-.2-3.1 1-3.9 1-.8 0-2-1-3.3-1-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.2 10.2.8 1.2 1.8 2.5 3.1 2.4 1.3 0 1.8-.8 3.4-.8 1.6 0 2.1.8 3.5.8s2.2-1.2 3-2.4c1-1.4 1.4-2.7 1.4-2.8-.1 0-2.6-1-2.6-4.2zM14.4 4.9c.7-.9 1.2-2.1 1.1-3.3-1.1.1-2.4.8-3.2 1.6-.7.8-1.3 2-1.1 3.2 1.2.1 2.4-.6 3.2-1.5z"/></svg><strong>Finder</strong><span>File</span><span>Edit</span><span>View</span></div>
+          <div class="mac-menu-right"><button id="menubar-trigger" aria-expanded="true" aria-controls="app-popover" aria-label="Toggle SurfMeter"><span data-icon="wave"></span><span id="menubar-total">3h 10m</span></button><span class="system-icon" data-icon="wifi"></span><span class="system-icon battery" data-icon="battery"></span><span class="mac-date">Thu 5 Nov <b>18:24</b></span></div>
+        </header>
+        <div id="closed-hint" hidden><span data-icon="arrow-up"></span>Click SurfMeter in the menu bar to open.</div>
+        <section id="app-popover" class="app-popover" aria-label="SurfMeter application">
+          <div class="popover-notch"></div>
+          <header class="app-header"><div class="app-title"><span class="small-brand" data-icon="wave"></span><strong>SurfMeter</strong></div><button id="status-pill" class="status-pill" title="Pause tracking"><span></span>Tracking</button></header>
+          <div id="app-content"></div>
+          <footer class="app-footer"><button id="pause-toggle"><span data-icon="pause"></span><span>Pause tracking</span></button><button id="preferences-button" class="icon-button" title="Preferences" aria-label="Open preferences"><span data-icon="settings"></span></button></footer>
+        </section>
+        <div class="desktop-caption"><span class="caption-line"></span><span>SMALL FOOTPRINT. CLEARER HABITS.</span></div>
+      </section>
+      <footer class="preview-footer"><span><span class="tiny-dot"></span> Local by design. Your browsing stays yours.</span><span>SurfMeter / UI exploration</span></footer>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description"><div class="dialog-icon" data-icon="trash"></div><h2 id="delete-title">Delete all activity?</h2><p id="delete-description">This clears the sample activity from this preview. You can restore it with Reset demo.</p><div class="dialog-actions"><button id="cancel-delete" class="secondary-button">Cancel</button><button id="confirm-delete" class="danger-button">Delete activity</button></div></dialog>
+</body>
+</html>
