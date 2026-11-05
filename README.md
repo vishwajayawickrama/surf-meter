@@ -86,4 +86,4 @@ Want to shape the next iteration? [Open an issue](https://github.com/vishwajayaw
 
 ---
 
-[Requirements](docs/SRS.md) · [Development guide](docs/DEVELOPMENT.md) · [Media and capture notes](docs/media/README.md)
+[Requirements](docs/SRS.md) · [Technology stack and architecture](docs/ARCHITECTURE.md) · [Development guide](docs/DEVELOPMENT.md) · [Media and capture notes](docs/media/README.md)

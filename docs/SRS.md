@@ -1,8 +1,10 @@
 # Software Requirements Specification — SurfMeter
 
-Version: 0.1 (initial draft)  
-Date: 2026-11-05  
-Status: Proposed requirements; implementation has not started
+Version: 0.2 (UI and proposed architecture)
+
+Date: 2026-11-05
+
+Status: Interactive web prototype implemented; native app and browser tracking not yet implemented
 
 ## 1. Purpose
 
@@ -168,15 +170,16 @@ Persist only the minimum coverage detail needed to describe incomplete days. Thi
 
 ## 8. Technical discovery and release gates
 
-The implementation language, macOS deployment target, storage engine, and browser integration are not selected by this SRS. A native menu bar app is the proposed direction. Browser extensions with a local app connection and supported macOS browser automation are integration options to evaluate.
+The proposed implementation direction is Swift and SwiftUI, `MenuBarExtra`, system Liquid Glass where supported, TypeScript browser extensions with native messaging, and local SwiftData persistence. See [Technology stack and architecture](ARCHITECTURE.md) for component responsibilities, data flow, and validation gates. The macOS deployment target, exact browser support matrix, local IPC mechanism, and distribution details remain subject to technical discovery.
 
 Before implementing the full MVP:
 
 1. Verify how Safari and Chrome expose the active hostname, selected tab, focused window, and private-browsing state with user-authorized access.
 2. Validate focus, idle, sleep, lock, and resume detection on the proposed minimum macOS version.
-3. Select the integration method based on accuracy, privacy, permissions, reliability, and installation effort. If extensions are required, include their installation and connection state in setup.
+3. Validate the proposed extension/native messaging approach for accuracy, privacy, permissions, reliability, installation, and connection recovery. Document any change of approach before implementation; include extension installation and connection state in setup.
 4. Decide the exact supported browser versions and minimum macOS version and publish that support matrix before release.
 5. Verify the private-browsing exclusion requirement for every supported integration. If a target browser cannot meet it, document the constraint and revise release scope before shipping support for that browser.
+6. Reconcile FR-39's hourly platform detail with FR-33's daily-only persisted-data rule. Specify the minimum hourly aggregate schema and retention, or revise that detail view, before implementing native storage. Raw browsing-event history remains outside scope.
 
 ## 9. Acceptance criteria
 
@@ -206,7 +209,7 @@ Before implementing the full MVP:
 
 1. Browser/OS feasibility prototype and finalized support matrix.
 2. Activity eligibility, platform classification, daily aggregation, and local storage.
-3. Menu bar total and today/yesterday dropdown with accessible comparison colors and text.
+3. Menu bar total and Daily/Weekly dashboard with the Yesterday shortcut and accessible comparison colors and text.
 4. Setup, pause/resume, exclusions, retention, deletion, and launch-at-login preference.
 5. Acceptance validation, performance measurement, and packaging for local installation.
 

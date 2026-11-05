@@ -8,6 +8,12 @@ Requirements and interactive UI prototype. Browser tracking is not implemented y
 
 See the [Software Requirements Specification](SRS.md) for the proposed MVP, tracking rules, privacy requirements, and acceptance criteria.
 
+## Native implementation direction
+
+The proposed production stack is **Swift + SwiftUI**, `MenuBarExtra`, native Liquid Glass materials, **TypeScript browser extensions**, browser native messaging, and **local SwiftData persistence**. Xcode and Swift Package Manager will support the native app and helper targets. The MVP does not require a backend or account.
+
+See [Technology stack and architecture](ARCHITECTURE.md) for the component flow, browser-specific adapters, tracking engine, storage boundaries, and integration decisions still to validate. These technologies describe the intended native app; the runnable repository currently contains the web prototype below.
+
 ## UI prototype
 
 Run from the repository root:
