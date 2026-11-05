@@ -1,77 +1,352 @@
 [
   {
-    "name":"01-open-surfmeter", "title":"Find your way around SurfMeter",
-    "source":"docs/media/native/native-daily-light@2x.png", "kind":"Native SwiftUI render · sample activity · controls shown for reference", "width":414,
-    "notes":[
-      {"rect":[632,1248,46,46],"title":"Open Browser setup","text":"Click the globe in the footer. This is where you connect Chrome and enable recording."},
-      {"rect":[690,1248,46,46],"title":"Open Preferences","text":"Use the gear for login items, appearance, retention, exclusions, and activity deletion."},
-      {"rect":[42,1248,270,46],"title":"Pause or resume","text":"This stops or resumes recording without deleting previously recorded activity."},
-      {"rect":[42,170,745,80],"title":"Choose your period","text":"Daily includes a Yesterday shortcut. Weekly shows the last seven calendar days."}
+    "name": "01-open-surfmeter",
+    "title": "Find your way around SurfMeter",
+    "source": "docs/media/native/native-daily-light@2x.png",
+    "kind": "Native SwiftUI render \u00b7 sample activity \u00b7 controls shown for reference",
+    "width": 390,
+    "notes": [
+      {
+        "rect": [
+          674,
+          1400,
+          60,
+          66
+        ],
+        "title": "Preferences and browser setup",
+        "text": "Click the gear for appearance, login, retention, and exclusions. Choose Connected browsers there to open Chrome setup."
+      },
+      {
+        "rect": [
+          46,
+          1400,
+          270,
+          66
+        ],
+        "title": "Pause or resume",
+        "text": "This stops or resumes recording without deleting previously recorded activity."
+      },
+      {
+        "rect": [
+          46,
+          128,
+          688,
+          78
+        ],
+        "title": "Choose your period",
+        "text": "Daily includes a Yesterday shortcut. Weekly shows the last seven calendar days."
+      }
     ]
   },
   {
-    "name":"02-load-chrome", "title":"Load the Chrome extension",
-    "source":"docs/media/setup/sources/chrome-extensions.png", "kind":"Google Chrome documentation screenshot · Hello Extensions example, not SurfMeter", "width":560,
-    "notes":[
-      {"rect":[640,14,325,78],"title":"Turn on Developer mode","text":"Open chrome://extensions and enable this switch to reveal the local extension controls."},
-      {"rect":[6,111,280,96],"title":"Choose Load unpacked","text":"Select SurfMeter's ChromeExtension folder, or extensions/chrome/dist in the checkout. Select the folder containing manifest.json."},
-      {"rect":[266,512,444,44],"title":"Copy YOUR extension ID","text":"Copy the ID from the SurfMeter — Browser Bridge card. The Hello Extensions ID in this example must not be reused."},
-      {"rect":[782,608,86,50],"title":"Leave the extension enabled","text":"Keep SurfMeter's switch on. If the card is missing, check the folder you loaded and any manifest errors."}
+    "name": "02-load-chrome",
+    "title": "Load the Chrome extension",
+    "source": "docs/media/setup/sources/chrome-extensions.png",
+    "kind": "Google Chrome documentation screenshot \u00b7 Hello Extensions example, not SurfMeter",
+    "width": 560,
+    "notes": [
+      {
+        "rect": [
+          640,
+          14,
+          325,
+          78
+        ],
+        "title": "Turn on Developer mode",
+        "text": "Open chrome://extensions and enable this switch to reveal the local extension controls."
+      },
+      {
+        "rect": [
+          6,
+          111,
+          280,
+          96
+        ],
+        "title": "Choose Load unpacked",
+        "text": "Select SurfMeter's ChromeExtension folder, or extensions/chrome/dist in the checkout. Select the folder containing manifest.json."
+      },
+      {
+        "rect": [
+          266,
+          512,
+          444,
+          44
+        ],
+        "title": "Copy YOUR extension ID",
+        "text": "Copy the ID from the SurfMeter \u2014 Browser Bridge card. The Hello Extensions ID in this example must not be reused."
+      },
+      {
+        "rect": [
+          782,
+          608,
+          86,
+          50
+        ],
+        "title": "Leave the extension enabled",
+        "text": "Keep SurfMeter's switch on. If the card is missing, check the folder you loaded and any manifest errors."
+      }
     ]
   },
   {
-    "name":"03-register-chrome", "title":"Register the local Chrome connection",
-    "source":"docs/media/setup/sources/native-setup-content-light@2x.png", "kind":"Native setup content render · before connection · preview buttons are disabled", "width":414, "crop":[0,12,828,868],
-    "notes":[
-      {"rect":[40,560,414,50],"title":"Reveal the bundled folder","text":"In the real app this opens Finder at ChromeExtension. Use this folder with Chrome's Load unpacked command."},
-      {"rect":[40,740,746,52],"title":"Paste the actual Chrome ID","text":"Use the 32-letter ID from your SurfMeter extension card, not a sample ID or the whole chrome-extension URL."},
-      {"rect":[40,818,250,46],"title":"Choose Connect Chrome","text":"This registers the per-user native helper for that exact extension ID. Recording remains off until you enable it."}
+    "name": "03-register-chrome",
+    "title": "Register the local Chrome connection",
+    "source": "docs/media/setup/sources/native-setup-content-light@2x.png",
+    "kind": "Native setup content render \u00b7 before connection \u00b7 preview buttons are disabled",
+    "width": 390,
+    "crop": [
+      0,
+      0,
+      780,
+      880
+    ],
+    "notes": [
+      {
+        "rect": [
+          44,
+          558,
+          410,
+          44
+        ],
+        "title": "Reveal the bundled folder",
+        "text": "In the real app this opens Finder at ChromeExtension. Use this folder with Chrome's Load unpacked command."
+      },
+      {
+        "rect": [
+          44,
+          736,
+          692,
+          44
+        ],
+        "title": "Paste the actual Chrome ID",
+        "text": "Use the 32-letter ID from your SurfMeter extension card, not a sample ID or the whole chrome-extension URL."
+      },
+      {
+        "rect": [
+          44,
+          814,
+          245,
+          46
+        ],
+        "title": "Choose Connect Chrome",
+        "text": "This registers the per-user native helper for that exact extension ID. Recording remains off until you enable it."
+      }
     ]
   },
   {
-    "name":"04-pin-chrome", "title":"Pin and reconnect the extension",
-    "source":"docs/media/setup/sources/chrome-pin.png", "kind":"Google Chrome documentation screenshot · choose SurfMeter instead of Hello Extensions", "width":440,
-    "notes":[
-      {"rect":[590,2,61,58],"title":"Open the Extensions menu","text":"Click Chrome's puzzle icon. Find SurfMeter — Browser Bridge in the extension list."},
-      {"rect":[501,292,57,67],"title":"Pin SurfMeter, then click it","text":"Pin the SurfMeter row for easy access. Open a normal web page, then click SurfMeter's toolbar icon to reconnect."}
+    "name": "04-pin-chrome",
+    "title": "Pin and reconnect the extension",
+    "source": "docs/media/setup/sources/chrome-pin.png",
+    "kind": "Google Chrome documentation screenshot \u00b7 choose SurfMeter instead of Hello Extensions",
+    "width": 440,
+    "notes": [
+      {
+        "rect": [
+          590,
+          2,
+          61,
+          58
+        ],
+        "title": "Open the Extensions menu",
+        "text": "Click Chrome's puzzle icon. Find SurfMeter \u2014 Browser Bridge in the extension list."
+      },
+      {
+        "rect": [
+          501,
+          292,
+          57,
+          67
+        ],
+        "title": "Pin SurfMeter, then click it",
+        "text": "Pin the SurfMeter row for easy access. Open a normal web page, then click SurfMeter's toolbar icon to reconnect."
+      }
     ]
   },
   {
-    "name":"05-enable-recording", "title":"Enable recording after Chrome connects",
-    "source":"docs/media/setup/sources/native-setup-content-light@2x.png", "kind":"Native setup content render · scroll down in the actual popover to reach these controls", "width":414, "crop":[0,882,828,550],
-    "notes":[
-      {"rect":[40,992,550,48],"title":"Enable eligible Chrome recording","text":"First confirm Connected near the top of Browser setup. Then switch on recording. It is off by default; a disabled switch means no live connection."},
-      {"rect":[40,1250,745,90],"title":"Safari is not enabled yet","text":"No Safari setting will make this build record Safari. Packaging and validation require full Xcode and further implementation."}
+    "name": "05-enable-recording",
+    "title": "Enable recording after Chrome connects",
+    "source": "docs/media/setup/sources/native-setup-content-light@2x.png",
+    "kind": "Native setup content render \u00b7 scroll down in the actual popover to reach these controls",
+    "width": 390,
+    "crop": [
+      0,
+      880,
+      780,
+      610
+    ],
+    "notes": [
+      {
+        "rect": [
+          44,
+          1020,
+          690,
+          48
+        ],
+        "title": "Enable eligible Chrome recording",
+        "text": "First confirm Connected near the top of Browser setup. Then switch on recording. It is off by default; a disabled switch means no live connection."
+      },
+      {
+        "rect": [
+          44,
+          1276,
+          690,
+          84
+        ],
+        "title": "Safari is not enabled yet",
+        "text": "No Safari setting will make this build record Safari. Packaging and validation require full Xcode and further implementation."
+      }
     ]
   },
   {
-    "name":"06-preferences", "title":"Choose your recording preferences",
-    "source":"docs/media/setup/sources/native-preferences-content-light@2x.png", "kind":"Native preferences content render · full content shown without the popover's scroll crop", "width":414, "crop":[0,8,828,1234],
-    "notes":[
-      {"rect":[40,210,250,45],"title":"Launch at login is optional","text":"Enable it in the real app if you want automatic startup. If approval is required, follow the app's System Settings message."},
-      {"rect":[40,278,744,47],"title":"Choose an appearance","text":"System follows macOS. Light and Dark set SurfMeter's appearance independently."},
-      {"rect":[40,350,744,50],"title":"Choose retention","text":"Keep 7, 30, or 90 days. The default is 30 days. Shortening this setting removes older aggregates."},
-      {"rect":[40,698,744,50],"title":"Add excluded domains","text":"Enter example.com and choose Add. Subdomains are excluded too. Existing totals stay until deleted."},
-      {"rect":[40,1000,350,54],"title":"Delete activity deliberately","text":"Choose Delete all activity, then confirm in the dialog. Preferences remain; cancel leaves the records untouched."}
+    "name": "06-preferences",
+    "title": "Choose your recording preferences",
+    "source": "docs/media/setup/sources/native-preferences-content-light@2x.png",
+    "kind": "Native preferences content render \u00b7 full content shown without the popover's scroll crop",
+    "width": 390,
+    "crop": [
+      0,
+      0,
+      780,
+      1182
+    ],
+    "notes": [
+      {
+        "rect": [
+          44,
+          232,
+          690,
+          70
+        ],
+        "title": "Launch at login is optional",
+        "text": "Enable it in the real app if you want automatic startup. If approval is required, follow the app's System Settings message."
+      },
+      {
+        "rect": [
+          44,
+          338,
+          690,
+          85
+        ],
+        "title": "Choose an appearance",
+        "text": "Dark appearance switches the open panel immediately. Turn it off for Light, or choose Use system to follow macOS."
+      },
+      {
+        "rect": [
+          44,
+          630,
+          690,
+          70
+        ],
+        "title": "Choose retention",
+        "text": "Keep 7, 30, or 90 days. The default is 30 days. Shortening this setting removes older aggregates."
+      },
+      {
+        "rect": [
+          44,
+          830,
+          690,
+          68
+        ],
+        "title": "Add excluded domains",
+        "text": "Enter example.com and choose Add. Subdomains are excluded too. Existing totals stay until deleted."
+      },
+      {
+        "rect": [
+          44,
+          950,
+          360,
+          40
+        ],
+        "title": "Delete activity deliberately",
+        "text": "Choose Delete all activity, then confirm in the dialog. Preferences remain; cancel leaves the records untouched."
+      }
     ]
   },
   {
-    "name":"07-check-dashboard", "title":"Check the recorded totals",
-    "source":"docs/media/native/native-weekly-dark@2x.png", "kind":"Native SwiftUI render · sample activity, not proof of a live browser connection", "width":414,
-    "notes":[
-      {"rect":[42,170,745,80],"title":"Check Daily first","text":"A short eligible browsing session should appear in Daily. Positive durations below one minute display as <1m."},
-      {"rect":[42,265,745,95],"title":"Check the date range","text":"Weekly covers seven local calendar days, including today so far. Today is a partial day."},
-      {"rect":[42,540,745,250],"title":"Read the daily chart","text":"Each bar is one day's recorded time. Gaps do not prove the browser was unused."},
-      {"rect":[42,840,745,380],"title":"Open website details","text":"Click a row for hourly Daily detail or seven-day Weekly detail. Returning preserves the selected period."}
+    "name": "07-check-dashboard",
+    "title": "Check the recorded totals",
+    "source": "docs/media/native/native-weekly-dark@2x.png",
+    "kind": "Native SwiftUI render \u00b7 sample activity, not proof of a live browser connection",
+    "width": 390,
+    "notes": [
+      {
+        "rect": [
+          46,
+          128,
+          688,
+          78
+        ],
+        "title": "Check Daily first",
+        "text": "A short eligible browsing session should appear in Daily. Positive durations below one minute display as <1m."
+      },
+      {
+        "rect": [
+          46,
+          232,
+          688,
+          66
+        ],
+        "title": "Check the date range",
+        "text": "Weekly covers seven local calendar days, including today so far. Today is a partial day."
+      },
+      {
+        "rect": [
+          46,
+          500,
+          688,
+          210
+        ],
+        "title": "Read the daily chart",
+        "text": "Each bar is one day's recorded time. Gaps do not prove the browser was unused."
+      },
+      {
+        "rect": [
+          46,
+          800,
+          688,
+          490
+        ],
+        "title": "Open website details",
+        "text": "Click a row for hourly Daily detail or seven-day Weekly detail. Returning preserves the selected period."
+      }
     ]
   },
   {
-    "name":"08-reload-remove", "title":"Reload, disable, or remove the extension",
-    "source":"docs/media/setup/sources/chrome-reload.png", "kind":"Google Chrome documentation screenshot · use the controls on your SurfMeter card", "width":560,
-    "notes":[
-      {"rect":[720,591,60,60],"title":"Reload after rebuilding","text":"Click the circular arrow on SurfMeter's card after updating its extension files, then click its toolbar icon to reconnect."},
-      {"rect":[807,590,78,60],"title":"Disable the extension","text":"Turn this switch off to disable the browser bridge. It does not delete previously recorded activity."},
-      {"rect":[302,590,149,62],"title":"Remove when uninstalling","text":"Remove SurfMeter's extension, quit the app, and remove its native host registration using the guide's cleanup steps."}
+    "name": "08-reload-remove",
+    "title": "Reload, disable, or remove the extension",
+    "source": "docs/media/setup/sources/chrome-reload.png",
+    "kind": "Google Chrome documentation screenshot \u00b7 use the controls on your SurfMeter card",
+    "width": 560,
+    "notes": [
+      {
+        "rect": [
+          720,
+          591,
+          60,
+          60
+        ],
+        "title": "Reload after rebuilding",
+        "text": "Click the circular arrow on SurfMeter's card after updating its extension files, then click its toolbar icon to reconnect."
+      },
+      {
+        "rect": [
+          807,
+          590,
+          78,
+          60
+        ],
+        "title": "Disable the extension",
+        "text": "Turn this switch off to disable the browser bridge. It does not delete previously recorded activity."
+      },
+      {
+        "rect": [
+          302,
+          590,
+          149,
+          62
+        ],
+        "title": "Remove when uninstalling",
+        "text": "Remove SurfMeter's extension, quit the app, and remove its native host registration using the guide's cleanup steps."
+      }
     ]
   }
 ]

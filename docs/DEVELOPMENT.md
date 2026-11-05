@@ -85,6 +85,7 @@ Preview sample data without reading/writing the real database or opening the bro
 
 ```sh
 open -n .build/SurfMeter.app --args --demo
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --verify-appearance
 .build/SurfMeter.app/Contents/MacOS/SurfMeter --render-previews /private/tmp/surfmeter-native-previews
 ```
 
@@ -127,3 +128,5 @@ All usage data and browser connections are simulated. Login and retention contro
 The prototype follows an Apple Liquid Glass direction: a translucent floating popover, illuminated edges, capsule controls, and separate content/control layers in light and dark appearances. Adjust the material tokens in `prototype/liquid-glass.css` to tune opacity, blur, highlights, and corner radius. Reduced transparency, increased contrast, and reduced motion preferences have CSS fallbacks.
 
 This is a browser approximation of the material for UI review. The native macOS implementation should adopt Apple's system Liquid Glass APIs where supported, with an appropriate fallback on older macOS versions. See [Apple's materials guidance](https://developer.apple.com/design/human-interface-guidelines/materials).
+
+Appearance verification uses an isolated demo model and one persistent NSPanel, checking Light → Dark → Light → Dark → System against both AppKit effective appearance and the SwiftUI environment. It does not modify normal preferences or activity. Manual display/accessibility testing remains necessary.

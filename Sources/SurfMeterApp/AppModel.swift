@@ -289,12 +289,23 @@ final class AppModel: ObservableObject {
     func quit() { record(); checkpoint(); NSApplication.shared.terminate(nil) }
     private func seedPreview() {
         preferences.enabled = true
-        let days = week
-        for (index, day) in days.enumerated() {
-            for (offset, platform) in Platform.catalog.prefix(5).enumerated() {
-                let multiplier = index == days.count - 1 && offset.isMultiple(of: 2) ? 0.7 : 1.0
-                let seconds = Double((index + 2) * (6 - offset) * 113) * multiplier
-                ledger.add([.init(key: .init(day: day, hour: 9 + offset, platform: platform.id), seconds: seconds)])
+        let samples: [(String, [Double])] = [
+            ("youtube.com", [95,110,86,65,92,102,74]),
+            ("instagram.com", [35,52,48,30,38,28,42]),
+            ("reddit.com", [44,38,55,27,39,46,31]),
+            ("x.com", [30,46,32,22,35,41,23]),
+            ("github.com", [40,15,0,52,36,25,20])
+        ]
+        let weights: [Double] = [0,0,0,0,0,0,0,0,8,18,32,16,24,12,27,18,20,15,0,0,0,0,0,0]
+        for (index, day) in week.enumerated() {
+            for (id, minutes) in samples {
+                let activeHours = weights.indices.filter { weights[$0] > 0 }
+                var remaining = minutes[index] * 60
+                for hour in activeHours {
+                    let seconds = hour == activeHours.last ? remaining : floor(minutes[index] * 60 * weights[hour] / weights.reduce(0,+))
+                    remaining -= seconds
+                    ledger.add([.init(key: .init(day: day, hour: hour, platform: id), seconds: seconds)])
+                }
             }
             ledger.mark(day: day, reason: "partial")
         }

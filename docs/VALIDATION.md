@@ -60,3 +60,11 @@ The development app was installed under `/Applications`, its bundled Chrome exte
 The user explicitly opted into recording and launch at login. The installed app's setup command saved enabled/unpaused recording while preserving other preferences; `SMAppService` reported login enabled on this Mac. Cold-login/reboot, production signing, and clean-install approval behavior remain separate checks. Chrome's toolbar pin was on and local-file access was turned off. No personal browsing domains or installation screenshots are committed to the repository.
 
 Node.js LTS/npm were installed for the local build. The expanded native build and 20 Swift tests passed. The installed setup command also rejected malformed IDs/unknown flags with exit status 64 before configuration changes. The command runs before the activity model, so it does not become a second database writer or bridge server.
+
+## Prototype alignment and appearance regression — 2026-11-06
+
+The native panel now uses the approved prototype’s 390-point width, system typography, split duration display, daily hourly chart, vector platform marks, platform-colored progress bars, stacked comparisons, and Preferences layout. Light/dark captures of all six screens were refreshed at 2×; setup annotations now follow Preferences → Connected browsers. Real connection and coverage states remain distinct from the prototype’s sample states.
+
+`--verify-appearance` passed Light → Dark → Light → Dark → System in the same open NSPanel. It checks window effective appearance, the SwiftUI color scheme, and preservation of the Preferences route. A window-scoped AppKit override replaces presentation-level `preferredColorScheme`; system mode clears the override. The menu bar itself retains macOS appearance. This is an isolated AppKit-hosted regression check, not certification of every accessibility setting or live glass rendering condition. All 20 Swift tests also passed after the UI changes.
+
+The revised build was installed at `/Applications/SurfMeter.app` and relaunched. A before/after check confirmed unchanged saved preferences and preserved aggregate activity; the existing bundled-extension location and native registration were retained.

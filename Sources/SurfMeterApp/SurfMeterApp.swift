@@ -8,9 +8,10 @@ struct SurfMeterApp: App {
         if CommandLine.arguments.contains("--configure-chrome") {
             SetupCommand.run(arguments: Array(CommandLine.arguments.dropFirst()))
         }
-        let demo = CommandLine.arguments.contains("--demo") || CommandLine.arguments.contains("--render-previews")
+        let demo = CommandLine.arguments.contains("--verify-appearance") || CommandLine.arguments.contains("--demo") || CommandLine.arguments.contains("--render-previews")
         let model = AppModel(demo: demo)
         _model = StateObject(wrappedValue: model)
+        if CommandLine.arguments.contains("--verify-appearance") { PreviewExport.verifyAppearance(model: model); exit(0) }
         if let index = CommandLine.arguments.firstIndex(of: "--render-previews"), CommandLine.arguments.indices.contains(index + 1) {
             PreviewExport.render(model: model, directory: URL(fileURLWithPath: CommandLine.arguments[index + 1]))
             exit(0)
@@ -19,7 +20,7 @@ struct SurfMeterApp: App {
     var body: some Scene {
         MenuBarExtra {
             DashboardView(model: model)
-                .preferredColorScheme(model.colorScheme)
+                .modifier(SurfAppearance(mode: model.preferences.appearance))
         } label: {
             Label(model.menuLabel, systemImage: model.preferences.paused ? "pause.circle" : "water.waves")
                 .accessibilityLabel("SurfMeter, today \(model.menuLabel)")

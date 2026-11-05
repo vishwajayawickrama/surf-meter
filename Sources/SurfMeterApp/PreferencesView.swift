@@ -6,54 +6,66 @@ struct PreferencesView: View {
     @ViewState private var domain = ""
     @ViewState private var exclusionError: String?
     @ViewState private var confirmDelete = false
+    @Environment(\.colorScheme) private var scheme
+    private var palette: SurfPalette { SurfPalette(dark: scheme == .dark) }
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Text("Preferences").font(.title2.weight(.semibold))
-            Text("Make SurfMeter feel at home.").font(.callout).foregroundStyle(.secondary)
-            VStack(alignment: .leading, spacing: 15) {
-                Toggle("Launch at login", isOn: Binding(get: { model.loginEnabled }, set: { model.toggleLogin($0) }))
-                    .disabled(model.demo)
-                if let message = model.loginMessage { Text(message).font(.caption).foregroundStyle(.secondary) }
-                Picker("Appearance", selection: Binding(get: { model.preferences.appearance }, set: { value in model.changePreferences { $0.appearance = value } })) {
-                    Text("System").tag("system"); Text("Light").tag("light"); Text("Dark").tag("dark")
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 10) {
+                Button { model.screen = .activity } label: { Image(systemName: "chevron.left").frame(width: 29, height: 29).background(palette.control, in: Circle()) }
+                    .buttonStyle(.plain).accessibilityLabel("Back to activity")
+                Text("Preferences").font(.system(size: 18, weight: .semibold))
+            }.padding(.bottom, 25)
+            section("MAKE IT YOURS")
+            setting("Launch at login", subtitle: "A little awareness, from the moment you start.") {
+                Toggle("Launch at login", isOn: Binding(get: { model.loginEnabled }, set: { model.toggleLogin($0) })).labelsHidden().toggleStyle(.switch).controlSize(.mini).disabled(model.demo)
+            }
+            if let message = model.loginMessage { Text(message).font(.system(size: 9)).foregroundStyle(palette.muted) }
+            setting("Dark appearance", subtitle: "A softer glow after hours.") {
+                VStack(alignment: .trailing, spacing: 5) {
+                    Toggle("Dark appearance", isOn: Binding(get: { model.preferences.appearance == "dark" || (model.preferences.appearance == "system" && scheme == .dark) }, set: { value in model.changePreferences { $0.appearance = value ? "dark" : "light" } })).labelsHidden().toggleStyle(.switch).controlSize(.mini)
+                    Button(model.preferences.appearance == "system" ? "Following system" : "Use system") { model.changePreferences { $0.appearance = "system" } }
+                        .buttonStyle(.plain).font(.system(size: 8)).foregroundStyle(palette.muted)
                 }
-                Picker("Keep activity", selection: Binding(get: { model.preferences.retention }, set: { value in model.changePreferences { $0.retention = value } })) {
+            }
+            Button { model.screen = .setup } label: {
+                HStack { Label("Connected browsers", systemImage: "globe"); Spacer(); Text(model.hasConnection ? "1 connected" : "Set up").foregroundStyle(palette.muted); Image(systemName: "chevron.right").font(.system(size: 8)) }
+                    .font(.system(size: 11)).padding(.vertical, 16).contentShape(Rectangle())
+            }.buttonStyle(.plain)
+            section("YOUR DATA").padding(.top, 18)
+            setting("Keep daily totals", subtitle: "Older activity is removed automatically.") {
+                Picker("Keep daily totals", selection: Binding(get: { model.preferences.retention }, set: { value in model.changePreferences { $0.retention = value } })) {
                     Text("7 days").tag(7); Text("30 days").tag(30); Text("90 days").tag(90)
-                }
-                Text("Only active browsing counts. Recording pauses after 60 seconds without input.").font(.caption).foregroundStyle(.secondary)
+                }.labelsHidden().frame(width: 88).controlSize(.small)
             }
-            Divider()
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Excluded websites").font(.headline)
-                Text("A domain also excludes its subdomains. Platform exclusions cover their aliases.").font(.caption).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 9) {
+                Text("Excluded websites").font(.system(size: 11, weight: .medium))
+                Text("These domains and their subdomains won’t count. Existing totals remain.").font(.system(size: 9)).foregroundStyle(palette.muted)
                 HStack {
-                    TextField("example.com", text: $domain).textFieldStyle(.roundedBorder).onSubmit(add)
-                        .accessibilityLabel("Website domain to exclude")
-                    Button("Add", action: add).disabled(domain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-                if let exclusionError { Text(exclusionError).font(.caption).foregroundStyle(.red) }
-                if model.preferences.excluded.isEmpty { Text("No websites excluded").font(.caption).foregroundStyle(.secondary) }
+                    TextField("e.g. work.example.com", text: $domain).textFieldStyle(.plain).onSubmit(add).accessibilityLabel("Website domain to exclude")
+                    Button("Add", action: add).buttonStyle(.plain).disabled(domain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }.font(.system(size: 10)).padding(10).background(palette.control, in: Capsule())
+                if let exclusionError { Text(exclusionError).font(.system(size: 9)).foregroundStyle(palette.red) }
                 ForEach(model.preferences.excluded, id: \.self) { item in
-                    HStack {
-                        Text(item).font(.callout); Spacer()
-                        Button { model.changePreferences { $0.excluded.removeAll { $0 == item } } } label: { Image(systemName: "xmark.circle.fill") }
-                            .buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("Remove exclusion for \(item)")
-                    }
+                    HStack { Text(item); Spacer(); Button { model.changePreferences { $0.excluded.removeAll { $0 == item } } } label: { Image(systemName: "xmark") }.buttonStyle(.plain).accessibilityLabel("Remove exclusion for \(item)") }
+                        .font(.system(size: 10)).padding(8).background(palette.control, in: Capsule())
                 }
-            }
-            Divider()
-            VStack(alignment: .leading, spacing: 10) {
-                Label("Local by design", systemImage: "lock.shield").font(.headline)
-                Text("Hourly website totals stay on this Mac. No account, cloud sync, full URLs, page titles, or browsing content.").font(.caption).foregroundStyle(.secondary)
-                Button("Delete all activity", role: .destructive) { confirmDelete = true }.buttonStyle(.bordered)
-                Text("Existing totals remain when you exclude a website. Deletion clears all recorded days.").font(.caption2).foregroundStyle(.secondary)
-            }
-            Text("SurfMeter 0.2 · Development build").font(.caption2).foregroundStyle(.tertiary)
+            }.padding(.vertical, 15)
+            Button("Delete all activity…", role: .destructive) { confirmDelete = true }.buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(palette.red).padding(.vertical, 12)
+            Label("Your activity stays on this Mac. No account, cloud sync, full URLs, page titles, or browsing content.", systemImage: "lock.shield")
+                .font(.system(size: 9)).foregroundStyle(palette.muted).fixedSize(horizontal: false, vertical: true).padding(.top, 15)
+            HStack { Text("SurfMeter 0.2 · Development build"); Spacer(); Button("Quit SurfMeter") { model.quit() }.buttonStyle(.plain) }.font(.system(size: 8)).foregroundStyle(palette.muted).padding(.top, 20)
         }
         .alert("Delete all activity?", isPresented: $confirmDelete) {
             Button("Cancel", role: .cancel) {}
             Button("Delete activity", role: .destructive) { model.deleteActivity() }
         } message: { Text("This permanently clears all recorded website totals from this Mac. Your preferences remain. New activity can accumulate while tracking is enabled.") }
+    }
+    private func section(_ title: String) -> some View { Text(title).font(.system(size: 9, weight: .medium)).tracking(1).foregroundStyle(palette.muted).padding(.bottom, 10) }
+    private func setting<Control: View>(_ title: String, subtitle: String, @ViewBuilder control: () -> Control) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 5) { Text(title).font(.system(size: 11, weight: .medium)); Text(subtitle).font(.system(size: 9)).foregroundStyle(palette.muted) }
+            Spacer(minLength: 10); control()
+        }.padding(.vertical, 13).overlay(alignment: .bottom) { Rectangle().fill(palette.line).frame(height: 1) }
     }
     private func add() {
         if model.addExclusion(domain) { domain = ""; exclusionError = nil }
@@ -66,7 +78,7 @@ struct BrowserSetupView: View {
     @ViewState private var extensionID = ""
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Browser setup").font(.title2.weight(.semibold))
+            HStack { Button { model.screen = .preferences } label: { Image(systemName: "chevron.left") }.buttonStyle(.plain).accessibilityLabel("Back to preferences"); Text("Browser setup").font(.system(size: 18, weight: .semibold)) }
             Text("Your browser tells SurfMeter which website is active. The Mac app decides when time counts.").font(.callout).foregroundStyle(.secondary)
             HStack {
                 Image(systemName: "globe").font(.title2)

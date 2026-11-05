@@ -12,7 +12,8 @@ public struct Platform: Identifiable, Equatable, Sendable {
         .init(id: "x.com", name: "X / Twitter", symbol: "bubble.left.fill", hex: 0x526074),
         .init(id: "reddit.com", name: "Reddit", symbol: "bubble.left.and.bubble.right.fill", hex: 0xE46B39),
         .init(id: "tiktok.com", name: "TikTok", symbol: "music.note", hex: 0x278B92),
-        .init(id: "linkedin.com", name: "LinkedIn", symbol: "person.crop.square.fill", hex: 0x3377AF)
+        .init(id: "linkedin.com", name: "LinkedIn", symbol: "person.crop.square.fill", hex: 0x3377AF),
+        .init(id: "github.com", name: "GitHub", symbol: "chevron.left.forwardslash.chevron.right", hex: 0x9C95CF)
     ]
     public static func named(_ id: String) -> Platform {
         catalog.first { $0.id == id } ?? .init(id: id, name: id, symbol: "globe", hex: 0x6686B8)

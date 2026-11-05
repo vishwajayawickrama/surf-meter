@@ -16,21 +16,22 @@ enum PreviewExport {
             ] {
                 model.screen = screen
                 for dark in [false, true] {
+                    model.changePreferences { $0.appearance = dark ? "dark" : "light" }
                     let view = DashboardView(model: model, weekly: weekly, yesterday: yesterday, platform: platform, opaqueBackground: true)
-                        .environment(\.colorScheme, dark ? .dark : .light)
-                    try capture(view, size: NSSize(width: 414, height: 660), dark: dark,
+                        .modifier(SurfAppearance(mode: model.preferences.appearance))
+                    try capture(view, size: NSSize(width: 390, height: screen == .activity ? (platform != nil ? 620 : weekly ? 766 : 746) : 690), dark: dark,
                                 destination: directory.appendingPathComponent("native-\(name)-\(dark ? "dark" : "light")@2x.png"))
                 }
             }
             // Full native content avoids hiding setup controls below the popover's scroll fold.
             // Demo model only: no normal preferences, browser registration, or activity are touched.
-            model.changePreferences { $0.enabled = false; $0.paused = false }
+            model.changePreferences { $0.enabled = false; $0.paused = false; $0.appearance = "light" }
             for (name, view) in [
                 ("setup-content", AnyView(BrowserSetupView(model: model))),
                 ("preferences-content", AnyView(PreferencesView(model: model)))
             ] {
-                let content = view.padding(22).frame(width: 414).fixedSize(horizontal: false, vertical: true)
-                    .background(Color(nsColor: .windowBackgroundColor))
+                let content = view.padding(22).frame(width: 390).fixedSize(horizontal: false, vertical: true)
+                    .background(SurfPalette(dark: false).solid)
                     .environment(\.colorScheme, .light)
                 try capture(content, dark: false, destination: directory.appendingPathComponent("native-\(name)-light@2x.png"))
             }
@@ -39,12 +40,31 @@ enum PreviewExport {
             FileHandle.standardError.write(Data("Native preview rendering failed.\n".utf8)); exit(1)
         }
     }
+    static func verifyAppearance(model: AppModel) {
+        let probe = AppearanceProbe()
+        // ObservedObject ensures the modifier is recomputed with preferences.
+        let host = NSHostingView(rootView: AppearanceTestRoot(model: model, probe: probe))
+        let panel = NSPanel(contentRect: NSRect(x: -10000, y: -10000, width: 390, height: 690), styleMask: [.borderless], backing: .buffered, defer: false)
+        panel.contentView = host; panel.orderFrontRegardless()
+        model.screen = .preferences
+        for mode in ["light", "dark", "light", "dark", "system"] {
+            model.changePreferences { $0.appearance = mode }
+            RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+            let expected: NSAppearance.Name = mode == "system" ? NSApp.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua])! : mode == "dark" ? .darkAqua : .aqua
+            guard panel.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == expected,
+                  (probe.scheme == .dark) == (expected == .darkAqua),
+                  model.screen == .preferences else {
+                fputs("Appearance transition failed: \(mode)\n", stderr); exit(1)
+            }
+            print("PASS same open panel: \(mode), AppKit + SwiftUI agree")
+        }
+        panel.orderOut(nil)
+    }
     private static func capture<V: View>(_ view: V, size: NSSize? = nil, dark: Bool, destination: URL) throws {
         let host = NSHostingView(rootView: view)
         let measured = size ?? host.fittingSize
         let fitted = NSSize(width: measured.width, height: ceil(measured.height))
         let window = NSWindow(contentRect: NSRect(origin: .zero, size: fitted), styleMask: [.borderless], backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: dark ? .darkAqua : .aqua)
         window.contentView = host
         window.setFrameOrigin(NSPoint(x: -10000, y: -10000))
         window.orderFrontRegardless()
@@ -59,4 +79,21 @@ enum PreviewExport {
         try data.write(to: destination)
     }
 
+}
+
+@MainActor private final class AppearanceProbe { var scheme: ColorScheme? }
+private struct SchemeProbe: NSViewRepresentable {
+    let probe: AppearanceProbe
+    @Environment(\.colorScheme) var scheme
+    func makeNSView(context: Context) -> NSView { NSView() }
+    func updateNSView(_ view: NSView, context: Context) { probe.scheme = scheme }
+}
+private struct AppearanceTestRoot: View {
+    @ObservedObject var model: AppModel
+    let probe: AppearanceProbe
+    var body: some View {
+        DashboardView(model: model, opaqueBackground: true)
+            .background(SchemeProbe(probe: probe))
+            .modifier(SurfAppearance(mode: model.preferences.appearance))
+    }
 }

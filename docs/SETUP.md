@@ -67,9 +67,9 @@ An archive created by `./scripts/package-app.sh` contains `SurfMeter.app`, its h
 
 ## 2. Open Browser setup
 
-Click SurfMeter's waves/time item in the menu bar, then click the **globe** in the popover footer. Choose **Show Chrome extension folder** in Browser setup. Finder reveals the app's bundled `ChromeExtension` folder.
+Click SurfMeter's waves/time item in the menu bar, then click the **gear** in the popover footer and choose **Connected browsers**. Choose **Show Chrome extension folder** in Browser setup. Finder reveals the app's bundled `ChromeExtension` folder.
 
-[![Annotated native SurfMeter dashboard showing the Browser setup globe, Preferences gear, pause control, and Daily/Weekly tabs.](media/setup/01-open-surfmeter@2x.png)](media/setup/01-open-surfmeter@2x.png)
+[![Annotated native SurfMeter dashboard showing the Preferences gear and browser setup route, pause control, and Daily/Weekly tabs.](media/setup/01-open-surfmeter@2x.png)](media/setup/01-open-surfmeter@2x.png)
 
 **Expected:** the setup screen initially says **Waiting for extension**. If your dashboard has no rows, that is normal; the figure uses labeled sample activity. You can still use the same footer controls.
 
@@ -151,7 +151,7 @@ Return to the dashboard or click the **gear** in the footer. Scroll Preferences 
 | Excluded websites | Enter a domain such as `example.com` and choose Add. | Future matching domain/subdomain activity is excluded. Recognized platform aliases are grouped. Existing totals remain. Use the row's × control to remove an exclusion. |
 | Delete all activity | Choose the button, then confirm in the dialog. | Stored activity is cleared; preferences remain. Cancel keeps the records. If recording remains enabled, new activity can accumulate afterward. |
 
-Use **Pause tracking** in the footer for a temporary stop. Use **Resume tracking** to continue; pause does not delete totals. The power icon quits the app. Launch-at-login is opt-in and has not yet been certified on a signed clean installation.
+Use **Pause tracking** in the footer for a temporary stop. Use **Resume tracking** to continue; pause does not delete totals. Choose **Quit SurfMeter** at the bottom of Preferences, or in the gear’s context menu. Launch-at-login is opt-in and has not yet been certified on a signed clean installation.
 
 ## 8. Check that activity is being recorded
 
@@ -249,7 +249,7 @@ There is no cloud sync or account. Full URLs, paths, queries, titles, and page c
 
 1. If you want recorded totals cleared, open Preferences → **Delete all activity** and confirm. For a clean stop, disable recording or pause before deletion so new activity does not immediately reappear.
 2. Disable **Launch at login** if it is enabled. If necessary, remove SurfMeter from macOS Login Items.
-3. Quit SurfMeter with its power button.
+3. Quit SurfMeter from Preferences or the gear’s context menu.
 4. At `chrome://extensions`, choose **Remove** on **SurfMeter — Browser Bridge** and confirm Chrome's removal prompt.
 5. Remove the single native host registration using the `rm` command in the existing-registration section. This does not delete your activity database.
 6. Remove the app. The inactive helper directory and settings may remain locally; the locations table above identifies them. Avoid deleting the whole SurfMeter support directory if you intend to keep its activity data.

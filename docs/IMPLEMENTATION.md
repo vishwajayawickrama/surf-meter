@@ -149,3 +149,7 @@ Implemented the native development app through accounting, persistence, and inte
 ### Local install follow-up — 2026-11-06
 
 The app and bundled Chrome extension are installed and connected on the development Mac. Recording and login registration were explicitly enabled by the user. A live Chrome-to-store smoke check and a background no-increase check passed; this does not close the remaining browser accuracy/privacy, Safari, lifecycle, or distribution gates. Added a validated installed-app setup command for a menu-only app and preference reload notifications. Setup/development documentation describes its explicit recording/login flags and partial-login exit status.
+
+### Prototype appearance follow-up — 2026-11-06
+
+Fixed live panel appearance switching with a window-scoped AppKit bridge, restored prototype typography/layout/charts/vector marks, and refreshed native previews plus setup annotations. The isolated same-panel theme regression and 20 Swift tests pass. No acceptance gate for Safari, distribution, or full browser/lifecycle accuracy is closed by this UI work.
