@@ -28,20 +28,13 @@ The production direction is a native macOS app. The approved prototype provides 
 
 No backend, account system, cloud database, or cloud synchronization is planned for the MVP.
 
-## Component flow
+## Main components
 
-```mermaid
-flowchart TD
-    Safari[Safari Web Extension] --> SafariAdapter[Safari native extension handler]
-    Chrome[Chrome extension] --> ChromeAdapter[Swift native messaging host]
-    SafariAdapter --> Bridge[Local app bridge]
-    ChromeAdapter --> Bridge
-    OS[Foreground app, idle, sleep and lock state] --> Engine[Swift tracking engine]
-    Bridge --> Engine
-    Controls[Pause and exclusion settings] --> Engine
-    Engine --> Store[Local SwiftData store]
-    Store --> UI[SwiftUI menu bar dashboard]
-```
+![SurfMeter component architecture: Safari and Chrome extensions communicate through native adapters and a local app bridge. The Swift tracking engine combines browser state, macOS eligibility signals, and preferences; a local SwiftData repository supplies the SwiftUI menu bar interface.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/components.png)
+
+[Open full-resolution PNG](diagrams/components.png) · [Open vector SVG](diagrams/components.svg) · [Diagram source and regeneration](diagrams/README.md)
+
+The image separates browser extensions, their native adapters, and the main Mac app. Arrows show the primary browser-state, eligibility, and usage-data flow. The UI also observes live tracking/connection status and changes preferences; the diagram does not enumerate every control callback.
 
 The extension reports browser state. The native engine determines whether that state qualifies for tracking. The extension does not independently run a second usage timer.
 
