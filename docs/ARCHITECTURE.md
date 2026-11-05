@@ -30,11 +30,11 @@ No backend, account system, cloud database, or cloud synchronization is planned 
 
 ## Main components
 
-![SurfMeter component architecture: Safari and Chrome extensions communicate through native adapters and a local app bridge. The Swift tracking engine combines browser state, macOS eligibility signals, and preferences; a local SwiftData repository supplies the SwiftUI menu bar interface.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/components.png)
+![SurfMeter component architecture: Safari and Chrome extensions communicate through native adapters and a local app bridge. The Swift tracking engine combines browser state, macOS eligibility signals, and preferences; a local SwiftData repository supplies the SwiftUI menu bar interface.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/component-architecture.png)
 
-[Open full-resolution PNG](diagrams/components.png) · [Open vector SVG](diagrams/components.svg) · [Diagram source and regeneration](diagrams/README.md)
+[Open full-resolution PNG](diagrams/component-architecture.png) · [Open vector SVG](diagrams/component-architecture.svg) · [Editable diagrams.net file](diagrams/component-architecture.drawio) · [Diagram source and regeneration](diagrams/README.md)
 
-The image separates browser extensions, their native adapters, and the main Mac app. Arrows show the primary browser-state, eligibility, and usage-data flow. The UI also observes live tracking/connection status and changes preferences; the diagram does not enumerate every control callback.
+Dashed enclosures identify the Mac, browser processes, native adapter processes, and the main app process. Solid arrows carry browser state and usage data; dashed arrows carry live status and control/settings changes. Browser app icons identify Safari and Chrome, component icons identify application services, and the cylinder represents local persistence. The diagram shows the main connections rather than every method call.
 
 The extension reports browser state. The native engine determines whether that state qualifies for tracking. The extension does not independently run a second usage timer.
 
