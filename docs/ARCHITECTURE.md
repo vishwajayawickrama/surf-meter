@@ -28,17 +28,20 @@ The production direction is a native macOS app. The approved prototype provides 
 
 No backend, account system, cloud database, or cloud synchronization is planned for the MVP.
 
-## Architecture diagram alternatives
+## Main components
 
-These are three distinct views of the proposed native architecture. No visual direction has been selected yet. Each export includes recognizable browser icons and a notation key; the scope and arrow meaning are stated within the image.
+The icon-led reference view (A) is the selected direction. It uses IBM Plex Sans typography and consistent Lucide technical symbols, alongside Safari and Chrome browser icons. The scope and meaning of connections are stated in the image.
 
-### A — Icon-led reference architecture
+### Icon-led reference architecture
 
 A high-level view of the main components and primary information flow. Short labels sit below icons; browser adapters remain outside the main app boundary. This is the lightest overview for the README or an introduction to the system.
 
-![Option A: Icon-led SurfMeter reference architecture with Safari and Chrome extensions, native adapters, a local bridge, Swift tracking engine, macOS signals, preferences, SwiftData storage, and menu bar UI.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-a-reference.png)
+![Option A: Icon-led SurfMeter reference architecture with Safari and Chrome extensions, native adapters, a local bridge, Swift tracking engine, macOS signals, preferences, SwiftData storage, and menu bar UI.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-a-reference.png?v=2)
 
 [Full-resolution PNG](diagrams/architecture-a-reference.png) · [SVG](diagrams/architecture-a-reference.svg) · [Editable diagram](diagrams/architecture-a-reference.drawio)
+
+<details>
+<summary>Earlier alternatives: C4 and layered views</summary>
 
 ### B — C4 component view
 
@@ -55,6 +58,8 @@ A logical view organized into Presentation, Application, and Integration/data re
 ![Option C: Layered SurfMeter architecture showing presentation, tracking logic, platform integration, persistence, and browser extensions.](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/diagrams/architecture-c-layered.png)
 
 [Full-resolution PNG](diagrams/architecture-c-layered.png) · [SVG](diagrams/architecture-c-layered.svg) · [Editable diagram](diagrams/architecture-c-layered.drawio)
+
+</details>
 
 [All three pages in one diagrams.net file](diagrams/architecture-alternatives.drawio) · [Research, conventions, and regeneration](diagrams/README.md)
 

@@ -1,10 +1,10 @@
-# Architecture diagram alternatives
+# Architecture diagrams
 
-Three different visual treatments are embedded in [ARCHITECTURE.md](../ARCHITECTURE.md). They describe the same proposed application at different levels of emphasis; none is a selected final style yet.
+The icon-led reference architecture (A) is the selected visual direction in [ARCHITECTURE.md](../ARCHITECTURE.md). B and C are retained as collapsed comparisons.
 
 | Option | View | PNG size | Best use |
 | --- | --- | --- | --- |
-| A | Icon-led reference architecture | 2800 × 1640 | Quick overview of components and main information flow. |
+| A (selected) | Icon-led reference architecture | 2800 × 1640 | Quick overview of components and main information flow. |
 | B | C4 component view | 2560 × 2120 | Technical documentation of the native app's components and interfaces. |
 | C | Layered architecture | 2560 × 1960 | Understanding logical responsibilities and dependency direction. |
 
@@ -43,3 +43,22 @@ After regeneration, review each PNG at normal reading size for label collisions,
 - Database cylinders use conventional diagram notation.
 
 Cached icons are committed under `icons/`, so regeneration normally does not require Safari or Chrome to be installed. Rebuilding a missing browser icon requires the app in `/Applications`; rebuilding a missing system symbol requires the macOS symbol library. Browser marks remain those of their respective owners.
+
+
+## Selected view: typography and icons
+
+Option A uses [IBM Plex Sans](https://github.com/IBM/plex), with regular component labels and medium-weight large headings. The original font files and SIL Open Font License are in `fonts/`. Fonts are registered for the renderer process; the script does not install fonts into macOS. Its SVG embeds the required font faces, and its PNG already contains the rendered typography. For matching typography while manually editing the diagrams.net file, install the bundled regular/medium fonts locally or select them in an editor that supports font loading.
+
+The selected view uses [Lucide](https://lucide.dev/) icons for application services:
+
+| Role | Icon |
+| --- | --- |
+| Safari native handler | Application window |
+| Chrome native host | Terminal window |
+| Local IPC bridge | Left/right message exchange |
+| Tracking engine | CPU |
+| Preferences | Horizontal sliders |
+| macOS state | Monitor |
+| Menu bar UI | Window with a top panel |
+
+Upstream SVGs and the Lucide license are in `icons/lucide/`. The renderer uses a neutral color and a 1.5-unit stroke for a consistent diagram scale. It renders the selected SVG primitives directly into PNG and preserves vector geometry in the SVG export. The browser icons and conventional database cylinder remain unchanged. B/C retain the earlier SF Symbols treatment for comparison.

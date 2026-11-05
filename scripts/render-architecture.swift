@@ -15,6 +15,17 @@ var svg = ""
 var cells: [String] = []
 var serial = 1
 var pages: [String] = []
+var usePlex = false
+let fontDirectory = output.appendingPathComponent("fonts")
+var plexNames: [String:String] = [:]
+for weight in ["Regular", "Medium"] {
+    let url = fontDirectory.appendingPathComponent("IBMPlexSans-\(weight).ttf")
+    let descriptors = CTFontManagerCreateFontDescriptorsFromURL(url as CFURL)! as! [CTFontDescriptor]
+    plexNames[weight] = CTFontDescriptorCopyAttribute(descriptors[0], kCTFontNameAttribute) as? String
+    guard CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil) else {
+        fatalError("Unable to register bundled font: \(url.path)")
+    }
+}
 
 func begin(_ title: String, _ w: Double, _ h: Double) {
     width=w; height=h; serial=1
@@ -23,6 +34,14 @@ func begin(_ title: String, _ w: Double, _ h: Double) {
     cg.scaleBy(x:scale,y:scale);cg.translateBy(x:0,y:h);cg.scaleBy(x:1,y:-1)
     cells=["<mxCell id=\"0\"/>","<mxCell id=\"1\" parent=\"0\"/>"]
     svg="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\(w)\" height=\"\(h)\" viewBox=\"0 0 \(w) \(h)\" role=\"img\"><title>\(xml(title))</title><defs><marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"10\" refY=\"5\" markerWidth=\"7\" markerHeight=\"7\" orient=\"auto\"><path d=\"M0 0 L10 5 L0 10 Z\" fill=\"#526171\"/></marker></defs>"
+    if usePlex {
+        svg += "<style>"
+        for (weight, name) in [(400,"Regular"),(500,"Medium")] {
+            let data = try! Data(contentsOf: fontDirectory.appendingPathComponent("IBMPlexSans-\(name).ttf"))
+            svg += "@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:\(weight);src:url(data:font/ttf;base64,\(data.base64EncodedString())) format('truetype');}"
+        }
+        svg += "</style>"
+    }
     rect(0,0,w,h,fill:"#ffffff",stroke:"#ffffff")
 }
 func save(_ key: String, _ name: String) throws {
@@ -61,7 +80,12 @@ func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double,
 }
 func label(_ s: String, _ x: Double, _ y: Double, size: Double = 16,
            bold: Bool = false, ink: String = "#293442", center: Bool = false) {
-    let font = NSFont(name:bold ? "Helvetica-Bold":"Helvetica",size:size)!
+    let strong = bold && (!usePlex || size >= 24)
+    let fontName = usePlex ? plexNames[strong ? "Medium":"Regular"]! : (bold ? "Helvetica-Bold":"Helvetica")
+    let family = usePlex ? "IBM Plex Sans":"Helvetica"
+    let weight = usePlex ? (strong ? 500:400):(bold ? 700:400)
+    let ink = usePlex && ink == "#667484" ? "#596474":ink
+    let font = NSFont(name:fontName,size:size)!
     let attr: [NSAttributedString.Key:Any] = [.font:font,.foregroundColor:NSColor(cgColor:color(ink))!]
     let line = CTLineCreateWithAttributedString(NSAttributedString(string:s,attributes:attr))
     let measured = CTLineGetTypographicBounds(line,nil,nil,nil)
@@ -69,8 +93,8 @@ func label(_ s: String, _ x: Double, _ y: Double, size: Double = 16,
     cg.saveGState(); cg.textMatrix = .identity
     cg.translateBy(x:left,y:y+size); cg.scaleBy(x:1,y:-1); cg.textPosition = .zero
     CTLineDraw(line,cg); cg.restoreGState()
-    svg += "<text x=\"\(x)\" y=\"\(y+size)\" font-family=\"Helvetica, Arial, sans-serif\" font-size=\"\(size)\" font-weight=\"\(bold ? 700:400)\" fill=\"\(ink)\" text-anchor=\"\(center ? "middle":"start")\">\(xml(s))</text>\n"
-    vertex(s,"text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;overflow=visible;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=\(size);fontColor=\(ink);fontStyle=\(bold ? 1:0);spacing=0;",left,y,measured+3,size+7)
+    svg += "<text x=\"\(x)\" y=\"\(y+size)\" font-family=\"\(family), Arial, sans-serif\" font-size=\"\(size)\" font-weight=\"\(weight)\" fill=\"\(ink)\" text-anchor=\"\(center ? "middle":"start")\">\(xml(s))</text>\n"
+    vertex(s,"text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;overflow=visible;strokeColor=none;fillColor=none;fontFamily=\(family);fontSize=\(size);fontColor=\(ink);fontStyle=\(usePlex ? 0:(bold ? 1:0));spacing=0;",left,y,measured+3,size+7)
 }
 func route(_ points: [(Double,Double)], dashed: Bool = false, arrow: Bool = true) {
     cg.saveGState(); cg.setStrokeColor(color("#526171")); cg.setLineWidth(1.5)
@@ -121,6 +145,10 @@ func cachedIcon(_ key: String) throws -> Data {
     return data
 }
 func icon(_ key: String, _ x:Double, _ y:Double, size:Double=32) throws {
+    if key.hasPrefix("lucide-") {
+        try lucideIcon(String(key.dropFirst(7)),x,y,size:size)
+        return
+    }
     let data=try cachedIcon(key)
     let image=NSBitmapImageRep(data:data)!.cgImage!
     cg.saveGState(); cg.translateBy(x:x,y:y+size); cg.scaleBy(x:1,y:-1)
@@ -158,12 +186,13 @@ func title(_ primary: String, _ secondary: String) {
 }
 func tile(_ key:String, _ name:String, _ technology:String, _ x:Double,_ y:Double) throws {
     try icon(key,x,y,size:64)
-    label(name,x+32,y+80,size:17,bold:true,center:true)
-    label(technology,x+32,y+108,size:13,ink:"#667484",center:true)
+    label(name,x+32,y+80,size:usePlex ? 18:17,bold:!usePlex,center:true)
+    label(technology,x+32,y+108,size:usePlex ? 14:13,ink:"#667484",center:true)
 }
 func note(_ s:String,_ x:Double,_ y:Double) { label(s,x,y,size:13,ink:"#526171",center:true) }
 
 // A: icon-first reference architecture. White space, short labels, one app group.
+usePlex = true
 begin("A — SurfMeter reference architecture",1400,820)
 title("SurfMeter — reference architecture","A · Icon-led overview · Primary information flows · Proposed native app")
 rect(454,128,898,575,fill:"#ffffff",stroke:"#aab6c4")
@@ -171,17 +200,17 @@ label("SurfMeter.app",474,143,size:17,bold:true)
 label("Native Swift application",474,169,size:13,ink:"#667484")
 try tile("safari","Safari","Web Extension",90,210)
 try tile("chrome","Chrome","Web Extension",90,460)
-try tile("extension","Safari adapter","Swift extension handler",270,210)
-try tile("extension","Chrome adapter","Swift native host",270,460)
-try tile("bridge","Local bridge","Validate + reconnect",520,334)
-try tile("swift","Tracking engine","Swift · eligible time",800,334)
-try tile("settings","Preferences","Pause + exclusions",800,150)
-try tile("system","macOS signals","Focus · idle · lock · sleep",800,526)
+try tile("lucide-app-window","Safari adapter","Swift extension handler",270,210)
+try tile("lucide-square-terminal","Chrome adapter","Swift native host",270,460)
+try tile("lucide-arrow-left-right","Local bridge","Validate + reconnect",520,334)
+try tile("lucide-cpu","Tracking engine","Swift · eligible time",800,334)
+try tile("lucide-sliders-horizontal","Preferences","Pause + exclusions",800,150)
+try tile("lucide-monitor","macOS signals","Focus · idle · lock · sleep",800,526)
 // Standard database symbol at the same visual scale as the service icons.
 database(1120,200,64,64)
-label("Local usage store",1152,280,size:17,bold:true,center:true)
+label("Local usage store",1152,280,size:18,bold:false,center:true)
 label("SwiftData",1152,308,size:13,ink:"#667484",center:true)
-try tile("ui","Menu bar UI","SwiftUI · Daily + Weekly",1120,470)
+try tile("lucide-panel-top","Menu bar UI","SwiftUI · Daily + Weekly",1120,470)
 route([(154,242),(270,242)]);note("Native messaging",212,219)
 route([(154,492),(270,492)]);note("Native messaging",212,469)
 route([(334,242),(414,242),(414,356),(520,356)])
@@ -198,6 +227,8 @@ route([(320,752),(370,752)],dashed:true);label("Live status",384,741,size:13,ink
 label("All components run on the user's Mac. No backend or account.",650,741,size:14,ink:"#526171")
 label("IPC = local inter-process communication. Exact transport and permissions are subject to feasibility validation.",40,787,size:12,ink:"#667484")
 try save("architecture-a-reference","A — Icon-led reference")
+
+usePlex = false
 
 // B: C4 component notation: explicit type, technology, responsibility, scope.
 func c4(_ name:String,_ type:String,_ description:[String],_ key:String,
@@ -274,3 +305,74 @@ try save("architecture-c-layered","C — Layered architecture")
 
 try ("<mxfile host=\"app.diagrams.net\" type=\"device\">"+pages.joined()+"</mxfile>").write(to:output.appendingPathComponent("architecture-alternatives.drawio"),atomically:true,encoding:.utf8)
 print("Saved a three-page editable diagrams.net document.")
+
+// Render the bundled Lucide SVG primitives directly, keeping the SVG export vector.
+// These selected upstream icons use only M/L/H/V paths, rectangles, and lines.
+struct LucideShape { let name:String; let attributes:[String:String] }
+final class LucideParser: NSObject, XMLParserDelegate {
+    var shapes:[LucideShape]=[]
+    func parser(_ parser:XMLParser,didStartElement elementName:String,namespaceURI:String?,
+                qualifiedName:String?,attributes attributeDict:[String:String]) {
+        if ["path","rect","line"].contains(elementName) {
+            shapes.append(LucideShape(name:elementName,attributes:attributeDict))
+        }
+    }
+}
+func lucidePath(_ d:String) -> CGPath {
+    let regex=try! NSRegularExpression(pattern:"[A-Za-z]|[-+]?(?:[0-9]*[.])?[0-9]+")
+    let tokens=regex.matches(in:d,range:NSRange(d.startIndex...,in:d)).map { String(d[Range($0.range,in:d)!]) }
+    var i=0, command="", current=CGPoint.zero
+    let path=CGMutablePath()
+    func number() -> Double { defer { i += 1 }; return Double(tokens[i])! }
+    while i<tokens.count {
+        if tokens[i].first!.isLetter { command=tokens[i];i += 1 }
+        let relative=command==command.lowercased()
+        switch command.uppercased() {
+        case "M", "L":
+            let x=number(),y=number()
+            let next=CGPoint(x:x+(relative ? current.x:0),y:y+(relative ? current.y:0))
+            if command.uppercased()=="M" { path.move(to:next);command=relative ? "l":"L" }
+            else { path.addLine(to:next) }
+            current=next
+        case "H":
+            current.x=number()+(relative ? current.x:0);path.addLine(to:current)
+        case "V":
+            current.y=number()+(relative ? current.y:0);path.addLine(to:current)
+        case "Z":path.closeSubpath();command=""
+        default:fatalError("Unsupported SVG command in bundled icon: \(command)")
+        }
+    }
+    return path
+}
+func drawLucide(_ shapes:[LucideShape], in context:CGContext) {
+    context.setStrokeColor(color("#344054"));context.setLineWidth(1.5)
+    context.setLineCap(.round);context.setLineJoin(.round)
+    for shape in shapes {
+        let a=shape.attributes
+        func n(_ key:String,_ fallback:Double=0) -> Double { Double(a[key] ?? "") ?? fallback }
+        switch shape.name {
+        case "path":context.addPath(lucidePath(a["d"]!))
+        case "rect":context.addPath(CGPath(roundedRect:CGRect(x:n("x"),y:n("y"),width:n("width"),height:n("height")),cornerWidth:n("rx"),cornerHeight:n("ry",n("rx")),transform:nil))
+        case "line":context.move(to:CGPoint(x:n("x1"),y:n("y1")));context.addLine(to:CGPoint(x:n("x2"),y:n("y2")))
+        default:break
+        }
+        context.strokePath()
+    }
+}
+func lucideIcon(_ name:String,_ x:Double,_ y:Double,size:Double) throws {
+    let source=try String(contentsOf:iconDirectory.appendingPathComponent("lucide/\(name).svg"),encoding:.utf8)
+    let parser=XMLParser(data:Data(source.utf8)), delegate=LucideParser()
+    parser.delegate=delegate
+    guard parser.parse() else { fatalError("Invalid bundled Lucide SVG: \(name)") }
+    cg.saveGState();cg.translateBy(x:x+4,y:y+4);cg.scaleBy(x:(size-8)/24,y:(size-8)/24)
+    drawLucide(delegate.shapes,in:cg);cg.restoreGState()
+    let inner=source.components(separatedBy:">").dropFirst().joined(separator:">").replacingOccurrences(of:"</svg>",with:"")
+    svg += "<svg x=\"\(x+4)\" y=\"\(y+4)\" width=\"\(size-8)\" height=\"\(size-8)\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#344054\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\(inner)</svg>\n"
+    let bitmap=CGContext(data:nil,width:160,height:160,bitsPerComponent:8,bytesPerRow:0,
+                         space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue)!
+    bitmap.translateBy(x:0,y:160);bitmap.scaleBy(x:1,y:-1);bitmap.translateBy(x:10,y:10);bitmap.scaleBy(x:140/24,y:140/24)
+    drawLucide(delegate.shapes,in:bitmap)
+    let data=NSBitmapImageRep(cgImage:bitmap.makeImage()!).representation(using:.png,properties:[:])!
+    try data.write(to:iconDirectory.appendingPathComponent("lucide-\(name).png"))
+    vertex("","shape=image;imageAspect=0;aspect=fixed;image=data:image/png,\(data.base64EncodedString());",x,y,size,size)
+}
