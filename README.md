@@ -1,29 +1,94 @@
+<div align="center">
+
 # SurfMeter
 
-A planned macOS menu bar app that tracks active browser time by website or platform and compares today's usage with yesterday's.
+### Your browsing. A little clearer.
 
-## Project status
+A quiet place in your Mac’s menu bar for where your time goes.
 
-Requirements and interactive UI prototype. Browser tracking is not implemented yet.
+[Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
-See the [Software Requirements Specification](docs/SRS.md) for the proposed MVP, tracking rules, privacy requirements, and acceptance criteria.
+</div>
 
-## UI prototype
+![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](docs/media/cover.png)
 
-Run from the repository root:
+> **First-look prototype.** Explore the interface with sample activity today. Automatic browser tracking and the native macOS app are still to come. Everything pictured below is captured from the interactive prototype.
+
+## Know where the hours went
+
+A few minutes on YouTube. A quick scroll through Instagram. Another Reddit tab. SurfMeter is being built to make those little moments visible, right where you can check them: your menu bar.
+
+- **Today, at a glance.** See time per platform, with yesterday’s total beside it. Green means less time; red means more. Arrows make the change clear, too.
+- **Yesterday, one click away.** A dedicated button inside Daily lets you revisit the full day without losing your place.
+- **Your week, in perspective.** A seven-day chart, platform totals, and daily averages show the bigger picture. Today’s partial day is clearly labeled.
+- **Look a little closer.** Open a platform to explore its hourly or daily breakdown. Details follow the period you’re viewing.
+- **Make room for your preferences.** Explore light and dark appearances, pause/resume, and website exclusions in the preview.
+
+## Take a look around
+
+<table>
+  <tr>
+    <th align="center">Daily → Yesterday → Weekly → Details</th>
+    <th align="center">Light when you want it. Dark when you need it.</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/media/activity-tour.gif" alt="Animated prototype walkthrough cycling through Daily, Yesterday, Weekly, and YouTube’s weekly detail" width="420"></td>
+    <td align="center"><img src="docs/media/appearance-tour.gif" alt="Animated comparison of SurfMeter’s light and dark appearances" width="420"></td>
+  </tr>
+</table>
+
+*Looping UI walkthroughs using sample data. Prefer still images? Open the screenshots below.*
+
+## A closer look
+
+<details>
+<summary><strong>Open the screenshot gallery</strong></summary>
+<br>
+
+| Daily | Weekly |
+| :---: | :---: |
+| [![Daily usage with a Yesterday button and platform comparisons](docs/media/daily.png)](docs/media/daily.png) | [![Seven-day usage chart, platform totals, and daily averages](docs/media/weekly.png)](docs/media/weekly.png) |
+
+| Yesterday | Dark preferences |
+| :---: | :---: |
+| [![Yesterday’s full-day browsing totals](docs/media/yesterday.png)](docs/media/yesterday.png) | [![SurfMeter preferences in dark appearance](docs/media/preferences-dark.png)](docs/media/preferences-dark.png) |
+
+Click any screenshot to view it at full size.
+
+</details>
+
+## Made for a quieter kind of awareness
+
+The visual direction takes inspiration from Apple’s Liquid Glass: a floating translucent panel, softly lit edges, and simple controls that leave the numbers easy to read. The preview includes light and dark appearances, keyboard navigation, and CSS fallbacks for reduced transparency, increased contrast, and reduced motion.
+
+The planned native app puts privacy at the center: active-tab timing, local storage, private-window exclusions, and no account required. These are implementation requirements, not claims of tracking functionality in this first look.
+
+## Try the first look
+
+You only need Python 3 and a browser. No packages, account, or build step.
 
 ```sh
+git clone https://github.com/vishwajayawickrama/surf-meter.git
+cd surf-meter
 python3 -m http.server 5173 --bind 127.0.0.1 --directory prototype
 ```
 
-Open [the prototype](http://127.0.0.1:5173) in your browser. No dependencies or build step are needed.
+Open **[localhost:5173](http://127.0.0.1:5173/)** and click around. Start with Daily, try Yesterday, then switch to Weekly. The left navigation opens Preferences and Browser setup; **Reset demo** restores the original sample data.
 
-The prototype includes a menu bar dashboard with **Daily** and **Weekly** tabs. Daily opens on today and has a dedicated **Yesterday** toggle; click it again to return to today. Weekly shows the last seven calendar days (including today so far), a daily chart, daily averages, and per-platform totals. Website details follow the selected day or week. Preferences, browser setup, pause/resume, exclusions, and an empty state are also included. Appearance and preview settings persist in browser local storage. Use **Reset demo** to restore the sample data.
+The browser connections, activity, and system settings are simulated. Preview preferences are stored in your browser’s local storage. The desktop frame and left navigation are design-review tools around the planned menu bar interface.
 
-All usage data and browser connections are simulated. Login and retention controls update preview preferences only; they do not change macOS settings or collect activity. The desktop frame and left navigation are preview controls, not part of the planned native menu bar app.
+## What’s next
 
-### Visual direction
+- [x] Daily and Weekly UI, Yesterday shortcut, and platform details
+- [x] Liquid Glass visual study in light and dark appearances
+- [x] Interactive preferences, browser setup, and empty states
+- [ ] Validate Safari and Chrome integration and private-window exclusion
+- [ ] Build the native macOS menu bar app with system materials
+- [ ] Implement active browsing detection and local daily aggregation
+- [ ] Validate accuracy, privacy controls, accessibility, and performance
 
-The prototype follows an Apple Liquid Glass direction: a translucent floating popover, illuminated edges, capsule controls, and separate content/control layers in light and dark appearances. Adjust the material tokens in `prototype/liquid-glass.css` to tune opacity, blur, highlights, and corner radius. Reduced transparency, increased contrast, and reduced motion preferences have CSS fallbacks.
+Want to shape the next iteration? [Open an issue](https://github.com/vishwajayawickrama/surf-meter/issues) with feedback on the interface or how you’d use SurfMeter.
 
-This is a browser approximation of the material for UI review. The native macOS implementation should adopt Apple's system Liquid Glass APIs where supported, with an appropriate fallback on older macOS versions. See [Apple's materials guidance](https://developer.apple.com/design/human-interface-guidelines/materials).
+---
+
+[Requirements](docs/SRS.md) · [Development guide](docs/DEVELOPMENT.md) · [Media and capture notes](docs/media/README.md)
