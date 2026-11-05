@@ -14,6 +14,8 @@ The proposed production stack is **Swift + SwiftUI**, `MenuBarExtra`, native Liq
 
 See [Technology stack and architecture](ARCHITECTURE.md) for the component flow, browser-specific adapters, tracking engine, storage boundaries, and integration decisions still to validate. These technologies describe the intended native app; the runnable repository currently contains the web prototype below.
 
+Follow the [five-task implementation tracker](IMPLEMENTATION.md) for delivery order, completion criteria, current progress, and handoff notes between sessions. Start with Task 1; native implementation has not started yet.
+
 ## UI prototype
 
 Run from the repository root:

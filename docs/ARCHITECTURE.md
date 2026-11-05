@@ -104,12 +104,7 @@ Safari and Chrome are initial targets, not a published support guarantee. Extens
 
 ## Implementation sequence
 
-1. Prove one browser → native adapter → running Swift app connection and its eligibility signals.
-2. Validate Safari and Chrome private-browsing and connection-lifecycle behavior; finalize the support matrix and local bridge design.
-3. Build the independently testable tracking engine and local persistence, resolving hourly aggregate requirements first.
-4. Recreate the approved Daily, Weekly, detail, preferences, and setup screens in SwiftUI.
-5. Integrate privacy controls, retention, launch at login, and failure recovery.
-6. Validate the SRS acceptance criteria, performance targets, accessibility, and installation experience.
+The [implementation tracker](IMPLEMENTATION.md) is the source of truth for delivery order and progress. It divides the native app into five tasks: foundation/browser feasibility, tracking engine, storage/summaries, native UI/integration, and release validation/packaging. Each task includes completion criteria and session handoff notes.
 
 ## Primary references
 

@@ -207,11 +207,7 @@ Before implementing the full MVP:
 
 ## 10. Suggested delivery order
 
-1. Browser/OS feasibility prototype and finalized support matrix.
-2. Activity eligibility, platform classification, daily aggregation, and local storage.
-3. Menu bar total and Daily/Weekly dashboard with the Yesterday shortcut and accessible comparison colors and text.
-4. Setup, pause/resume, exclusions, retention, deletion, and launch-at-login preference.
-5. Acceptance validation, performance measurement, and packaging for local installation.
+See the [five-task implementation tracker](IMPLEMENTATION.md) for delivery order, dependencies, completion criteria, and current progress. It covers the native foundation/browser feasibility, tracking engine, storage/summaries, native UI/integration, and release validation/packaging in that order.
 
 ## 11. Decisions to confirm before implementation
 

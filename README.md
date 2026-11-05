@@ -74,16 +74,16 @@ The browser connections, activity, and system settings are simulated. Preview pr
 
 ## What’s next
 
-- [x] Daily and Weekly UI, Yesterday shortcut, and platform details
-- [x] Liquid Glass visual study in light and dark appearances
-- [x] Interactive preferences, browser setup, and empty states
-- [ ] Validate Safari and Chrome integration and private-window exclusion
-- [ ] Build the native macOS menu bar app with system materials
-- [ ] Implement active browsing detection and local daily aggregation
-- [ ] Validate accuracy, privacy controls, accessibility, and performance
+Native implementation is organized into [five tasks](docs/IMPLEMENTATION.md), with completion criteria and handoff notes for work across sessions.
+
+- [ ] Native foundation and browser feasibility
+- [ ] Accurate activity tracking engine
+- [ ] Local storage and usage summaries
+- [ ] Native UI and complete app integration
+- [ ] Validation, packaging, and first release
 
 Want to shape the next iteration? [Open an issue](https://github.com/vishwajayawickrama/surf-meter/issues) with feedback on the interface or how you’d use SurfMeter.
 
 ---
 
-[Requirements](docs/SRS.md) · [Technology stack and architecture](docs/ARCHITECTURE.md) · [Development guide](docs/DEVELOPMENT.md) · [Media and capture notes](docs/media/README.md)
+[Implementation](docs/IMPLEMENTATION.md) · [Requirements](docs/SRS.md) · [Technology stack and architecture](docs/ARCHITECTURE.md) · [Development guide](docs/DEVELOPMENT.md) · [Media and capture notes](docs/media/README.md)
