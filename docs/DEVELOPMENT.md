@@ -47,6 +47,18 @@ python3 scripts/prepare-chrome-host.py --extension-id YOUR_32_CHARACTER_EXTENSIO
 
 The CLI path points to `.build/chrome-native-host` in this checkout. The GUI installer is the self-contained app path. Neither path enables recording automatically.
 
+### Configure the installed app from Terminal
+
+After loading the bundled extension in Chrome and approving its access, the installed app can perform its own setup without automating a menu bar popover:
+
+```sh
+/Applications/SurfMeter.app/Contents/MacOS/SurfMeter --configure-chrome YOUR_32_LETTER_EXTENSION_ID --enable-recording --enable-login
+```
+
+Use the actual extension ID. `--enable-recording` explicitly enables and unpauses local recording while preserving other preferences; omit it to leave recording settings unchanged. `--enable-login` uses `SMAppService.mainApp` and is opt-in; omit it to leave login settings unchanged. Exit status 3 means Chrome setup succeeded but login still needs approval or registration did not complete. The command reports the result; it does not bypass macOS approval. Missing/invalid IDs and unknown flags fail before changing configuration.
+
+This command runs before the activity model and does not open another usage store or bridge server. It notifies an already-running app to reload preferences. The local registration and helper are identical to the GUI installer's output. It does not turn on Chrome Developer mode or load an extension for you; those steps still require Chrome's normal user-authorized flow.
+
 ## Data and tracking behavior
 
 - The main app is the sole writer of Core Data/SQLite hourly platform aggregates under `~/Library/Application Support/SurfMeter/Data/activity.sqlite`. Daily and weekly totals are derived from them. No raw browsing-event history is stored.

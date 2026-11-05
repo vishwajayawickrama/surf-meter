@@ -224,6 +224,16 @@ python3 scripts/prepare-chrome-host.py --extension-id YOUR_32_LETTER_EXTENSION_I
 
 Replace the placeholder with the actual Chrome ID. This alternative uses the helper in the checkout's `.build/chrome-native-host` directory, so keep that checkout in place. Do not alternate GUI and CLI installers without inspecting/removing a conflicting old registration. Neither installer enables recording automatically.
 
+### Installed-app setup command
+
+If the menu-only controls are difficult to automate, the installed app also supports this explicit command after you have loaded and approved its Chrome extension:
+
+```sh
+/Applications/SurfMeter.app/Contents/MacOS/SurfMeter --configure-chrome YOUR_32_LETTER_EXTENSION_ID --enable-recording --enable-login
+```
+
+Replace the placeholder with the ID shown on your SurfMeter card. The two enable flags are optional: recording is enabled/unpaused only when `--enable-recording` is present, and login registration is attempted only when `--enable-login` is present. Other preferences are retained. A running app is notified to reload the change. Exit code 3 means login is not yet enabled; follow the reported macOS approval/signing message. This command does not load an extension or bypass Chrome/macOS permission prompts.
+
 ## Where your data lives
 
 | Location | Contents |

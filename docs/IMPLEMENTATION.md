@@ -145,3 +145,7 @@ Keep the five task IDs stable. Add detail within the appropriate task rather tha
 ## Latest session handoff — 2026-11-06
 
 Implemented the native development app through accounting, persistence, and interface integration. Run commands and data/setup/removal locations are in [Development](DEVELOPMENT.md). Current automated and pending manual evidence is in [Validation](VALIDATION.md). All five tasks retain open acceptance gates rather than claiming Done from synthetic tests. The current checkpoint is identifiable by the Git commit titled “Build native tracking, storage, and dashboard”.
+
+### Local install follow-up — 2026-11-06
+
+The app and bundled Chrome extension are installed and connected on the development Mac. Recording and login registration were explicitly enabled by the user. A live Chrome-to-store smoke check and a background no-increase check passed; this does not close the remaining browser accuracy/privacy, Safari, lifecycle, or distribution gates. Added a validated installed-app setup command for a menu-only app and preference reload notifications. Setup/development documentation describes its explicit recording/login flags and partial-login exit status.

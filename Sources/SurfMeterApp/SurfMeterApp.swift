@@ -5,6 +5,9 @@ import AppKit
 struct SurfMeterApp: App {
     @StateObject private var model: AppModel
     init() {
+        if CommandLine.arguments.contains("--configure-chrome") {
+            SetupCommand.run(arguments: Array(CommandLine.arguments.dropFirst()))
+        }
         let demo = CommandLine.arguments.contains("--demo") || CommandLine.arguments.contains("--render-previews")
         let model = AppModel(demo: demo)
         _model = StateObject(wrappedValue: model)

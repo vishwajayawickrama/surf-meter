@@ -152,6 +152,16 @@ final class AppModel: ObservableObject {
     }
 
     private func installObservers() {
+        distributed.append(DistributedNotificationCenter.default().addObserver(forName: SetupCommand.preferencesChanged, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, let defaults = self.defaults else { return }
+                defaults.synchronize()
+                guard let data = defaults.data(forKey: "preferences"), let saved = try? JSONDecoder().decode(Preferences.self, from: data) else { return }
+                self.transition({ self.preferences = saved }, invalidate: true)
+                self.loginEnabled = SMAppService.mainApp.status == .enabled
+                self.checkpoint()
+            }
+        })
         let center = NSWorkspace.shared.notificationCenter
         func observe(_ name: Notification.Name, _ handler: @escaping () -> Void) {
             observers.append(center.addObserver(forName: name, object: nil, queue: .main) { _ in Task { @MainActor in handler() } })
