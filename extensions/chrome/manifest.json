@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "SurfMeter — Browser Bridge",
+  "version": "0.1.0",
+  "description": "Connect the focused browser hostname to the local SurfMeter Mac app.",
+  "permissions": ["tabs", "nativeMessaging", "alarms"],
+  "incognito": "not_allowed",
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "Reconnect SurfMeter" },
+  "minimum_chrome_version": "120"
+}

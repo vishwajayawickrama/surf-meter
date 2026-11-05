@@ -12,7 +12,7 @@ A quiet place in your Mac’s menu bar for where your time goes.
 
 ![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
 
-> **First-look prototype.** Explore the interface with sample activity today. Automatic browser tracking and the native macOS app are still to come. Everything pictured below is captured from the interactive prototype.
+> **First-look prototype.** Explore the interface with sample activity today. The native menu bar foundation and development Chrome bridge are now available; automatic time recording is still to come. Everything pictured below is captured from the interactive prototype.
 
 ## Know where the hours went
 
@@ -73,6 +73,8 @@ Open **[localhost:5173](http://127.0.0.1:5173/)** and click around. Start with D
 The browser connections, activity, and system settings are simulated. Preview preferences are stored in your browser’s local storage. The desktop frame and left navigation are design-review tools around the planned menu bar interface.
 
 ## What’s next
+
+Try the [native development build](docs/DEVELOPMENT.md#native-foundation), or read the [current validation results](docs/FOUNDATION-VALIDATION.md). The native shell shows connection diagnostics; the screenshots above remain the UI prototype.
 
 Native implementation is organized into [five tasks](docs/IMPLEMENTATION.md), with completion criteria and handoff notes for work across sessions.
 

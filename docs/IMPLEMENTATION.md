@@ -10,13 +10,13 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 
 | Task | Deliverable | Status | Depends on |
 | --- | --- | --- | --- |
-| 1 | Native foundation and browser feasibility | Not started | — |
+| 1 | Native foundation and browser feasibility | In progress | — |
 | 2 | Accurate activity tracking engine | Not started | 1 |
 | 3 | Local storage and usage summaries | Not started | 2 |
 | 4 | Native UI and complete app integration | Not started | 3 |
 | 5 | Validation, packaging, and first release | Not started | 4 |
 
-**Next action:** Start Task 1 by inspecting the available Xcode/Swift toolchain, then establish a buildable native app and one browser-to-app connection.
+**Next action:** Load the Chrome extension and register its actual extension ID, then record real-browser checks. Install full Xcode to package and validate Safari; finish native lifecycle and launch/recovery validation before Task 2.
 
 ## Task 1 — Native foundation and browser feasibility
 
@@ -38,7 +38,7 @@ Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.
 - Safari and Chrome have a recorded pass/fail result for the required signals, private-window exclusion, and connection recovery. Any support reduction is explicitly resolved in the SRS before moving on.
 - The architecture and development guide describe the chosen bridge, permissions, support matrix, and reproducible integration checks. A dependency requiring user setup is recorded as pending, not as a passed check.
 
-**Evidence / handoff:** Not started. Record build commands, browser/OS versions, integration results, and unresolved setup here.
+**Evidence / handoff — 2026-11-05:** Native Swift Package foundation added: `SurfMeterCore`, `SurfMeterApp` (`MenuBarExtra`), and `SurfMeterNativeHost`. Strict TypeScript Chrome extension, versioned hostname-only contract, same-user Unix socket IPC, ad hoc app bundling, exact-origin registration preparation, and reproducible checks are implemented. Build succeeded on macOS 27.2 / Swift 6.4 CLT. Six Swift tests, three extension tests, and a real app/helper IPC test with synthetic data passed. See [validation record](FOUNDATION-VALIDATION.md), [protocol](BROWSER-PROTOCOL.md), and [setup](DEVELOPMENT.md). Real Chrome events, Safari packaging/IPC, minimum OS execution, screen lock, manual native UI/OS signals, and app-launch/recovery behavior remain pending. Full Xcode is absent. No accounting or database exists yet. Next: complete the real Chrome matrix with its installed extension ID; then Safari and OS feasibility. This task is not Done.
 
 ## Task 2 — Accurate activity tracking engine
 

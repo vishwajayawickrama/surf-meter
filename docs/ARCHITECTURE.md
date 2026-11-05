@@ -2,11 +2,13 @@
 
 Date: 2026-11-05
 
-Status: Proposed native implementation direction; browser and OS integrations require a feasibility prototype.
+Status: Native foundation implemented; real-browser and OS feasibility checks remain in progress. The diagram shows the intended complete architecture, including components not implemented yet.
 
 ## Current implementation
 
-The repository currently contains an interactive UI prototype built with HTML, CSS, and vanilla JavaScript. It runs with a local Python HTTP server, uses sample activity, and stores preview preferences in browser local storage. Browser connections and system settings are simulated.
+The repository contains a Swift Package with a SwiftUI menu bar shell, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. There is no accounting engine or persistent usage store yet.
+
+The approved interactive UI prototype is built with HTML, CSS, and vanilla JavaScript. It runs with a local Python HTTP server, uses sample activity, and stores preview preferences in browser local storage. Browser connections and system settings are simulated.
 
 The production direction is a native macOS app. The approved prototype provides the screen designs and interaction reference; those screens will be recreated in SwiftUI.
 
@@ -69,10 +71,10 @@ The extension reports browser state. The native engine determines whether that s
 
 - **Safari:** package a Safari Web Extension with the Mac app. Its native extension handler receives messages and relays the needed state to the app.
 - **Chrome:** use an extension and registered native messaging host implemented in Swift. The host relays validated browser state to the running app.
-- **Shared contract:** define versioned messages for browser identity, active hostname, tab/window identity, focus, private-browsing eligibility, and connection status. Include only fields necessary for attribution and recovery.
+- **Shared contract:** v1 carries browser, worker session UUID, sequence, eligibility state, and optional normalized hostname. Tab/window identifiers are unnecessary for the current snapshot path and are omitted. See [protocol](BROWSER-PROTOCOL.md).
 - **Connection lifecycle:** on startup or reconnection, request a current-state snapshot. Do not replay disconnected intervals as measured usage. Detect stale or disconnected integrations and stop affected attribution.
 
-Native messaging is the extension-to-native boundary. The Safari handler and Chrome host still need a local connection to the main app; the IPC mechanism, packaging, launch behavior, and sandbox compatibility must be validated. Do not assume that a native messaging callback executes inside the main app process.
+Native messaging is the extension-to-native boundary. The development Chrome host relays to the app using a private same-user Unix domain socket with framed JSON, restrictive filesystem permissions, peer UID validation, and an exclusive server lock. This path is tested with the actual app/helper and synthetic snapshots. Exact origin registration restricts extension access, but UID checks do not authenticate same-user processes by code signature. Safari sandbox compatibility, production authentication, packaging, and launch behavior remain unverified. The helper currently requires the app to be open. See [validation](FOUNDATION-VALIDATION.md).
 
 Only the main app should write usage records. Browser adapters should not independently open and mutate the same model store. Limit native messaging access to the intended extension and validate incoming messages before accepting them.
 
@@ -106,7 +108,7 @@ Use `MenuBarExtra` as the starting point for the menu bar application and evalua
 
 Adopt system Liquid Glass for supported controls and navigation. Keep the content layer readable, and use a compatible material fallback on older supported macOS versions. The CSS material and 2× capture mode belong to the web prototype and documentation only.
 
-The minimum macOS version is not yet fixed. Select it after validating the integration, SwiftData availability, and fallback UI. Native Liquid Glass availability must not silently determine the deployment target.
+The foundation targets macOS 14 to accommodate the planned SwiftData layer. Only Apple Silicon/macOS 27.2 has been exercised; the minimum-version and Intel validation gates remain open. The minimal shell uses system presentation; explicit Liquid Glass treatment and accessibility review belong to Task 4.
 
 ## Validation and release gates
 

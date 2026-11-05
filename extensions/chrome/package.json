@@ -1,0 +1,11 @@
+{
+  "name": "surfmeter-chrome",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node scripts/package.mjs",
+    "test": "npm run build && node --test tests/*.test.mjs"
+  },
+  "devDependencies": { "typescript": "5.9.3" }
+}

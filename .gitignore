@@ -6,3 +6,7 @@ xcuserdata/
 .env
 .env.*
 !.env.example
+node_modules/
+extensions/*/dist/
+
+__pycache__/
