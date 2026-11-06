@@ -44,7 +44,7 @@ enum PreviewExport {
                     model.changePreferences { $0.appearance = dark ? "dark" : "light" }
                     let view = DashboardView(model: model, weekly: weekly, yesterday: yesterday, platform: platform, opaqueBackground: true)
                         .modifier(SurfAppearance(mode: model.preferences.appearance))
-                    try capture(view, size: NSSize(width: 390, height: screen == .activity ? (platform != nil ? 720 : weekly ? 766 : 746) : 690), dark: dark,
+                    try capture(view, size: NSSize(width: 390, height: screen == .activity ? (platform != nil ? 720 : MenuPanelLayout.activityHeight) : 690), dark: dark,
                                 destination: directory.appendingPathComponent("native-\(name)-\(dark ? "dark" : "light")@2x.png"))
                 }
             }
@@ -83,7 +83,7 @@ enum PreviewExport {
                 for dark in [false, true] {
                     model.changePreferences { $0.appearance = dark ? "dark" : "light"; $0.enabled = name != "empty" }
                     let view = DashboardView(model: model, opaqueBackground: true).modifier(SurfAppearance(mode: model.preferences.appearance))
-                    try capture(view, size: NSSize(width: 390, height: 746), dark: dark, destination: directory.appendingPathComponent("\(name)-\(dark ? "dark" : "light").png"))
+                    try capture(view, size: NSSize(width: 390, height: MenuPanelLayout.activityHeight), dark: dark, destination: directory.appendingPathComponent("\(name)-\(dark ? "dark" : "light").png"))
                 }
             }
             let firstRunDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("surfmeter-first-run-\(UUID().uuidString)")
@@ -92,7 +92,7 @@ enum PreviewExport {
             for dark in [false, true] {
                 fresh.changePreferences { $0.appearance = dark ? "dark" : "light" }
                 let view = DashboardView(model: fresh, opaqueBackground: true).modifier(SurfAppearance(mode: fresh.preferences.appearance))
-                try capture(view, size: NSSize(width: 390, height: 746), dark: dark, destination: directory.appendingPathComponent("first-run-\(dark ? "dark" : "light").png"))
+                try capture(view, size: NSSize(width: 390, height: MenuPanelLayout.activityHeight), dark: dark, destination: directory.appendingPathComponent("first-run-\(dark ? "dark" : "light").png"))
             }
             print("Rendered 16 edge-case fixture screens and 2 genuine isolated first-run screens.")
         } catch { fputs("Audit rendering failed: \(error)\n", stderr); exit(1) }

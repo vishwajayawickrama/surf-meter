@@ -15,7 +15,7 @@ import SwiftUI
     private var localMonitor: Any?
     private var activationObserver: NSObjectProtocol?
     private var refreshPending = false
-    private var desiredHeight: CGFloat = 746
+    private var desiredHeight: CGFloat = MenuPanelLayout.activityHeight
     private var lastSymbol: String?
     private let layout = MenuPanelLayout()
 
@@ -164,7 +164,9 @@ final class MenuGlassPanel: NSPanel {
 }
 
 @MainActor final class MenuPanelLayout: ObservableObject {
-    @Published var maximumHeight: CGFloat = 746
+    // Period changes replace content inside a stable window, without resizing it.
+    static let activityHeight: CGFloat = 766
+    @Published var maximumHeight: CGFloat = activityHeight
 }
 struct MenuPanelRoot: View {
     @ObservedObject var model: AppModel

@@ -126,3 +126,9 @@ Frame evidence: [daily light](media/audit/native-frame/menu-frame-daily-light-2x
 The user reported having to click Daily/Weekly repeatedly. The plain unselected button had no explicit hit shape across its expanded label. Added a full rectangular hit target inside each segment label. Yesterday's capsule padding/background now belong to the button label too, with a capsule hit shape. The menu hosting view explicitly accepts first mouse events, and opening activates the app before making the panel key.
 
 Verified through native UI controls in a sample-only audit app with a separate bundle identity: eight individual coordinate clicks switched Daily/Weekly on the first click, covering left/right segment edges and top/bottom padding away from the text. Two additional padded-area clicks toggled Yesterday on and off, each with one click. Selection and totals were read after each action. The window-frame audit also verifies the hosting view's first-mouse policy; inactive-app click-through in the actual floating panel remains a separate live acceptance check.
+
+## Stable Daily/Weekly window — 2026-11-06
+
+The user reported the menu snapping when changing periods. Daily requested 746 points and Weekly 766 points, causing the hosting view to resize and reposition the native window after each selection. Both now use one 766-point activity height, capped to the available display space. The controller's initial size and preview/audit dimensions use the same value. Chart and row changes stay inside the existing scroll area; preferences/setup/detail navigation retains its separate sizing.
+
+The native frame audit measures both actual Daily and Weekly SwiftUI trees and verifies identical fitting sizes and native positions at normal height and a 540-point screen limit. Full-frame transparency/layout checks and appearance transitions passed. The optimized app was installed with preferences unchanged and aggregate totals preserved.

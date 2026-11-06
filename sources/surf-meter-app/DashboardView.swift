@@ -47,7 +47,7 @@ struct DashboardView: View {
             Rectangle().fill(palette.line).frame(height: 1).padding(.horizontal, 23)
             footer.padding(.horizontal, 23).padding(.vertical, 15)
         }
-        .frame(width: 390, height: min(maximumHeight ?? .infinity, model.screen == .activity ? (selectedPlatform != nil ? 720 : period == .weekly ? 766 : 746) : 690))
+        .frame(width: 390, height: min(maximumHeight ?? .infinity, model.screen == .activity ? (selectedPlatform != nil ? 720 : MenuPanelLayout.activityHeight) : 690))
         .background {
             if opaqueBackground || reduceTransparency || contrast == .increased { palette.solid }
             else { Rectangle().fill(.ultraThinMaterial).overlay(palette.solid.opacity(colorScheme == .dark ? 0.78 : 0.66)) }

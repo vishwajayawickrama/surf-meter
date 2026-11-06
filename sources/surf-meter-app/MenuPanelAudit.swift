@@ -24,9 +24,24 @@ import SwiftUI
             }
         }
         let model = AppModel(demo: true)
+        // Measure both real view trees, including their different charts and rows.
+        // Equal fitting sizes prevent the controller from moving/resizing the window.
+        for limit: CGFloat in [MenuPanelLayout.activityHeight, 540] {
+            let daily = NSHostingView(rootView: DashboardView(model: model, maximumHeight: limit))
+            let weekly = NSHostingView(rootView: DashboardView(model: model, weekly: true, maximumHeight: limit))
+            let dailySize = daily.fittingSize
+            let weeklySize = weekly.fittingSize
+            check(dailySize == weeklySize && dailySize.height == limit,
+                  "Daily and Weekly keep identical native dimensions at \(Int(limit))pt")
+            let visible = NSRect(x: 0, y: 40, width: 1440, height: 860)
+            let anchor = NSRect(x: 900, y: 900, width: 24, height: 24)
+            check(MenuBarController.frame(anchor: anchor, visible: visible, desiredHeight: dailySize.height) ==
+                  MenuBarController.frame(anchor: anchor, visible: visible, desiredHeight: weeklySize.height),
+                  "period switching leaves native window position unchanged")
+        }
         let layout = MenuPanelLayout()
         var measured = CGSize.zero
-        let panel = MenuBarController.makePanel(size: NSSize(width: 390, height: 746))
+        let panel = MenuBarController.makePanel(size: NSSize(width: 390, height: MenuPanelLayout.activityHeight))
         panel.setFrameOrigin(NSPoint(x: -10000, y: -10000))
         let host = MenuHostingView(rootView: MenuPanelRoot(model: model, layout: layout))
         host.sizingOptions = [.intrinsicContentSize]
@@ -37,7 +52,7 @@ import SwiftUI
         defer { panel.orderOut(nil) }
         for dark in [false, true] {
             model.changePreferences { $0.appearance = dark ? "dark" : "light" }
-            for (name, screen, expected) in [("daily", Screen.activity, 746.0), ("preferences", .preferences, 690.0), ("setup", .setup, 690.0)] {
+            for (name, screen, expected) in [("daily", Screen.activity, MenuPanelLayout.activityHeight), ("preferences", .preferences, 690.0), ("setup", .setup, 690.0)] {
                 model.screen = screen
                 panel.setContentSize(NSSize(width: 390, height: expected))
                 host.layoutSubtreeIfNeeded()

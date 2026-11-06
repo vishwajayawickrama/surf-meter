@@ -7,7 +7,7 @@ import SurfMeterCore
     static func showWindow(model: AppModel) -> Never {
         precondition(model.demo)
         let host = NSHostingView(rootView: AuditRoot(model: model))
-        let window = NSWindow(contentRect: NSRect(x: 200, y: 120, width: 390, height: 746), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
+        let window = NSWindow(contentRect: NSRect(x: 200, y: 120, width: 390, height: MenuPanelLayout.activityHeight), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
         window.title = "SurfMeter — Isolated UI audit"
         window.contentView = host
         window.isReleasedWhenClosed = false
