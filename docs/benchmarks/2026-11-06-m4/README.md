@@ -23,3 +23,5 @@ The recovery utility requires the identified error, all expected endpoint groups
 ## Publication scope
 
 The files contain numeric resource data and public build/hardware metadata. No real tab URL, page title/content, browsing-domain record, process ID, precise local timestamp, account setting, or machine home path is published. Synthetic platform names in the archived code are predetermined test inputs. The installed helper was already approximately 9.4 hours old at the start; its initial footprint was not created entirely during these 30 minutes.
+
+Published CSV line endings are canonical LF so Git checkout does not invalidate the digest. `sample_data_sha256` identifies the published CSV; `source_sample_data_sha256` preserves the original capture-file digest. Numeric rows and measurements are unchanged by this normalization.

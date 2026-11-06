@@ -241,7 +241,7 @@
     }
   },
   "measurement_date": "2026-11-06",
-  "sample_data_sha256": "47342bccca31113b18314c2e7c7391cbc28074d5c8e10cf9c45fa6bfdfc02768",
+  "sample_data_sha256": "202baa0645b95048604d801128602e67d6ebe900efcdbae1a954d38d8d5d3227",
   "controlled_recording_delta_seconds": {
     "active": null,
     "idle": null
@@ -287,5 +287,7 @@
       "linear_fit_MB_per_minute": 1.0041614194587727
     }
   },
-  "plot_matplotlib_version": "3.11.2"
+  "plot_matplotlib_version": "3.11.2",
+  "source_sample_data_sha256": "47342bccca31113b18314c2e7c7391cbc28074d5c8e10cf9c45fa6bfdfc02768",
+  "sample_csv_line_endings": "LF"
 }

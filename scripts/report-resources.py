@@ -96,6 +96,8 @@ def plot(rows, destination):
     fig.suptitle('SurfMeter · native development build resource measurements', fontsize=15, fontweight='bold')
     fig.savefig(destination/'resource-usage.png', dpi=200, metadata={'Software': 'Matplotlib'})
     fig.savefig(destination/'resource-usage.svg', metadata={'Date': None, 'Creator': 'Matplotlib'})
+    vector = destination/'resource-usage.svg'
+    vector.write_text('\n'.join(line.rstrip() for line in vector.read_text().splitlines())+'\n')
     plt.close(fig)
     return matplotlib.__version__
 
@@ -137,7 +139,11 @@ def main():
         public['resource_counter_recovery'] = recovery
         shutil.copyfile(args.run/'measurement-harness-at-run.py', args.output/'measurement-harness-at-run.py')
     public['measurement_date'] = source['measurement_started_local'].split('T')[0]
-    public['sample_data_sha256'] = hashlib.sha256((args.run/'samples.csv').read_bytes()).hexdigest()
+    source_samples = (args.run/'samples.csv').read_bytes()
+    published_samples = source_samples.replace(b'\r\n', b'\n')
+    public['source_sample_data_sha256'] = hashlib.sha256(source_samples).hexdigest()
+    public['sample_data_sha256'] = hashlib.sha256(published_samples).hexdigest()
+    public['sample_csv_line_endings'] = 'LF'
     public['controlled_recording_delta_seconds'] = {'active': active_delta, 'idle': idle_delta}
     context = args.run/'age-context.json'
     if context.exists():
@@ -158,7 +164,7 @@ def main():
         slope, _ = statistics.linear_regression(seconds, sizes)
         public['app_footprint_growth'][scenario] = {'start_bytes': sizes[0], 'end_bytes': sizes[-1],
                                                   'change_bytes': sizes[-1]-sizes[0], 'linear_fit_MB_per_minute': slope*60/1e6}
-    shutil.copyfile(args.run/'samples.csv', args.output/'samples.csv')
+    (args.output/'samples.csv').write_bytes(published_samples)
     if not args.no_plot:
         public['plot_matplotlib_version'] = plot(samples, args.output)
     (args.output/'summary.json').write_text(json.dumps(public, indent=2)+'\n')

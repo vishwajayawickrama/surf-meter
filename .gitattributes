@@ -1,0 +1,5 @@
+# Hashed benchmark text must retain canonical LF on every checkout.
+docs/benchmarks/**/*.csv text eol=lf
+docs/benchmarks/**/*.py text eol=lf
+docs/benchmarks/**/*.json text eol=lf
+docs/benchmarks/**/*.svg text eol=lf
