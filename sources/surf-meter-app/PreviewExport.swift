@@ -102,12 +102,29 @@ enum PreviewExport {
             let expected: NSAppearance.Name = mode == "system" ? NSApp.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua])! : mode == "dark" ? .darkAqua : .aqua
             guard panel.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == expected,
                   (probe.scheme == .dark) == (expected == .darkAqua),
-                  model.screen == .preferences else {
+                  model.screen == .preferences,
+                  !panel.isOpaque,
+                  panel.backgroundColor.alphaComponent == 0,
+                  panel.contentView?.layer?.masksToBounds == true,
+                  panel.contentView?.layer?.cornerRadius == MenuPanelSurface.cornerRadius,
+                  panel.contentView?.layer?.cornerCurve == .continuous else {
                 fputs("Appearance transition failed: \(mode)\n", stderr); exit(1)
             }
-            print("PASS same open panel: \(mode), simulated system \(systemDark ? "dark" : "light"), AppKit + SwiftUI agree")
+            print("PASS same open panel: \(mode), simulated system \(systemDark ? "dark" : "light"), AppKit + SwiftUI agree; native backing transparent and corners clipped")
         }
         panel.orderOut(nil)
+        let desktop = NSWindow(contentRect: NSRect(x: -10000, y: -10000, width: 1100, height: 780), styleMask: [.titled], backing: .buffered, defer: false)
+        let wasOpaque = desktop.isOpaque
+        let background = desktop.backgroundColor
+        desktop.contentView = NSHostingView(rootView: DesktopRoot(model: model))
+        desktop.orderFrontRegardless()
+        RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+        guard desktop.isOpaque == wasOpaque, desktop.backgroundColor == background,
+              desktop.contentView?.layer?.masksToBounds != true else {
+            fputs("Menu surface styling leaked into desktop window.\n", stderr); exit(1)
+        }
+        print("PASS: desktop retains its native backing; menu corner policy is scoped")
+        desktop.orderOut(nil)
     }
     private static func capture<V: View>(_ view: V, size: NSSize? = nil, dark: Bool, destination: URL) throws {
         let host = NSHostingView(rootView: view)

@@ -51,9 +51,10 @@ struct DashboardView: View {
             else { Rectangle().fill(.ultraThinMaterial).overlay(palette.solid.opacity(colorScheme == .dark ? 0.78 : 0.66)) }
         }
         .foregroundStyle(palette.text)
-        .clipShape(RoundedRectangle(cornerRadius: 26))
-        .overlay(RoundedRectangle(cornerRadius: 26).strokeBorder(.white.opacity(colorScheme == .dark ? 0.21 : 0.78), lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: MenuPanelSurface.cornerRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: MenuPanelSurface.cornerRadius, style: .continuous).strokeBorder(.white.opacity(colorScheme == .dark ? 0.21 : 0.78), lineWidth: 1))
         .tint(accent)
+        .modifier(MenuPanelSurface())
     }
 
     private var header: some View {
