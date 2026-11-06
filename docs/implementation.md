@@ -27,7 +27,7 @@ Setup: [annotated guide](setup.md) · Requirements: [SRS](srs.md) · Technical d
 **Scope**
 
 - Inspect the installed toolchain and record build prerequisites. Create the native Swift/SwiftUI app, a shared Swift package for core logic, and the browser extension/helper structure.
-- Add a minimal `MenuBarExtra` shell with a connection status view. Keep this shell functional and simple until Task 4 recreates the approved design.
+- Provide a menu bar shell with connection status. The current native UI uses an AppKit status item and owned borderless panel to preserve the approved rounded surface.
 - Define a small, versioned browser-state message contract shared by the TypeScript extensions and Swift adapters. Normalize to a hostname and avoid sending page content, titles, or URL paths/queries.
 - Prove a connection from one browser through its native adapter to the running app, then validate the Safari and Chrome adapters, permission requirements, private-window exclusion, focus/tab changes, and reconnection behavior.
 - Select and demonstrate the local IPC path from the Safari native handler and Chrome native messaging host to the main app. Validate message identity restrictions and app-launch behavior.

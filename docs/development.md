@@ -156,3 +156,15 @@ The native app bundles 48 website identities for 67 domain aliases. See [asset p
 ```
 
 [Light gallery](media/native/site-icons-light-2x.png) · [Dark gallery](media/native/site-icons-dark-2x.png). The gallery uses known site identities and reserved example domains, not a user's history.
+
+
+## Complete menu-window audit
+
+The current menu uses an AppKit status item and owned borderless panel. Inspect its complete native frame, rather than only rendered SwiftUI content:
+
+```sh
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --verify-menu-panel /private/tmp/surfmeter-frame-audit
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --menu-audit
+```
+
+The first command checks display placement, native frame padding, transparent corner pixels, interior rendering, route resizing and height clamping, with light/dark 2× frame images. The second opens the actual menu controller with sample activity and a temporary audit status item; quit this isolated copy afterward. Neither opens the normal activity store. Global dismissal monitoring uses mouse clicks only and requests no keyboard monitoring permission.

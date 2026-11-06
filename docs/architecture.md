@@ -20,7 +20,7 @@ The SwiftUI implementation follows the approved prototype, which remains the ref
 | Desktop | AppKit `NSWindow` with SwiftUI and Swift Charts | Detailed activity, date selection, website search and chart filtering. One shared model/store/bridge with the menu panel. |
 | Onboarding | SwiftUI sheet and separate setup-completion preference | Four-step install/browser/privacy/appearance walkthrough, recording opt-in, and safe existing-user migration. |
 | Distribution | Self-contained app bundle and compressed DMG | Bundled helper, extension, icon and offline illustrated setup; development signing today, Developer ID/notarization pending. |
-| Menu bar | SwiftUI `MenuBarExtra`, with AppKit where needed | Today's usage label, application lifecycle, and popover presentation. |
+| Menu bar | AppKit `NSStatusItem` and an owned transparent borderless `NSPanel` | Today's usage label, application lifecycle, and popover presentation. |
 | Appearance | SwiftUI system materials and window-scoped AppKit appearance | Liquid Glass-inspired translucent panels, explicit Light/Dark/System modes, and opaque accessibility fallbacks. |
 | Browser extensions | TypeScript and WebExtensions | Observe the active website, selected tab, and browser-window focus. Share browser-independent logic and keep browser-specific adapters small. |
 | Extension/app communication | Browser native messaging and a local Swift bridge | Deliver browser state to the app without a remote service. Safari and Chrome use different native integration mechanisms. |
@@ -109,7 +109,7 @@ FR-33 was revised on 2026-11-06 to allow the minimum hourly aggregates required 
 
 The app retains one desktop `NSWindow` through `DesktopController`. Menu and desktop navigation are independent; preferences and activity remain shared. Dock presence follows desktop visibility, and closing it does not quit recording. Native-host launches pass `--background`; login launches are detected through the launch Apple event.
 
-Use `MenuBarExtra` as the starting point for the menu bar application and evaluate its window-style presentation against the approved popover. Add AppKit presentation support if required by behavior that SwiftUI alone does not cover.
+The menu bar uses `NSStatusItem` and a retained borderless `NSPanel` hosting SwiftUI. Owning the complete window avoids the system popover frame showing behind custom corners. The hosting view reports intrinsic size changes; placement is clamped to the active display. Escape, outside clicks and app deactivation dismiss the panel. Opening the desktop also dismisses it. No new recording or storage instance is created.
 
 Adopt system Liquid Glass for supported controls and navigation. Keep the content layer readable, and use a compatible material fallback on older supported macOS versions. The CSS material and 2× capture mode belong to the web prototype and documentation only.
 

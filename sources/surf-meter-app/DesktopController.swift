@@ -10,6 +10,7 @@ import SwiftUI
     func configure(model: AppModel) { self.model = model }
     func show(model: AppModel? = nil) {
         guard let model = model ?? self.model else { return }
+        MenuBarController.shared.hide()
         if window == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1100, height: 780),
                                   styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
@@ -35,7 +36,8 @@ import SwiftUI
 @MainActor final class SurfMeterDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         let args = CommandLine.arguments
-        guard !args.contains("--bridge-directory"), !args.contains("--background") else { return }
+        MenuBarController.shared.start()
+        guard !args.contains("--menu-audit"), !args.contains("--bridge-directory"), !args.contains("--background") else { return }
         // Login and native-host launches stay quiet. A normal Finder launch opens the app.
         let login = NSAppleEventManager.shared().currentAppleEvent?
             .paramDescriptor(forKeyword: AEKeyword(keyAELaunchedAsLogInItem))?.booleanValue ?? false

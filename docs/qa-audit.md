@@ -107,3 +107,15 @@ The existing appearance verification now asserts native transparency, layer mask
 Replaced the five illustrative native brand drawings and generic brand symbols with bundled upstream vector artwork for 48 website identities / 67 domain aliases, including ChatGPT, Google, the social platforms, developer tools, streaming and productivity sites. The menu panel, desktop, detail headings and accessibility labels use consistent display names; unknown sites receive initials. No icon lookup sends browsing domains off the Mac, and neither accounting classification nor existing totals change.
 
 The isolated `--verify-site-icons` check validates every bundled vector's geometry, required familiar sites, unique aliases, subdomain normalization, more-specific service matching, deceptive suffix rejection, fallback initials and unchanged accounting grouping. The light/dark 2× galleries were rendered and reviewed. Artwork is decoded and converted to paths once per process; no image request or repeated SVG parsing occurs during recording. The app build and DMG verifier now check the app's additional resource bundle and retained licenses. Published Alpha 1 assets remain unchanged.
+
+
+## Complete native-frame follow-up — 2026-11-06
+
+The user supplied a second screenshot showing native window decoration still outside the custom corners. This supersedes the earlier content-backing fix: clearing and clipping the content did not remove the system MenuBarExtra frame.
+
+Replaced that container with an AppKit status item and an owned transparent borderless panel. The retained SwiftUI hosting tree preserves menu navigation; intrinsic sizing updates the native window for each page. Placement clamps to the status item's display, including short screens and monitors with negative/stacked coordinates. Escape, outside clicks and application deactivation dismiss it; expanding to the desktop closes the menu. Tracking still uses the original shared model, bridge and store.
+
+`--verify-menu-panel` captures the **entire native frame view**, checks eight corner pixels per screen for transparency, verifies visible interior pixels and zero outer padding, and exercises daily/preferences/setup in both appearances. It also checks 20 display/height combinations, live intrinsic sizing and a 540-point height limit. The light/dark native-frame images were visually reviewed. Native automation could not attach to the floating audit panel; this limitation is not counted as a successful click-through. Status-click toggling, outside-click/Escape interaction and full-screen/Space behavior still need a live interaction check. The published Alpha 1 artifacts remain unchanged.
+
+
+Frame evidence: [daily light](media/audit/native-frame/menu-frame-daily-light-2x.png) · [daily dark](media/audit/native-frame/menu-frame-daily-dark-2x.png). These are full native-frame renders with sample activity. The complete local regression audit passed after the replacement, followed by the optimized native-frame audit and an installed-app update that verified unchanged preferences and preserved aggregate totals.

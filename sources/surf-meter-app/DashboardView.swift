@@ -8,6 +8,7 @@ private enum Period: String, CaseIterable { case daily = "Daily", weekly = "Week
 struct DashboardView: View {
     @ObservedObject var model: AppModel
     let opaqueBackground: Bool
+    let maximumHeight: CGFloat?
     @ViewState private var period: Period = .daily
     @ViewState private var yesterday = false
     @ViewState private var selectedPlatform: String?
@@ -16,9 +17,10 @@ struct DashboardView: View {
     @Environment(\.colorScheme) private var colorScheme
     private var palette: SurfPalette { SurfPalette(dark: colorScheme == .dark) }
     private var accent: Color { palette.accent }
-    init(model: AppModel, weekly: Bool = false, yesterday: Bool = false, platform: String? = nil, opaqueBackground: Bool = false) {
+    init(model: AppModel, weekly: Bool = false, yesterday: Bool = false, platform: String? = nil, opaqueBackground: Bool = false, maximumHeight: CGFloat? = nil) {
         self.model = model
         self.opaqueBackground = opaqueBackground
+        self.maximumHeight = maximumHeight
         _period = State(initialValue: weekly ? .weekly : .daily)
         _yesterday = State(initialValue: yesterday)
         _selectedPlatform = State(initialValue: platform)
@@ -45,7 +47,7 @@ struct DashboardView: View {
             Rectangle().fill(palette.line).frame(height: 1).padding(.horizontal, 23)
             footer.padding(.horizontal, 23).padding(.vertical, 15)
         }
-        .frame(width: 390, height: model.screen == .activity ? (selectedPlatform != nil ? 720 : period == .weekly ? 766 : 746) : 690)
+        .frame(width: 390, height: min(maximumHeight ?? .infinity, model.screen == .activity ? (selectedPlatform != nil ? 720 : period == .weekly ? 766 : 746) : 690))
         .background {
             if opaqueBackground || reduceTransparency || contrast == .increased { palette.solid }
             else { Rectangle().fill(.ultraThinMaterial).overlay(palette.solid.opacity(colorScheme == .dark ? 0.78 : 0.66)) }

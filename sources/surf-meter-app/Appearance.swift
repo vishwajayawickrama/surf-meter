@@ -1,8 +1,8 @@
 import SwiftUI
 import AppKit
 
-/// MenuBarExtra owns its own NSPanel. Override that window rather than the
-/// presentation preference (which can leave an already-open panel unchanged).
+/// Scope appearance to each native window so an already-open panel updates
+/// without changing the system appearance of the menu-bar status item.
 struct SurfAppearance: ViewModifier {
     let mode: String
     @Environment(\.colorScheme) private var systemScheme

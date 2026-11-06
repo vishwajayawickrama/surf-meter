@@ -13,6 +13,8 @@ APP="$PWD/.build/SurfMeter.app/Contents/MacOS/SurfMeter"
 "$APP" --verify-model
 "$APP" --verify-appearance
 "$APP" --verify-site-icons
+FRAME_RENDERS="$(mktemp -d "${TMPDIR:-/private/tmp}/surfmeter-frame-audit.XXXXXX")"
+"$APP" --verify-menu-panel "$FRAME_RENDERS"
 BIN="$(swift build --disable-sandbox --show-bin-path)"
 "$BIN/SurfMeterVerification"
 ./scripts/package-app.sh
