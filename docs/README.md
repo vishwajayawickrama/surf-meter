@@ -5,6 +5,7 @@ SurfMeter is a native macOS development app with Chrome tracking and local aggre
 | Document | Purpose |
 | --- | --- |
 | [Setup](setup.md) | Install, connect Chrome, choose preferences, troubleshoot, and remove the integration. Includes annotated screenshots. |
+| [Alpha 1 release notes](releases/alpha-one.md) | Version 0.1.1 Alpha 1 features, download setup and known limitations. |
 | [Desktop and downloads](distribution.md) | Standalone DMG, first-run walkthrough, desktop behavior and release gates. |
 | [Development](development.md) | Build, test, preview, package, and work on the app or prototype. |
 | [Architecture](architecture.md) | Technologies, main components, ownership, data flow, and editable diagrams. |

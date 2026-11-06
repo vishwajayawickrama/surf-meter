@@ -16,7 +16,10 @@ with tempfile.TemporaryDirectory(prefix="surfmeter-dmg-check-") as temp:
         subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True)
         info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
         assert info["CFBundleIdentifier"] == "dev.surfmeter.app"
-        assert info["CFBundleShortVersionString"] == pathlib.Path("version.txt").read_text().strip()
+        version = pathlib.Path("version.txt").read_text().strip()
+        assert info["CFBundleShortVersionString"] == version.split("-")[0]
+        assert info["SurfMeterReleaseVersion"] == version
+        assert int(info["CFBundleVersion"]) > 0
         assert (mount / "Applications").is_symlink()
         assert (mount / "Applications").readlink() == pathlib.Path("/Applications")
         assert (mount / "Start Here.html").is_file()

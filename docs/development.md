@@ -1,6 +1,6 @@
 # Developing SurfMeter
 
-SurfMeter 0.3 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard, detailed desktop window and first-run walkthrough. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
+SurfMeter 0.1.1 Alpha 1 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard, detailed desktop window and first-run walkthrough. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
 
 [Annotated setup guide](setup.md) · [Implementation tracker](implementation.md) · [Architecture](architecture.md) · [Current validation](validation.md) · [Browser protocol](browser-protocol.md)
 

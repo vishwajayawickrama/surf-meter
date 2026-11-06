@@ -5,6 +5,7 @@ export CLANG_MODULE_CACHE_PATH="${CLANG_MODULE_CACHE_PATH:-/private/tmp/surfmete
 export SWIFTPM_MODULECACHE_OVERRIDE="${SWIFTPM_MODULECACHE_OVERRIDE:-/private/tmp/surfmeter-swift-cache}"
 CONFIGURATION="${SURFMETER_BUILD_CONFIGURATION:-debug}"
 VERSION="$(cat version.txt)"
+BUNDLE_VERSION="${VERSION%%-*}"
 swift build --configuration "$CONFIGURATION" --disable-sandbox --cache-path /private/tmp/surfmeter-spm-cache -Xswiftc -module-cache-path -Xswiftc /private/tmp/surfmeter-swift-cache
 BIN="$(swift build --configuration "$CONFIGURATION" --disable-sandbox --show-bin-path)"
 APP="$PWD/.build/SurfMeter.app"
@@ -37,8 +38,9 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <key>CFBundleExecutable</key><string>SurfMeter</string>
 <key>CFBundleIconFile</key><string>AppIcon</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>$VERSION</string>
-<key>CFBundleVersion</key><string>3</string>
+<key>CFBundleShortVersionString</key><string>$BUNDLE_VERSION</string>
+<key>SurfMeterReleaseVersion</key><string>$VERSION</string>
+<key>CFBundleVersion</key><string>4</string>
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>LSUIElement</key><true/>
 <key>NSHighResolutionCapable</key><true/>

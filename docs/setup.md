@@ -2,7 +2,7 @@
 
 This guide takes you from a checkout to recorded Chrome activity, then covers preferences, troubleshooting, updates, and removal.
 
-**Current build:** SurfMeter 0.3 development build. Chrome is the implemented adapter; Safari is not enabled. The deployment target is macOS 14+, but only Apple Silicon/macOS 27.2 has been exercised. Browser privacy/accuracy certification and signed, notarized distribution are still pending. See [validation](validation.md).
+**Current build:** SurfMeter 0.1.1 Alpha 1. Chrome is the implemented adapter; Safari is not enabled. The deployment target is macOS 14+, but only Apple Silicon/macOS 27.2 has been exercised. Browser privacy/accuracy certification and signed, notarized distribution are still pending. See [validation](validation.md).
 
 The annotated images use native SurfMeter UI renders and Google's official Chrome example screenshots. SurfMeter renders use sample data or the pre-connection state; greyed-out preview buttons are enabled in the real app. Google's screenshots show **Hello Extensions**, so use your **SurfMeter — Browser Bridge** card and its actual ID instead. Images are available as 2× PNGs and [editable annotation data with SVG exports](media/setup/README.md). Click any image to zoom.
 

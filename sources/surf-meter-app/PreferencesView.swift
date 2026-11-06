@@ -63,7 +63,7 @@ struct PreferencesView: View {
             Button("Delete all activity…", role: .destructive) { confirmDelete = true }.buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(palette.red).padding(.vertical, 12)
             Label("Your activity stays on this Mac. No account, cloud sync, full URLs, page titles, or browsing content.", systemImage: "lock.shield")
                 .font(.system(size: 9)).foregroundStyle(palette.muted).fixedSize(horizontal: false, vertical: true).padding(.top, 15)
-            HStack { Text("SurfMeter \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Development") · Development build"); Spacer(); Button("Quit SurfMeter") { model.quit() }.buttonStyle(.plain) }.font(.system(size: 8)).foregroundStyle(palette.muted).padding(.top, 20)
+            HStack { Text("SurfMeter \(Bundle.main.object(forInfoDictionaryKey: "SurfMeterReleaseVersion") as? String ?? "Development") · Development build"); Spacer(); Button("Quit SurfMeter") { model.quit() }.buttonStyle(.plain) }.font(.system(size: 8)).foregroundStyle(palette.muted).padding(.top, 20)
         }
         .alert("Delete all activity?", isPresented: $confirmDelete) {
             Button("Cancel", role: .cancel) {}

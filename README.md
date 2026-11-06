@@ -6,13 +6,13 @@
 
 Your browser time, in the menu bar and a detailed Mac app.
 
-[Download the Mac app](https://github.com/vishwajayawickrama/surf-meter/releases) · [Install the DMG](docs/distribution.md) · [Setup guide](docs/setup.md) · [Functional audit](docs/qa-audit.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
+[Download Alpha 1](https://github.com/vishwajayawickrama/surf-meter/releases/tag/v0.1.1-alpha.1) · [Install the DMG](docs/distribution.md) · [Setup guide](docs/setup.md) · [Functional audit](docs/qa-audit.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
 </div>
 
 ![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
 
-> **Native development build available.** SurfMeter 0.3 adds a resizable desktop window and first-run setup walkthrough alongside its SwiftUI menu bar dashboard, Chrome tracking engine, and local aggregate storage. The Apple Silicon DMG is an ad hoc signed, unnotarized development prerelease. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The original hero and GIFs show the interactive UI prototype; native previews below use labeled sample data.
+> **Native development build available.** SurfMeter 0.1.1 Alpha 1 includes a resizable desktop window and first-run setup walkthrough alongside its SwiftUI menu bar dashboard, Chrome tracking engine, and local aggregate storage. The Apple Silicon DMG is an ad hoc signed, unnotarized development prerelease. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The original hero and GIFs show the interactive UI prototype; native previews below use labeled sample data.
 
 ## Open the bigger picture
 
@@ -20,7 +20,7 @@ Your browser time, in the menu bar and a detailed Mac app.
 
 Browse dates, search websites, and select a platform to explore its chart. Daily has a dedicated Yesterday button; Weekly shows seven calendar days. Close the window to keep SurfMeter in your menu bar, then reopen it whenever you need more detail.
 
-**[Download the development DMG](https://github.com/vishwajayawickrama/surf-meter/releases)** · Apple Silicon · [Installation and first-run walkthrough](docs/distribution.md). Includes the app, Chrome extension and offline illustrated guide. No developer tools needed to run it. Chrome setup is still manual; Safari and production signing/notarization remain pending.
+**[Download the Alpha 1 DMG](https://github.com/vishwajayawickrama/surf-meter/releases/tag/v0.1.1-alpha.1)** · Apple Silicon · [Installation and first-run walkthrough](docs/distribution.md). Includes the app, Chrome extension and offline illustrated guide. No developer tools needed to run it. Chrome setup is still manual; Safari and production signing/notarization remain pending.
 
 ## Know where the hours went
 
