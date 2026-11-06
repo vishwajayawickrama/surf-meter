@@ -57,13 +57,17 @@ struct DesktopSidebarSurface: ViewModifier {
     func body(content: Content) -> some View {
         content.background {
             ZStack {
-                if reduceTransparency || contrast == .increased {
-                    SurfPalette(dark: scheme == .dark).solid
-                } else {
-                    SidebarBackdrop().allowsHitTesting(false)
-                }
+                Group {
+                    if reduceTransparency || contrast == .increased {
+                        SurfPalette(dark: scheme == .dark).solid
+                    } else {
+                        SidebarBackdrop()
+                    }
+                }.ignoresSafeArea(.container, edges: [.top, .bottom]).allowsHitTesting(false)
+                // Only the backdrop extends into the titlebar. Keep the inset
+                // glass edge below the native traffic-light controls.
                 surface.padding(.horizontal, 8).padding(.vertical, 8).allowsHitTesting(false)
-            }.ignoresSafeArea(.container, edges: [.top, .bottom])
+            }
         }
     }
 }

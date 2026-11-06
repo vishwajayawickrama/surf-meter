@@ -160,3 +160,10 @@ Replaced the small system graphical date control with a larger calendar: readabl
 Today and Yesterday now derive their selected state directly from the displayed date. The active shortcut has an accent highlight, checkmark and accessibility selected value. Choosing another date clears both shortcuts. A visible label states Today, Yesterday or the custom date; Weekly states the exact seven-day range.
 
 Verified in a separate sample-only native app: Yesterday selection, custom-day selection clearing both shortcuts, right-arrow navigation updating the date and shortcut selection, previous-month navigation, calendar Today reset, Return and Escape dismissal, Daily/Weekly switching and the displayed weekly range. Inspected the live calendar in light and dark appearances. The 42 calendar arithmetic checks, seven appearance checks, native menu-frame/geometry checks and repository hygiene checks passed. Static 2× calendar renders were also reviewed; they do not prove the live glass compositor. Older macOS fallback and VoiceOver reading order remain unverified on their corresponding environments. Published Alpha 1 assets remain unchanged.
+
+
+## Traffic-light clearance — 2026-11-06
+
+The sidebar background previously applied `ignoresSafeArea` to both its backdrop and inset glass plate. This extended the rounded top edge into the native close/minimize/full-screen controls. Only the backdrop now extends behind the titlebar; the plate respects the native top safe area and keeps its eight-point inset below it. The title remains hidden.
+
+Reviewed the live sample-only window in dark Activity and light Preferences: the plate starts below the titlebar with a clear gap. The capture system's sharing indicator obscures the traffic-light pixels themselves, so this is a check of the glass boundary and reserved titlebar area, not a pixel inspection of those buttons. All seven existing appearance checks passed.
