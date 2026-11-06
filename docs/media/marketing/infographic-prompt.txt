@@ -1,0 +1,22 @@
+Use case: infographic-diagram / ads-marketing.
+Create a finished, exceptionally polished marketing infographic poster for SurfMeter, a macOS browser time tracker. Portrait 4:5 composition, high resolution, designed to share on social media and a GitHub product page. This is a professional information design artifact, not a generic startup template.
+
+Art direction: precision Swiss editorial layout meets native macOS product design. Cool neutral off-white background #F2F2F2, near-black SF Pro-like modern sans-serif typography, restrained Apple blue #1676F3, quiet gray hairline rules, green and red only for change indicators. Beautiful typography, substantial breathing room, carefully aligned grids. Crisp vector-like charts and SF Symbols-like thin line icons. No blue-tinted background, gradients, blobs, glossy 3D objects, sparkles, robot imagery, fake badges, texture, or giant rounded bento cards. Use discreet glass-like edges only around the central illustrative menu panel. Not a fake screenshot; make it unmistakably an editorial feature infographic with illustrative data.
+
+Top header: small original abstract blue wave mark beside exact brand name "SurfMeter"; small opposite text "FOR macOS".
+Large impactful two-line headline exact: "Your browsing." and "A little clearer."
+Subhead exact: "See where your browser time goes."
+
+Central hero occupies roughly 45% of poster. An impeccably clean straight-on illustrative Mac menu-bar usage panel integrated with an editorial chart. Header "TODAY" with tiny label "SAMPLE DATA". Large total "3h 10m". Under it exact "Yesterday: 4h 2m" and a green downward arrow with "52m less". Three clean horizontal usage bars with correct, familiar small platform logos and directly aligned labels: "YouTube  1h 14m", "Instagram  42m", "Reddit  31m". YouTube red play logo, Instagram proper camera glyph, Reddit orange alien logo. Other websites are included in total; small footnote "Plus other websites." Do not invent percentages. Bars proportional to 74,42,31 minutes on same scale.
+
+Around or below hero, three editorial numbered sections in strict readable sequence, separated by hairline rules, not boxed:
+"01  Check your day" with caption "Today, Yesterday, and any date."
+"02  Compare at a glance" with two compact inline indicators and exact text "↓ Less time" in green and "↑ More time" in red; include arrows so meaning does not rely only on color.
+"03  See the whole week" with caption "Seven-day totals and daily averages." Small flat seven-bar blue chart, no numeric ticks or invented analytics claims.
+
+Bottom strip with three small understated outline icons and exact short labels: "Stored on your Mac" / "No account needed" / "Menu bar + desktop".
+Clear call to action exact: "Explore SurfMeter on GitHub"
+Below exact readable URL: "github.com/vishwajayawickrama/surf-meter"
+Very small but readable final line exact: "Development alpha • Chrome setup required • Illustrative sample data"
+
+All copy must be spelled correctly and appear exactly once except standard necessary labels. Absolutely no claims about saved hours, perfect accuracy, Safari support, battery usage, popularity or performance. Keep text large enough for mobile. Strong contrast, professional optical spacing, visual hierarchy, no clutter. Final poster should feel deliberately art-directed and ready to publish.
