@@ -10,9 +10,9 @@ Your browser time, in the menu bar and a detailed Mac app.
 
 </div>
 
-![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
+![SurfMeter — the current native Mac dashboard with website usage and a Finder-style sidebar](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
 
-> **Native development build available.** SurfMeter 0.1.1 Alpha 1 includes a resizable desktop window and first-run setup walkthrough alongside its SwiftUI menu bar dashboard, Chrome tracking engine, and local aggregate storage. The Apple Silicon DMG is an ad hoc signed, unnotarized development prerelease. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The original hero and GIFs show the interactive UI prototype; native previews below use labeled sample data.
+> **Native development build available.** SurfMeter 0.1.1 Alpha 1 includes a resizable desktop window and first-run setup walkthrough alongside its SwiftUI menu bar dashboard, Chrome tracking engine, and local aggregate storage. The Apple Silicon DMG is an ad hoc signed, unnotarized development prerelease. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The screenshots and GIF state tours show the current native development UI with labeled sample data. They may include improvements made after the downloadable Alpha 1 build.
 
 ## Open the bigger picture
 
@@ -35,12 +35,12 @@ A few minutes on YouTube. A quick scroll through Instagram. Another Reddit tab. 
 ## Take a look around
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/activity-tour-2x.gif" alt="Animated prototype walkthrough cycling through Daily, Yesterday, Weekly, and YouTube’s weekly detail" width="45%">
+  <img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/activity-tour-2x.gif" alt="Native app state tour cycling through Daily, Yesterday, Weekly, and YouTube’s weekly detail" width="45%">
   &nbsp;
   <img src="https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/appearance-tour-2x.gif" alt="Animated comparison of SurfMeter’s light and dark appearances" width="45%">
 </p>
 
-*Activity walkthrough (left) · Light and dark appearances (right). Rendered at 2× resolution using sample data. Prefer still images? Open the screenshots below.*
+*Current native UI state tours: activity (left) and appearances (right). Each state holds for three seconds; these are not continuous recordings. Original 2× renders use sample data. Prefer still images? Open the screenshots below.*
 
 ## A closer look
 
@@ -56,15 +56,19 @@ A few minutes on YouTube. A quick scroll through Instagram. Another Reddit tab. 
 | :---: | :---: |
 | [![Yesterday’s full-day browsing totals](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/yesterday-2x.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/yesterday-2x.png) | [![SurfMeter preferences in dark appearance](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/preferences-dark-2x.png)](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/preferences-dark-2x.png) |
 
+| Desktop · dark | Calendar · dark |
+| :---: | :---: |
+| [![Current desktop with neutral sidebar and weekly range](docs/media/desktop/desktop-weekly-dark-2x.png)](docs/media/desktop/desktop-weekly-dark-2x.png) | [![New calendar with a highlighted seven-day range](docs/media/desktop/calendar-weekly-dark-2x.png)](docs/media/desktop/calendar-weekly-dark-2x.png) |
+
 Click any screenshot to view it at full size.
 
 </details>
 
 ## Made for a quieter kind of awareness
 
-The visual direction takes inspiration from Apple’s Liquid Glass: a floating translucent panel, softly lit edges, and simple controls that leave the numbers easy to read. The preview includes light and dark appearances, keyboard navigation, and CSS fallbacks for reduced transparency, increased contrast, and reduced motion.
+The visual direction takes inspiration from Apple’s Liquid Glass: a floating translucent panel, softly lit edges, and simple controls that leave the numbers easy to read. The native app follows macOS light and dark appearances, with native sidebar materials and keyboard navigation. The browser prototype remains available separately.
 
-The planned native app puts privacy at the center: active-tab timing, local storage, private-window exclusions, and no account required. These are implementation requirements, not claims of tracking functionality in this first look.
+The native development app uses active-tab timing and local aggregate storage, excludes private-window activity, and needs no account. Validation status and remaining gates are documented in the functional audit.
 
 ## Try the native development build
 
@@ -129,7 +133,7 @@ The browser connections, activity, and system settings are simulated. Preview pr
 
 ## What’s next
 
-Try the [native development build](docs/development.md#build-the-native-app), or read the [current validation results](docs/validation.md). The native app now includes accounting, persistence, and the dashboard. Original marketing GIFs remain the web prototype; the native previews are labeled separately.
+Try the [native development build](docs/development.md#build-the-native-app), or read the [current validation results](docs/validation.md). The native app now includes accounting, persistence, and the dashboard. README screenshots and GIF state tours now use the current native UI with sample activity.
 
 Native implementation is organized into [five tasks](docs/implementation.md), with completion criteria and handoff notes for work across sessions.
 

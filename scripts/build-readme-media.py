@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Build README assets from full-page screenshots of the real prototype.
+"""Build README media from current native --render-previews output at 2×.
 
-Capture names and dimensions are documented in docs/media/README.md.
-Requires ffmpeg; no Python packages or network access are used.
+Requires ffmpeg. Uses labeled sample activity, never recorded browser data.
 """
 import argparse
 from pathlib import Path
@@ -22,54 +21,46 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('capture_dir', type=Path)
     args = parser.parse_args()
-    names = ['01-daily', '02-yesterday', '03-weekly', '04-detail', '05-daily-dark', '06-preferences-dark']
-    missing = [name for name in names if not (args.capture_dir / f'{name}.jpg').is_file()]
+    names = ['daily-light', 'yesterday-light', 'weekly-light', 'detail-weekly-light', 'daily-dark', 'preferences-dark']
+    required = [args.capture_dir / f'native-{name}@2x.png' for name in names]
+    required += [args.capture_dir / f'desktop-daily-{mode}-2x.png' for mode in ['light', 'dark']]
+    missing = [path.name for path in required if not path.is_file()]
     if missing:
-        parser.error('Missing captures: ' + ', '.join(missing))
+        parser.error('Missing native renders: ' + ', '.join(missing))
     if not shutil.which('ffmpeg'):
         parser.error('ffmpeg is required')
-    DEST.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='surfmeter-media-') as tmp:
+    for folder in ['desktop', 'native']:
+        (DEST / folder).mkdir(parents=True, exist_ok=True)
+    for pattern, folder in [('desktop-*-2x.png', 'desktop'), ('onboarding-*-2x.png', 'desktop'), ('native-*@2x.png', 'native')]:
+        for path in args.capture_dir.glob(pattern):
+            shutil.copyfile(path, DEST / folder / path.name)
+    for source, target in [('daily-light', 'daily'), ('yesterday-light', 'yesterday'), ('weekly-light', 'weekly'),
+                           ('daily-dark', 'daily-dark'), ('preferences-dark', 'preferences-dark')]:
+        shutil.copyfile(args.capture_dir / f'native-{source}@2x.png', DEST / f'{target}-2x.png')
+    with tempfile.TemporaryDirectory(prefix='surfmeter-native-media-') as tmp:
         temp = Path(tmp)
+        title = temp / 'title.txt'
+        title.write_text('SurfMeter — Your browsing. A little clearer.')
+        subtitle = temp / 'subtitle.txt'
+        subtitle.write_text('NATIVE MAC APP  ·  DAILY & WEEKLY ACTIVITY  ·  SAMPLE DATA')
+        # Original 2200×1560 render stays at its native resolution on the cover.
+        filters = '[0:v][1:v]overlay=100:240,' + ','.join([
+            f'drawtext=fontfile=/System/Library/Fonts/Supplemental/Arial.ttf:textfile={title}:x=100:y=62:fontsize=58:fontcolor=0x202020',
+            f'drawtext=fontfile=/System/Library/Fonts/Supplemental/Arial.ttf:textfile={subtitle}:x=103:y=151:fontsize=23:fontcolor=0x666666',
+        ])
+        run('-f', 'lavfi', '-i', 'color=c=0xf2f2f2:s=2400x1880', '-i', args.capture_dir / 'desktop-daily-light-2x.png',
+            '-filter_complex', filters, '-frames:v', '1', DEST / 'cover-2x.png')
         for name in names:
-            run('-i', args.capture_dir / f'{name}.jpg', '-vf',
-                'pad=iw:ih+200:0:0:color=0xf5f7fa,crop=900:1800:1576:176',
+            run('-i', args.capture_dir / f'native-{name}@2x.png', '-vf', 'pad=780:1532:0:0:color=0xeeeeee',
                 '-frames:v', '1', temp / f'{name}.png')
-        for source, target in [('01-daily', 'daily'), ('02-yesterday', 'yesterday'),
-                               ('03-weekly', 'weekly'), ('05-daily-dark', 'daily-dark'),
-                               ('06-preferences-dark', 'preferences-dark')]:
-            shutil.copyfile(temp / f'{source}.png', DEST / f'{target}-2x.png')
-
-        # Compose a sharp, typeset cover around an unscaled screenshot.
-        labels = [
-            ('SurfMeter', 95, 90, 30, '#326df1'),
-            ('YOUR BROWSING, AT A GLANCE', 98, 235, 16, '#75849b'),
-            ('Your browsing.', 92, 295, 70, '#202b3b'),
-            ('A little clearer.', 92, 385, 70, '#202b3b'),
-            ('A quiet place in your menu bar', 98, 525, 27, '#65758b'),
-            ('for where your time goes.', 98, 570, 27, '#65758b'),
-            ('DAILY  /  YESTERDAY  /  WEEKLY', 98, 715, 17, '#326df1'),
-            ('FIRST LOOK  /  INTERACTIVE UI PROTOTYPE', 98, 845, 12, '#838c99'),
-        ]
-        filters = ['[0:v][1:v]overlay=1820:40']
-        for i, (label, x, y, size, color) in enumerate(labels):
-            path = temp / f'label-{i}.txt'
-            path.write_text(label)
-            filters.append(f"drawtext=fontfile=/System/Library/Fonts/Supplemental/Arial.ttf:textfile={path}:x={x*2}:y={y*2}:fontsize={size*2}:fontcolor={color}")
-        run('-f', 'lavfi', '-i', 'color=c=0xf5f7fa:s=2800x1880', '-i', temp / '01-daily.png',
-            '-filter_complex', ','.join(filters), '-frames:v', '1', DEST / 'cover-2x.png')
-
-        for filename, frames in [
-            ('activity-tour-2x.gif', names[:4]),
-            ('appearance-tour-2x.gif', ['01-daily', '05-daily-dark']),
-        ]:
-            manifest = temp / f'{filename}.txt'
+        for filename, frames in [('activity-tour-2x.gif', names[:4]), ('appearance-tour-2x.gif', ['daily-light', 'daily-dark'])]:
+            manifest = temp / 'frames.txt'
             manifest.write_text(''.join(f"file '{temp / (name + '.png')}'\nduration 3\n" for name in frames)
                                 + f"file '{temp / (frames[-1] + '.png')}'\n")
             run('-f', 'concat', '-safe', '0', '-i', manifest, '-t', len(frames) * 3,
-                '-vf', 'fps=8,split[a][b];[a]palettegen=stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a',
+                '-vf', 'fps=4,split[a][b];[a]palettegen=stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a',
                 '-loop', '0', DEST / filename)
-    print('Built cover, five screenshots, and two looping GIFs in docs/media.')
+    print('Updated native cover, stills, desktop/onboarding gallery and two GIF state tours.')
 
 
 if __name__ == '__main__':
