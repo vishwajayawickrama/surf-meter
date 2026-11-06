@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 /// Native Liquid Glass where available, with the same shape and readable fallback.
 struct DesktopGlassButtons: ViewModifier {
@@ -37,6 +38,45 @@ struct DesktopGlassSurface: ViewModifier {
                 .overlay(Capsule().strokeBorder(.white.opacity(scheme == .dark ? 0.16 : 0.65), lineWidth: 1))
         }
     }
+}
+
+/// Keep a clear window behind this surface so glass can sample the desktop.
+struct DesktopSidebarSurface: ViewModifier {
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.colorSchemeContrast) private var contrast
+    @ViewBuilder private var surface: some View {
+        if reduceTransparency || contrast == .increased {
+            SurfPalette(dark: scheme == .dark).solid
+        } else if #available(macOS 26, *) {
+            Color.clear.glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        } else {
+            Rectangle().fill(.ultraThinMaterial)
+        }
+    }
+    func body(content: Content) -> some View {
+        content.background {
+            ZStack {
+                if reduceTransparency || contrast == .increased {
+                    SurfPalette(dark: scheme == .dark).solid
+                } else {
+                    SidebarBackdrop().allowsHitTesting(false)
+                }
+                surface.padding(.horizontal, 8).padding(.vertical, 8).allowsHitTesting(false)
+            }.ignoresSafeArea(.container, edges: [.top, .bottom])
+        }
+    }
+}
+
+private struct SidebarBackdrop: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = .sidebar
+        view.blendingMode = .behindWindow
+        view.state = .active
+        return view
+    }
+    func updateNSView(_ view: NSVisualEffectView, context: Context) {}
 }
 
 struct DesktopPeriodPicker: View {

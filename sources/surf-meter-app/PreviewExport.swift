@@ -125,16 +125,18 @@ enum PreviewExport {
         }
         panel.orderOut(nil)
         let desktop = NSWindow(contentRect: NSRect(x: -10000, y: -10000, width: 1100, height: 780), styleMask: [.titled], backing: .buffered, defer: false)
+        DesktopController.configureSurface(desktop)
         let wasOpaque = desktop.isOpaque
         let background = desktop.backgroundColor
         desktop.contentView = NSHostingView(rootView: DesktopRoot(model: model))
         desktop.orderFrontRegardless()
         RunLoop.main.run(until: Date().addingTimeInterval(0.2))
-        guard desktop.isOpaque == wasOpaque, desktop.backgroundColor == background,
+        guard !wasOpaque, background?.alphaComponent == 0,
+              desktop.isOpaque == wasOpaque, desktop.backgroundColor == background,
               desktop.contentView?.layer?.masksToBounds != true else {
             fputs("Menu surface styling leaked into desktop window.\n", stderr); exit(1)
         }
-        print("PASS: desktop retains its native backing; menu corner policy is scoped")
+        print("PASS: desktop retains clear backing for sidebar glass; menu corner policy is scoped")
         desktop.orderOut(nil)
     }
     private static func capture<V: View>(_ view: V, size: NSSize? = nil, dark: Bool, destination: URL) throws {

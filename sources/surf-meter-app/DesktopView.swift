@@ -10,6 +10,7 @@ struct DesktopView: View {
     @ViewState private var search = ""
     @ViewState private var platform: String?
     @ViewState private var onboarding = false
+    @ViewState private var hoveredPage: String?
     @FocusState private var searchFocused: Bool
     @Environment(\.colorScheme) private var scheme
     private var palette: SurfPalette { SurfPalette(dark: scheme == .dark) }
@@ -39,7 +40,6 @@ struct DesktopView: View {
     var body: some View {
         HStack(spacing: 0) {
             sidebar.frame(width: 215)
-            Divider()
             ScrollView {
                 VStack(alignment: .leading, spacing: 25) {
                     if page == "preferences" {
@@ -51,15 +51,15 @@ struct DesktopView: View {
                     } else { activity }
                 }.padding(32).frame(maxWidth: .infinity, alignment: .leading)
             }
+            .background {
+                ZStack {
+                    (scheme == .dark ? Color(hex: 0x121D30) : Color(hex: 0xEEF3FB))
+                    LinearGradient(colors: [palette.accent.opacity(0.09), .clear], startPoint: .topLeading, endPoint: .bottomTrailing)
+                }.ignoresSafeArea(.container, edges: .top)
+            }
         }
         .foregroundStyle(palette.text)
         .modifier(DesktopGlassButtons())
-        .background {
-            ZStack {
-                (scheme == .dark ? Color(hex: 0x121D30) : Color(hex: 0xEEF3FB))
-                LinearGradient(colors: [palette.accent.opacity(0.09), .clear], startPoint: .topLeading, endPoint: .bottomTrailing)
-            }.ignoresSafeArea(.container, edges: .top)
-        }
         .onAppear { date = model.now; onboarding = model.needsOnboarding }
         .sheet(isPresented: $onboarding) { OnboardingView(model: model) { onboarding = false }
             .modifier(SurfAppearance(mode: model.preferences.appearance)) }
@@ -81,14 +81,20 @@ struct DesktopView: View {
             }
                 .disabled(!model.preferences.enabled).controlSize(.small)
             Button("Setup walkthrough") { onboarding = true }.buttonStyle(.plain).font(.system(size: 11)).padding(.top, 12)
-        }.padding(22).padding(.top, 16).background(.ultraThinMaterial)
+        }.padding(22).padding(.top, 16)
+            .modifier(DesktopSidebarSurface())
     }
     private func nav(_ title: String, symbol: String, value: String) -> some View {
         Button { page = value } label: {
             Label(title, systemImage: symbol).font(.system(size: 13, weight: page == value ? .semibold : .regular))
+                .foregroundStyle(page == value ? palette.accent : palette.text)
                 .frame(maxWidth: .infinity, alignment: .leading).padding(11)
-                .background(page == value ? palette.selected : .clear, in: RoundedRectangle(cornerRadius: 12))
+                .background(page == value ? palette.selected : hoveredPage == value ? palette.control : .clear, in: Capsule())
+                .overlay(Capsule().strokeBorder(page == value ? .white.opacity(scheme == .dark ? 0.18 : 0.65) : .clear, lineWidth: 1))
+                .contentShape(Capsule())
         }.buttonStyle(.plain)
+            .onHover { hoveredPage = $0 ? value : nil }
+            .accessibilityAddTraits(page == value ? .isSelected : [])
     }
     private var activity: some View {
         VStack(alignment: .leading, spacing: 24) {

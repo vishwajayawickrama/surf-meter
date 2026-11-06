@@ -14,10 +14,7 @@ import SwiftUI
         if window == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1100, height: 780),
                                   styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
-            window.title = "SurfMeter"
-            window.titleVisibility = .hidden
-            window.titlebarAppearsTransparent = true
-            window.isMovableByWindowBackground = true
+            Self.configureSurface(window)
             window.minSize = NSSize(width: 900, height: 680)
             window.isReleasedWhenClosed = false
             window.delegate = self
@@ -28,6 +25,14 @@ import SwiftUI
         NSApp.setActivationPolicy(.regular)
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+    static func configureSurface(_ window: NSWindow) {
+        window.title = "SurfMeter"
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.isMovableByWindowBackground = true
+        window.isOpaque = false
+        window.backgroundColor = .clear
     }
     func windowWillClose(_ notification: Notification) {
         model?.checkpoint()
