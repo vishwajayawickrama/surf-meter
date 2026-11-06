@@ -21,7 +21,7 @@ import SwiftUI
             window.minSize = NSSize(width: 900, height: 680)
             window.isReleasedWhenClosed = false
             window.delegate = self
-            window.contentView = NSHostingView(rootView: DesktopRoot(model: model))
+            window.contentView = DesktopHostingView(rootView: DesktopRoot(model: model))
             window.center()
             self.window = window
         }
@@ -55,4 +55,8 @@ import SwiftUI
 struct DesktopRoot: View {
     @ObservedObject var model: AppModel
     var body: some View { DesktopView(model: model).modifier(SurfAppearance(mode: model.preferences.appearance)) }
+}
+
+final class DesktopHostingView: NSHostingView<DesktopRoot> {
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }

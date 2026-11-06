@@ -10,6 +10,7 @@ struct DesktopView: View {
     @ViewState private var search = ""
     @ViewState private var platform: String?
     @ViewState private var onboarding = false
+    @FocusState private var searchFocused: Bool
     @Environment(\.colorScheme) private var scheme
     private var palette: SurfPalette { SurfPalette(dark: scheme == .dark) }
     private var day: String { LocalDay.key(date, calendar: model.calendar) }
@@ -52,6 +53,7 @@ struct DesktopView: View {
             }
         }
         .foregroundStyle(palette.text)
+        .modifier(DesktopGlassButtons())
         .background {
             ZStack {
                 (scheme == .dark ? Color(hex: 0x121D30) : Color(hex: 0xEEF3FB))
@@ -74,7 +76,9 @@ struct DesktopView: View {
             Label(model.demo ? "Sample activity" : !model.preferences.enabled ? "Recording is off" : model.preferences.paused ? "Recording paused" : model.hasConnection ? "Chrome connected" : "Chrome disconnected", systemImage: "circle.fill")
                 .font(.system(size: 11)).foregroundStyle(palette.muted)
             Text("Your activity stays on this Mac.").font(.system(size: 11)).foregroundStyle(palette.muted).padding(.bottom, 10)
-            Button(model.preferences.paused ? "Resume tracking" : "Pause tracking") { model.changePreferences { $0.paused.toggle() } }
+            Button { model.changePreferences { $0.paused.toggle() } } label: {
+                Text(model.preferences.paused ? "Resume tracking" : "Pause tracking").foregroundStyle(palette.text)
+            }
                 .disabled(!model.preferences.enabled).controlSize(.small)
             Button("Setup walkthrough") { onboarding = true }.buttonStyle(.plain).font(.system(size: 11)).padding(.top, 12)
         }.padding(22).padding(.top, 16).background(.ultraThinMaterial)
@@ -94,13 +98,19 @@ struct DesktopView: View {
                     Text(model.demo ? "Preview · sample data" : "Recorded browser time, by website.").font(.callout).foregroundStyle(palette.muted)
                 }
                 Spacer()
-                Picker("Period", selection: $weekly) { Text("Daily").tag(false); Text("Weekly").tag(true) }.pickerStyle(.segmented).frame(width: 180)
+                DesktopPeriodPicker(weekly: $weekly)
             }
             HStack {
-                DatePicker(weekly ? "Week ending" : "Date", selection: $date, in: ...model.now, displayedComponents: .date).datePickerStyle(.field).fixedSize()
+                DesktopDateButton(date: $date, latest: model.now, weekly: weekly)
                 Spacer()
-                if !weekly { Button("Yesterday") { date = model.calendar.date(byAdding: .day, value: -1, to: model.now) ?? model.now } }
-                Button("Today") { date = model.now }
+                if !weekly {
+                    Button { date = model.calendar.date(byAdding: .day, value: -1, to: model.now) ?? model.now } label: {
+                        Label("Yesterday", systemImage: "clock.arrow.circlepath").font(.system(size: 13, weight: .medium)).foregroundStyle(palette.text).padding(.vertical, 3)
+                    }
+                }
+                Button { date = model.now } label: {
+                    Label("Today", systemImage: "calendar.badge.clock").font(.system(size: 13, weight: .medium)).foregroundStyle(palette.text).padding(.vertical, 3)
+                }
             }.font(.callout)
             if let error = model.storageError { issue(error) { model.retryStorage() } }
             if let error = model.bridgeError { issue(error) { model.retryBridge() } }
@@ -127,7 +137,17 @@ struct DesktopView: View {
             }.padding(24).background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22))
             HStack {
                 Text("Websites").font(.title3.weight(.semibold)); Spacer()
-                TextField("Search websites", text: $search).textFieldStyle(.roundedBorder).frame(width: 210).accessibilityLabel("Search websites")
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass").foregroundStyle(palette.muted)
+                    TextField("Search websites", text: $search, prompt: Text("Search websites").foregroundStyle(palette.muted)).textFieldStyle(.plain)
+                        .focused($searchFocused).accessibilityLabel("Search websites")
+                    if !search.isEmpty {
+                        Button { search = "" } label: { Image(systemName: "xmark.circle.fill").foregroundStyle(palette.muted) }
+                            .buttonStyle(.plain).accessibilityLabel("Clear website search")
+                    }
+                }.font(.system(size: 12)).padding(.horizontal, 13).padding(.vertical, 10)
+                    .frame(width: 220).modifier(DesktopGlassSurface())
+                    .overlay(Capsule().strokeBorder(searchFocused ? palette.accent.opacity(0.65) : .clear, lineWidth: 2))
             }
             VStack(spacing: 0) {
                 HStack { Text("WEBSITE"); Spacer(); Text(weekly ? "7 DAYS / AVERAGE" : "TIME / PREVIOUS DAY"); Text("CHANGE").frame(width: 120, alignment: .trailing) }

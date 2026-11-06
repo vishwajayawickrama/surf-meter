@@ -55,10 +55,11 @@ struct OnboardingView: View {
                 if step > 0 { Button("Back") { step -= 1 } }
                 Button(step == 3 ? "Open SurfMeter" : "Continue") {
                     if step < 3 { step += 1 } else { model.completeOnboarding(); finish() }
-                }.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction)
+                }.modifier(DesktopGlassProminentButton()).keyboardShortcut(.defaultAction)
                     .disabled(mountedImage && step == 1)
             }
         }.padding(32).frame(width: 580, height: 650)
+            .modifier(DesktopGlassButtons())
             .foregroundStyle(SurfPalette(dark: scheme == .dark).text)
             .background(scheme == .dark ? Color(hex: 0x182337) : Color(hex: 0xF3F6FC))
     }

@@ -107,7 +107,7 @@ struct BrowserSetupView: View {
             Text("2. Select the ChromeExtension folder just revealed, then paste its extension ID below to register the local connection.").font(.callout)
             TextField("32-letter extension ID", text: $extensionID).textFieldStyle(.roundedBorder).accessibilityLabel("Chrome extension ID")
             Button("Connect Chrome") { model.registerChrome(extensionID.trimmingCharacters(in: .whitespacesAndNewlines)) }
-                .buttonStyle(.bordered).disabled(model.demo)
+                .disabled(model.demo)
             if let message = model.setupMessage { Text(message).font(.caption).foregroundStyle(.secondary).textSelection(.enabled) }
             Text("3. Open a normal web page in Chrome, then click the SurfMeter extension button. Once connected, enable recording below.").font(.callout)
             Toggle("Record eligible Chrome activity", isOn: Binding(get: { model.preferences.enabled }, set: { value in model.changePreferences { $0.enabled = value } }))
