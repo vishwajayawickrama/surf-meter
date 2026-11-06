@@ -153,3 +153,9 @@ The app and bundled Chrome extension are installed and connected on the developm
 ### Prototype appearance follow-up — 2026-11-06
 
 Fixed live panel appearance switching with a window-scoped AppKit bridge, restored prototype typography/layout/charts/vector marks, and refreshed native previews plus setup annotations. The isolated same-panel theme regression and 20 Swift tests pass. No acceptance gate for Safari, distribution, or full browser/lifecycle accuracy is closed by this UI work.
+
+### Functional/visual audit follow-up — 2026-11-06
+
+Added [QA audit evidence and handoff](QA-AUDIT.md) plus a repeatable audit script. Corrected retention persistence, unknown-baseline comparisons, bridge retry wiring, equal-time wording, tiny-duration progress, recording-off status, and weekly labels/averages. Automated/core/model/integration/theme/package checks pass. Native interaction was initially blocked by the locked Mac, then resumed: 41 actual sample-window assertions passed. Corrected hourly accessibility labels and restored paired detail statistics plus weekly labels/averages. Next action: inspect the installed menu panel, then complete the remaining real-browser and accessibility matrix before claiming every acceptance gate passes. All five implementation tasks retain their open release gates.
+
+Final storage-safety follow-up: reproduced the duplicate-writer startup bug in disposable input, added an exclusive activity lease before Core Data opens, and extended recording integration to check duplicate rejection and crash/reopen/helper recovery. This is separate from production crash-loss/performance certification.

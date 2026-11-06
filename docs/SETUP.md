@@ -146,7 +146,7 @@ Return to the dashboard or click the **gear** in the footer. Scroll Preferences 
 | Control | What to do | Expected behavior |
 | --- | --- | --- |
 | Launch at login | Optionally enable it. | SurfMeter uses the macOS login-item service. If it requests approval, follow the message to System Settings → Login Items. This development build may report signing/location errors; check the message rather than assuming registration worked. |
-| Appearance | Choose System, Light, or Dark. | System follows macOS. Explicit choices apply to SurfMeter. |
+| Appearance | Toggle **Dark appearance** on for Dark, off for Light, or choose **Use system**. | System follows macOS; explicit choices apply immediately to SurfMeter’s open panel. |
 | Keep activity | Choose 7, 30, or 90 days. | Default is 30 days. Shortening retention removes older aggregates; it cannot restore already-expired records. |
 | Excluded websites | Enter a domain such as `example.com` and choose Add. | Future matching domain/subdomain activity is excluded. Recognized platform aliases are grouped. Existing totals remain. Use the row's × control to remove an exclusion. |
 | Delete all activity | Choose the button, then confirm in the dialog. | Stored activity is cleared; preferences remain. Cancel keeps the records. If recording remains enabled, new activity can accumulate afterward. |

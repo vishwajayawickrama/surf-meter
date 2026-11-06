@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import SurfMeterCore
 
 @MainActor
 enum PreviewExport {
@@ -11,6 +12,8 @@ enum PreviewExport {
                 ("yesterday", false, true, nil, .activity),
                 ("weekly", true, false, nil, .activity),
                 ("detail", false, false, "youtube.com", .activity),
+                ("detail-weekly", true, false, "youtube.com", .activity),
+                ("detail-yesterday", false, true, "youtube.com", .activity),
                 ("preferences", false, false, nil, .preferences),
                 ("setup", false, false, nil, .setup)
             ] {
@@ -19,7 +22,7 @@ enum PreviewExport {
                     model.changePreferences { $0.appearance = dark ? "dark" : "light" }
                     let view = DashboardView(model: model, weekly: weekly, yesterday: yesterday, platform: platform, opaqueBackground: true)
                         .modifier(SurfAppearance(mode: model.preferences.appearance))
-                    try capture(view, size: NSSize(width: 390, height: screen == .activity ? (platform != nil ? 620 : weekly ? 766 : 746) : 690), dark: dark,
+                    try capture(view, size: NSSize(width: 390, height: screen == .activity ? (platform != nil ? 720 : weekly ? 766 : 746) : 690), dark: dark,
                                 destination: directory.appendingPathComponent("native-\(name)-\(dark ? "dark" : "light")@2x.png"))
                 }
             }
@@ -40,6 +43,38 @@ enum PreviewExport {
             FileHandle.standardError.write(Data("Native preview rendering failed.\n".utf8)); exit(1)
         }
     }
+    static func renderAudit(model: AppModel, directory: URL) {
+        precondition(model.demo)
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            for (name, current, previous, known) in [
+                ("empty", 0.0, 0.0, false), ("missing-yesterday", 61, 0, false),
+                ("lower", 60, 120, true), ("equal", 120, 120, true),
+                ("higher", 180, 120, true), ("zero-yesterday", 60, 0, true),
+                ("yesterday-only", 0, 120, true), ("subminute", 0.5, 1, true)
+            ] {
+                var ledger = UsageLedger()
+                ledger.add([.init(key: .init(day: model.today, hour: 9, platform: "youtube.com"), seconds: current), .init(key: .init(day: model.yesterday, hour: 10, platform: "youtube.com"), seconds: previous)])
+                if known { ledger.mark(day: model.yesterday, reason: "recorded") }
+                else if name == "missing-yesterday" { ledger.mark(day: model.yesterday, reason: "partial") }
+                model.replacePreviewActivity(ledger)
+                for dark in [false, true] {
+                    model.changePreferences { $0.appearance = dark ? "dark" : "light"; $0.enabled = name != "empty" }
+                    let view = DashboardView(model: model, opaqueBackground: true).modifier(SurfAppearance(mode: model.preferences.appearance))
+                    try capture(view, size: NSSize(width: 390, height: 746), dark: dark, destination: directory.appendingPathComponent("\(name)-\(dark ? "dark" : "light").png"))
+                }
+            }
+            let firstRunDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("surfmeter-first-run-\(UUID().uuidString)")
+            defer { try? FileManager.default.removeItem(at: firstRunDirectory) }
+            let fresh = AppModel(verificationDirectory: firstRunDirectory, startsServices: false)
+            for dark in [false, true] {
+                fresh.changePreferences { $0.appearance = dark ? "dark" : "light" }
+                let view = DashboardView(model: fresh, opaqueBackground: true).modifier(SurfAppearance(mode: fresh.preferences.appearance))
+                try capture(view, size: NSSize(width: 390, height: 746), dark: dark, destination: directory.appendingPathComponent("first-run-\(dark ? "dark" : "light").png"))
+            }
+            print("Rendered 16 edge-case fixture screens and 2 genuine isolated first-run screens.")
+        } catch { fputs("Audit rendering failed: \(error)\n", stderr); exit(1) }
+    }
     static func verifyAppearance(model: AppModel) {
         let probe = AppearanceProbe()
         // ObservedObject ensures the modifier is recomputed with preferences.
@@ -47,7 +82,10 @@ enum PreviewExport {
         let panel = NSPanel(contentRect: NSRect(x: -10000, y: -10000, width: 390, height: 690), styleMask: [.borderless], backing: .buffered, defer: false)
         panel.contentView = host; panel.orderFrontRegardless()
         model.screen = .preferences
-        for mode in ["light", "dark", "light", "dark", "system"] {
+        let originalAppearance = NSApp.appearance
+        defer { NSApp.appearance = originalAppearance }
+        for (mode, systemDark) in [("light", true), ("dark", false), ("light", false), ("dark", true), ("system", true), ("system", false)] {
+            NSApp.appearance = NSAppearance(named: systemDark ? .darkAqua : .aqua)
             model.changePreferences { $0.appearance = mode }
             RunLoop.main.run(until: Date().addingTimeInterval(0.2))
             let expected: NSAppearance.Name = mode == "system" ? NSApp.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua])! : mode == "dark" ? .darkAqua : .aqua
@@ -56,7 +94,7 @@ enum PreviewExport {
                   model.screen == .preferences else {
                 fputs("Appearance transition failed: \(mode)\n", stderr); exit(1)
             }
-            print("PASS same open panel: \(mode), AppKit + SwiftUI agree")
+            print("PASS same open panel: \(mode), simulated system \(systemDark ? "dark" : "light"), AppKit + SwiftUI agree")
         }
         panel.orderOut(nil)
     }

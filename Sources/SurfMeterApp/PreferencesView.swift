@@ -33,9 +33,17 @@ struct PreferencesView: View {
             }.buttonStyle(.plain)
             section("YOUR DATA").padding(.top, 18)
             setting("Keep daily totals", subtitle: "Older activity is removed automatically.") {
-                Picker("Keep daily totals", selection: Binding(get: { model.preferences.retention }, set: { value in model.changePreferences { $0.retention = value } })) {
-                    Text("7 days").tag(7); Text("30 days").tag(30); Text("90 days").tag(90)
-                }.labelsHidden().frame(width: 88).controlSize(.small)
+                Menu {
+                    ForEach([7, 30, 90], id: \.self) { days in
+                        Button { model.changePreferences { $0.retention = days } } label: {
+                            if days == model.preferences.retention { Label("\(days) days", systemImage: "checkmark") }
+                            else { Text("\(days) days") }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 6) { Text("\(model.preferences.retention) days"); Image(systemName: "chevron.down").font(.system(size: 8)).accessibilityHidden(true) }
+                        .font(.system(size: 10)).padding(.horizontal, 9).padding(.vertical, 7).background(palette.control, in: Capsule())
+                }.menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).foregroundStyle(palette.text).fixedSize().accessibilityLabel("Keep daily totals").accessibilityValue("\(model.preferences.retention) days")
             }
             VStack(alignment: .leading, spacing: 9) {
                 Text("Excluded websites").font(.system(size: 11, weight: .medium))

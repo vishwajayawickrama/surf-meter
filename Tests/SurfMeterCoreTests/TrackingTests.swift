@@ -127,6 +127,17 @@ struct TrackingTests {
         #expect(sum(slices) == 2)
         #expect(slices.map(\.key.hour) == [1, 3])
     }
+    @Test func repeatedAutumnHourKeepsSecondsInOneLocalBucket() {
+        var calendar = self.calendar
+        calendar.timeZone = TimeZone(identifier: "America/New_York")!
+        let start = ISO8601DateFormatter().date(from: "2026-11-01T05:59:59Z")!
+        let slices = LocalDay.split(start: start, seconds: 2, platform: "example.org", calendar: calendar)
+        var ledger = UsageLedger(); ledger.add(slices)
+        #expect(sum(slices) == 2)
+        #expect(ledger.buckets.count == 1)
+        #expect(ledger.total(days: ["2026-11-01"], hour: 1) == 2)
+        #expect(LocalDay.recent(2, now: start.addingTimeInterval(2), calendar: calendar) == ["2026-10-31", "2026-11-01"])
+    }
     @MainActor @Test func storageSurvivesReopenRetentionAndDeletion() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("sm-store-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: directory) }

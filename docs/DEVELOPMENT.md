@@ -28,7 +28,7 @@ Click the waves icon in the menu bar. Recording is **off until setup is complete
 
 For the full walkthrough with numbered screenshot callouts, expected results, and troubleshooting, see [Set up SurfMeter](SETUP.md).
 
-1. Open **Browser setup** using the globe icon in SurfMeter. Choose **Show Chrome extension folder**.
+1. Open **Browser setup** via **gear → Connected browsers** in SurfMeter. Choose **Show Chrome extension folder**.
 2. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select that `ChromeExtension` folder. The repository's `extensions/chrome/dist` also works for iterative development.
 3. Copy Chrome's 32-letter extension ID into SurfMeter and choose **Connect Chrome**. This installs the per-user native helper registration with that exact allowed origin. No wildcard origins or administrator access are used.
 4. Open a normal web page in Chrome and click the SurfMeter extension button. Once connected, enable **Record eligible Chrome activity** in SurfMeter. This development path is intended for a single Chrome profile until multi-profile arbitration is validated.
@@ -130,3 +130,16 @@ The prototype follows an Apple Liquid Glass direction: a translucent floating po
 This is a browser approximation of the material for UI review. The native macOS implementation should adopt Apple's system Liquid Glass APIs where supported, with an appropriate fallback on older macOS versions. See [Apple's materials guidance](https://developer.apple.com/design/human-interface-guidelines/materials).
 
 Appearance verification uses an isolated demo model and one persistent NSPanel, checking Light → Dark → Light → Dark → System against both AppKit effective appearance and the SwiftUI environment. It does not modify normal preferences or activity. Manual display/accessibility testing remains necessary.
+
+
+## Repeatable functional and visual audit
+
+```sh
+./scripts/audit-native.sh
+# Sample-only window for pointer/keyboard checks; never opens normal activity:
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --ui-audit
+```
+
+The audit script uses temporary databases and a unique temporary preferences suite, which is removed afterward. `--verify-model` checks app-level persistence and recovery; `--verify-appearance` now checks explicit and System modes against both simulated system appearances. `--render-audit-previews DIRECTORY` writes comparison edge cases and genuine isolated first-run screens. Normal browsing history is never seeded or cleared by these commands. See [QA audit](QA-AUDIT.md) for completed evidence and remaining manual checks.
+
+Only one service-enabled app may own an activity directory. The app acquires `activity.lock` (mode 0600) before opening Core Data; a duplicate exits with status 75. `bridge.lock` separately protects the socket endpoint. The OS releases both locks if the process exits or crashes; do not delete a lock file to bypass an active instance. The recording integration check now exercises duplicate rejection and crash/restart recovery in a temporary directory.

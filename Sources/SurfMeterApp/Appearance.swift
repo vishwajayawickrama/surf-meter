@@ -37,7 +37,7 @@ struct SurfPalette {
     var green: Color { Color(hex: dark ? 0x83DAB1 : 0x18704E) }
     var red: Color { Color(hex: dark ? 0xFFA69B : 0xB3433E) }
     var accent: Color { Color(hex: dark ? 0x94B8FF : 0x326DF1) }
-    func delta(_ seconds: Double) -> Color { abs(seconds) < 0.001 ? muted : seconds < 0 ? green : red }
+    func delta(_ seconds: Double) -> Color { abs(seconds) < 0.000_001 ? muted : seconds < 0 ? green : red }
 }
 extension Color {
     init(hex: UInt32) { self.init(red: Double((hex >> 16) & 255)/255, green: Double((hex >> 8) & 255)/255, blue: Double(hex & 255)/255) }

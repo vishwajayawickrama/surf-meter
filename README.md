@@ -6,7 +6,7 @@
 
 A quiet place in your Mac’s menu bar for where your time goes.
 
-[Setup guide](docs/SETUP.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
+[Setup guide](docs/SETUP.md) · [Functional audit](docs/QA-AUDIT.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
 </div>
 

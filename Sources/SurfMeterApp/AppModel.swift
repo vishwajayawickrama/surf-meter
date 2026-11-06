@@ -18,6 +18,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var ledger = UsageLedger()
     @Published private(set) var preferences: Preferences
     @Published private(set) var snapshots: [Browser: BrowserSnapshot] = [:]
+    @Published private(set) var instanceBlocked = false
     @Published var storageError: String?
     @Published var setupMessage: String?
     @Published var bridgeError: String?
@@ -31,6 +32,8 @@ final class AppModel: ObservableObject {
     private let classifier: DomainClassifier?
     private var engine = TrackingEngine()
     private var store: UsageStore?
+    private var activityLease: ActivityLease?
+    private let usesActivityLease: Bool
     private var eligibility = TrackingEligibility()
     private var timer: Timer?
     private var observers: [NSObjectProtocol] = []
@@ -54,15 +57,17 @@ final class AppModel: ObservableObject {
     var todayTotal: Double { ledger.total(days: [today]) }
     var menuLabel: String { preferences.paused ? "Paused" : UsageFormat.duration(todayTotal) }
     var hasConnection: Bool { snapshots[.chrome].map { ProcessInfo.processInfo.systemUptime - $0.received < 3 } ?? false }
-    var colorScheme: ColorScheme? { preferences.appearance == "light" ? .light : preferences.appearance == "dark" ? .dark : nil }
 
-    init(demo: Bool = false) {
+    init(demo: Bool = false, verificationDirectory: URL? = nil, verificationDefaults: UserDefaults? = nil, startsServices: Bool = true) {
         self.demo = demo
+        usesActivityLease = !demo && startsServices
         let args = CommandLine.arguments
-        let isolated = args.firstIndex(of: "--bridge-directory").flatMap { args.indices.contains($0 + 1) ? URL(fileURLWithPath: args[$0 + 1]) : nil }
+        let isolated = verificationDirectory ?? args.firstIndex(of: "--bridge-directory").flatMap { args.indices.contains($0 + 1) ? URL(fileURLWithPath: args[$0 + 1]) : nil }
         simulation = isolated != nil && args.contains("--simulate-chrome")
+        precondition(startsServices || isolated != nil || demo, "Services may be disabled only in an isolated verification model")
         bridgeDirectory = isolated ?? LocalBridge.defaultDirectory
-        defaults = demo || isolated != nil ? nil : .standard
+        precondition(verificationDefaults == nil || verificationDirectory != nil, "Verification preferences require an isolated directory")
+        defaults = demo ? nil : isolated != nil ? verificationDefaults : .standard
         preferences = defaults?.data(forKey: "preferences").flatMap { try? JSONDecoder().decode(Preferences.self, from: $0) } ?? Preferences()
         classifier = try? DomainClassifier.bundled()
         if simulation { preferences.enabled = true }
@@ -72,14 +77,19 @@ final class AppModel: ObservableObject {
             return
         }
         do {
+            if usesActivityLease { activityLease = try ActivityLease(directory: bridgeDirectory) }
             store = try UsageStore(directory: bridgeDirectory.appendingPathComponent("Data"))
             ledger = try store!.load()
             prune()
             ledger.mark(day: today, reason: "partial")
             dirty = true
+        } catch ActivityLease.Failure.inUse {
+            instanceBlocked = true
+            return
         } catch { storageError = "Activity storage could not open. Recording is stopped. Quit and reopen, or check disk access." }
         loginEnabled = SMAppService.mainApp.status == .enabled
         refreshEligibility()
+        guard startsServices else { return }
         if !simulation { installObservers() }
         startBridge()
         pulse()
@@ -243,7 +253,9 @@ final class AppModel: ObservableObject {
     }
     private func prune() {
         let cutoff = LocalDay.recent(max(7, preferences.retention), now: now, calendar: calendar).first!
+        let counts = (ledger.buckets.count, ledger.coverage.count)
         ledger.retain(since: cutoff)
+        if counts.0 != ledger.buckets.count || counts.1 != ledger.coverage.count { dirty = true }
     }
     func deleteActivity() {
         record()
@@ -275,9 +287,19 @@ final class AppModel: ObservableObject {
         } catch ProtocolError.invalidOrigin { setupMessage = "Paste the 32-letter extension ID from Chrome." }
         catch { setupMessage = "Could not register Chrome. An existing SurfMeter registration may need removal; see the development guide." }
     }
+    func replacePreviewActivity(_ ledger: UsageLedger) {
+        precondition(demo, "Preview fixtures must never replace recorded activity")
+        self.ledger = ledger
+    }
+    func retryBridge() {
+        guard !demo, bridgeError != nil else { return }
+        bridgeError = nil
+        startBridge()
+    }
     func retryStorage() {
         if store == nil {
             do {
+                if usesActivityLease && activityLease == nil { activityLease = try ActivityLease(directory: bridgeDirectory) }
                 let reopened = try UsageStore(directory: bridgeDirectory.appendingPathComponent("Data"))
                 ledger = try reopened.load(); store = reopened
                 storageError = nil; engine.reset(); snapshots.removeAll()

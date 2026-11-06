@@ -9,7 +9,7 @@ This is an implemented development app, not a completed release. Synthetic input
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Native build | Pass | `./scripts/build-native.sh`; SwiftUI app, shared core, host, bundled PSL, bundled Chrome extension. |
-| Swift tests | Pass | 20 tests with `./scripts/test-native.sh`. Protocol privacy/framing plus accounting, eligibility, public suffixes/aliases, boundary cases, aggregate queries, persistent reopen/retention/deletion, and invalid store location. |
+| Swift tests | Pass | 21 tests with `./scripts/test-native.sh`. Protocol privacy/framing plus accounting, eligibility, public suffixes/aliases, boundary cases, aggregate queries, persistent reopen/retention/deletion, and invalid store location. |
 | TypeScript and extension tests | Pass | Strict TypeScript 5.9.3 compile and three Node tests. Browser APIs are mocked; no real browser privacy claim follows. |
 | Native bridge | Pass | `python3 scripts/verify-native-bridge.py`: actual app/helper/socket, framing, origin check, duplicate ordering, rejection, reconnect, app loss, directory/socket permissions. Synthetic hostnames only. |
 | Native recording into disk | Pass | `python3 scripts/verify-recording.py`: actual app/helper/model/engine/Core Data database, about 12 synthetic eligible seconds under YouTube, then 10 seconds of unavailable snapshots add no time. Isolated data/preferences; simulated native eligibility. |
@@ -27,16 +27,16 @@ The preview exporter uses offscreen AppKit-hosted SwiftUI windows and captures t
 | AC-02/03 foreground and no double count | Native eligibility and transition tests pass | Real apps, windows, browsers/profiles; Safari not implemented. |
 | AC-04 idle | Threshold clipping/resume logic tests pass | Actual three-minute no-input experiment. |
 | AC-05 sleep/lock | Native notifications and fail-closed engine gates implemented | Actual sleep, lock, unlock, startup-locked, fast user switching. Supplemental lock signals are not certified public API contracts. |
-| AC-06/07/08 comparisons | Seconds-based formatting/direction and zero-yesterday logic checked | Native interaction checks with seeded lower/equal/higher totals. |
-| AC-09 empty state | Native view implemented; normal app starts without sample data | First-run interaction inspection. |
+| AC-06/07/08 comparisons | Seconds-based tests plus native lower/equal/higher/missing/zero/sub-minute renders; sample platform comparisons inspected | Real recorded coverage across local days remains part of browser validation. |
+| AC-09 empty state | Genuine isolated first-run renders and actual sample deletion → empty-state interaction pass | Clean-install onboarding certification remains open. |
 | AC-10 midnight | Hour/day split plus accelerated disk verification pass | Real session across local midnight. |
 | AC-11 domains/exclusions/private | PSL wildcards/exceptions, aliases, boundaries, exclusions, private normalization tests pass | Real private-window/focus/permission behavior for each advertised browser. |
 | AC-12 restart/pause | Preferences persist, disk reopen tested, no clock backfill | Real pause/relaunch/resume; native helper automatic app launch/recovery. |
 | AC-13 permission loss | Unavailable and freshness gates implemented/tested | Revoke tabs/native integration while browsing. |
-| AC-14 deletion | Store deletion/reopen test and explicit UI confirmation implemented | Actual confirmation/cancel/relaunch interaction. |
+| AC-14 deletion | Durable model deletion/reopen and actual sample UI Cancel/Confirm → refreshed totals pass | Runtime save-failure behavior during deletion remains untested. |
 | AC-15 clock/time zone | Monotonic engine/calendar/DST tests pass; app resets on discontinuity | Actual system changes without changing historical day keys. |
 | AC-16 privacy | Versioned strict fields, hostname-only bridge, aggregate-only schema, no payload logs | Inspect production store/logs after real URL/path/query session. |
-| AC-17/18/19 period navigation | Native Daily/Weekly, Yesterday, details, today-only menu label implemented; aggregate query tests and renders inspected | Keyboard/pointer interaction, back-state preservation, weekly/daily/menu consistency. |
+| AC-17/18/19 period navigation | Actual native period/detail/Back interactions and model aggregate/menu consistency pass | Installed menu-only panel attachment is tool-blocked; real-browser totals still require accuracy validation. |
 
 ## Release gates still open
 
@@ -68,3 +68,15 @@ The native panel now uses the approved prototype’s 390-point width, system typ
 `--verify-appearance` passed Light → Dark → Light → Dark → System in the same open NSPanel. It checks window effective appearance, the SwiftUI color scheme, and preservation of the Preferences route. A window-scoped AppKit override replaces presentation-level `preferredColorScheme`; system mode clears the override. The menu bar itself retains macOS appearance. This is an isolated AppKit-hosted regression check, not certification of every accessibility setting or live glass rendering condition. All 20 Swift tests also passed after the UI changes.
 
 The revised build was installed at `/Applications/SurfMeter.app` and relaunched. A before/after check confirmed unchanged saved preferences and preserved aggregate activity; the existing bundled-extension location and native registration were retained.
+
+## Rigorous development audit — 2026-11-06
+
+See [the audit report](QA-AUDIT.md) for findings, evidence, native screenshots, reproduction commands, and pending interaction checks. The repeatable `scripts/audit-native.sh` passes 21 Swift tests (including autumn DST fallback), 3 extension tests, 21 isolated app-model assertions, 6 same-panel appearance transitions, bridge and recording integration, the accelerated ten-minute scenario, and packaging. It also renders 36 native panels/content/edge cases for separate visual review.
+
+The audit fixed idle retention not persisting deletions immediately, missing-baseline comparisons, an incorrectly wired bridge retry action, equal-time wording, tiny-duration progress, disabled-recording status, and weekly display omissions. Six invalid setup commands were also rejected without changing preferences or Chrome registration. An installed-app lock smoke check observed unchanged aggregate seconds across 15 seconds with the lock signal set at both endpoints.
+
+Native computer control initially reported the Mac locked on two attempts. Once available, the isolated native window passed 41 interaction assertions, including the actual theme switch, navigation, retention menu, exclusions, keyboard shortcuts/Return submission, recording controls, and deletion confirmation/cancel. Light/dark live window material was inspected and the hourly accessibility entries corrected. Installed menu-panel placement, full accessibility settings, and the real-browser acceptance matrix remain separate checks.
+
+A final single-writer review found that the existing socket lock did not protect Core Data from a second unconnected model. A new integration assertion reproduced the old behavior: the duplicate remained running until the three-second test timeout. The fix acquires a separate private activity writer lease before opening Core Data and exits duplicate launches with status 75. The normal setup command still runs before the model and does not acquire a store or bridge.
+
+The strengthened restart check continues unavailable input beyond the replacement app's ten-second checkpoint before comparing SQLite totals; it therefore checks a fresh durable save. Duplicate rejection, forced-crash lease release, helper reuse, and no-backfill assertions pass. The installed build was updated afterward: preferences and aggregate history were preserved, and one installed process was verified to own the activity writer lease.
