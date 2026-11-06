@@ -129,6 +129,7 @@ struct DashboardView: View {
                             .background {
                                 if period == item { Capsule().fill(palette.selected).shadow(color: .black.opacity(0.07), radius: 3, y: 1) }
                             }
+                            .contentShape(Rectangle())
                     }.buttonStyle(.plain).accessibilityValue(period == item ? "Selected" : "")
                 }
             }.padding(4).background(Color(hex: colorScheme == .dark ? 0xB9D1FF : 0x6D8DB7).opacity(colorScheme == .dark ? 0.09 : 0.08), in: Capsule())
@@ -141,8 +142,12 @@ struct DashboardView: View {
                 Spacer()
                 if period == .weekly { Text(dateRange).font(.system(size: 9)).foregroundStyle(palette.muted) }
                 if period == .daily {
-                    Button { yesterday.toggle() } label: { Label("Yesterday", systemImage: "clock.arrow.circlepath") }
-                        .font(.system(size: 9)).buttonStyle(.plain).padding(.horizontal, 9).padding(.vertical, 6).background(yesterday ? palette.selected : palette.control, in: Capsule()).accessibilityValue(yesterday ? "Selected; activate to return to today" : "")
+                    Button { yesterday.toggle() } label: {
+                        Label("Yesterday", systemImage: "clock.arrow.circlepath")
+                            .font(.system(size: 9)).padding(.horizontal, 9).padding(.vertical, 6)
+                            .background(yesterday ? palette.selected : palette.control, in: Capsule())
+                            .contentShape(Capsule())
+                    }.buttonStyle(.plain).accessibilityValue(yesterday ? "Selected; activate to return to today" : "")
                 }
             }
             totalBlock

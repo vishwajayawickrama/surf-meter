@@ -85,8 +85,8 @@ import SwiftUI
             panel?.contentView = host
         }
         positionPanel()
-        panel?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+        panel?.makeKeyAndOrderFront(nil)
         installDismissalMonitors()
         if CommandLine.arguments.contains("--menu-audit") {
             print("Audit panel visible: \(panel?.isVisible == true), frame: \(String(describing: panel?.frame))")
@@ -180,6 +180,8 @@ final class MenuHostingView: NSHostingView<MenuPanelRoot> {
     var onSize: ((CGSize) -> Void)?
     private var pending = false
     private var lastSize = CGSize.zero
+    // A click should activate the control even when the panel wasn't key yet.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
     override func invalidateIntrinsicContentSize() {
         super.invalidateIntrinsicContentSize()
         scheduleSizeUpdate()

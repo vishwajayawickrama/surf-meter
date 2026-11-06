@@ -119,3 +119,10 @@ Replaced that container with an AppKit status item and an owned transparent bord
 
 
 Frame evidence: [daily light](media/audit/native-frame/menu-frame-daily-light-2x.png) · [daily dark](media/audit/native-frame/menu-frame-daily-dark-2x.png). These are full native-frame renders with sample activity. The complete local regression audit passed after the replacement, followed by the optimized native-frame audit and an installed-app update that verified unchanged preferences and preserved aggregate totals.
+
+
+## Single-click period controls — 2026-11-06
+
+The user reported having to click Daily/Weekly repeatedly. The plain unselected button had no explicit hit shape across its expanded label. Added a full rectangular hit target inside each segment label. Yesterday's capsule padding/background now belong to the button label too, with a capsule hit shape. The menu hosting view explicitly accepts first mouse events, and opening activates the app before making the panel key.
+
+Verified through native UI controls in a sample-only audit app with a separate bundle identity: eight individual coordinate clicks switched Daily/Weekly on the first click, covering left/right segment edges and top/bottom padding away from the text. Two additional padded-area clicks toggled Yesterday on and off, each with one click. Selection and totals were read after each action. The window-frame audit also verifies the hosting view's first-mouse policy; inactive-app click-through in the actual floating panel remains a separate live acceptance check.

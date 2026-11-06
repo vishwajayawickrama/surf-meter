@@ -31,6 +31,7 @@ import SwiftUI
         let host = MenuHostingView(rootView: MenuPanelRoot(model: model, layout: layout))
         host.sizingOptions = [.intrinsicContentSize]
         host.onSize = { measured = $0 }
+        check(host.acceptsFirstMouse(for: nil), "menu controls accept the first click before activation")
         panel.contentView = host
         panel.orderFrontRegardless()
         defer { panel.orderOut(nil) }
