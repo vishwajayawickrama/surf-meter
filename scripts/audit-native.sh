@@ -15,6 +15,7 @@ APP="$PWD/.build/SurfMeter.app/Contents/MacOS/SurfMeter"
 BIN="$(swift build --disable-sandbox --show-bin-path)"
 "$BIN/SurfMeterVerification"
 ./scripts/package-app.sh
+python3 scripts/verify-dmg.py ".build/SurfMeter-$(cat version.txt)-$(lipo -archs .build/SurfMeter.app/Contents/MacOS/SurfMeter)-development.dmg"
 RENDERS="$(mktemp -d "${TMPDIR:-/private/tmp}/surfmeter-audit-renders.XXXXXX")"
 "$APP" --render-previews "$RENDERS/standard"
 "$APP" --render-audit-previews "$RENDERS/edge-cases"

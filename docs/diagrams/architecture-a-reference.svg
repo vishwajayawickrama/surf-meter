@@ -85,8 +85,8 @@
   <path d="M3 9h18" />
 
 </svg>
-<text x="1152.0" y="568.0" font-family="IBM Plex Sans, Arial, sans-serif" font-size="18.0" font-weight="400" fill="#293442" text-anchor="middle">Menu bar UI</text>
-<text x="1152.0" y="592.0" font-family="IBM Plex Sans, Arial, sans-serif" font-size="14.0" font-weight="400" fill="#596474" text-anchor="middle">SwiftUI · Daily + Weekly</text>
+<text x="1152.0" y="568.0" font-family="IBM Plex Sans, Arial, sans-serif" font-size="18.0" font-weight="400" fill="#293442" text-anchor="middle">App interfaces</text>
+<text x="1152.0" y="592.0" font-family="IBM Plex Sans, Arial, sans-serif" font-size="14.0" font-weight="400" fill="#596474" text-anchor="middle">Menu bar + desktop</text>
 <path d="M154.0 242.0 L270.0 242.0" fill="none" stroke="#526171" stroke-width="1.5" marker-end="url(#arrow)"/>
 <text x="212.0" y="232.0" font-family="IBM Plex Sans, Arial, sans-serif" font-size="13.0" font-weight="400" fill="#526171" text-anchor="middle">Native messaging</text>
 <path d="M154.0 492.0 L270.0 492.0" fill="none" stroke="#526171" stroke-width="1.5" marker-end="url(#arrow)"/>

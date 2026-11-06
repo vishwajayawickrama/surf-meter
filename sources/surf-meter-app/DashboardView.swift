@@ -292,6 +292,9 @@ struct DashboardView: View {
                     .background(palette.control, in: Capsule())
             }.buttonStyle(.plain).keyboardShortcut("p", modifiers: [.command, .shift]).disabled(!model.preferences.enabled)
             Spacer()
+            Button { DesktopController.shared.show(model: model) } label: {
+                Image(systemName: "arrow.up.left.and.arrow.down.right").frame(width: 29, height: 29).background(palette.control, in: Circle())
+            }.buttonStyle(.plain).help("Open detailed view").accessibilityLabel("Open detailed view")
             Button { selectedPlatform = nil; model.screen = model.screen == .preferences ? .activity : .preferences } label: {
                 Image(systemName: "gearshape").font(.system(size: 13)).frame(width: 29, height: 29).background(palette.control, in: Circle())
             }.buttonStyle(.plain).help("Preferences").accessibilityLabel("Preferences")

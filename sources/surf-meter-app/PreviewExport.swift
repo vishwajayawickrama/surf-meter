@@ -7,6 +7,17 @@ enum PreviewExport {
     static func render(model: AppModel, directory: URL) {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            for dark in [false, true] {
+                model.changePreferences { $0.appearance = dark ? "dark" : "light" }
+                for weekly in [false, true] {
+                    try capture(DesktopView(model: model, weekly: weekly).modifier(SurfAppearance(mode: model.preferences.appearance)), size: NSSize(width: 1100, height: 780), dark: dark,
+                                destination: directory.appendingPathComponent("desktop-\(weekly ? "weekly" : "daily")-\(dark ? "dark" : "light")-2x.png"))
+                }
+                for step in 0..<4 {
+                    try capture(OnboardingView(model: model, finish: {}, step: step).modifier(SurfAppearance(mode: model.preferences.appearance)), size: NSSize(width: 580, height: 650), dark: dark,
+                                destination: directory.appendingPathComponent("onboarding-\(step + 1)-\(dark ? "dark" : "light")-2x.png"))
+                }
+            }
             for (name, weekly, yesterday, platform, screen) in [
                 ("daily", false, false, nil as String?, Screen.activity),
                 ("yesterday", false, true, nil, .activity),

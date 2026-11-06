@@ -25,7 +25,7 @@ do {
                   ProcessInfo.processInfo.systemUptime - lastLaunch > 10 else { throw error }
             lastLaunch = ProcessInfo.processInfo.systemUptime
             let launch = Process(); launch.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-            launch.arguments = ["-g", app]; launch.standardOutput = FileHandle.nullDevice; launch.standardError = FileHandle.nullDevice
+            launch.arguments = ["-g", app, "--args", "--background"]; launch.standardOutput = FileHandle.nullDevice; launch.standardError = FileHandle.nullDevice
             try launch.run(); launch.waitUntilExit()
             guard launch.terminationStatus == 0 else { throw ProtocolError.transport }
             for _ in 0..<20 {

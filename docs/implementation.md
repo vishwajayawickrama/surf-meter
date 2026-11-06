@@ -16,6 +16,8 @@ Setup: [annotated guide](setup.md) · Requirements: [SRS](srs.md) · Technical d
 | 4 | Native UI and complete app integration | In progress | 3 |
 | 5 | Validation, packaging, and first release | In progress | 4 |
 
+**Desktop / distribution update — 0.3.0:** Added the shared-model detailed window, Daily/Weekly date browsing, search, platform chart selection, four-step first-run walkthrough and a self-contained development DMG with offline illustrated installation instructions. See [desktop and downloads](distribution.md). Production notarization and release certification remain open.
+
 **Next action:** Run the native app, connect Chrome through Browser setup, and record the real-browser privacy/accuracy/lifecycle matrix in [Validation](validation.md). Install full Xcode for Safari packaging. Complete production identity/signing/notarization and clean-install/performance checks before calling this a release.
 
 ## Task 1 — Native foundation and browser feasibility

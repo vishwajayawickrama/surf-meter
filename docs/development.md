@@ -1,6 +1,6 @@
 # Developing SurfMeter
 
-SurfMeter 0.2 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
+SurfMeter 0.3 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard, detailed desktop window and first-run walkthrough. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
 
 [Annotated setup guide](setup.md) · [Implementation tracker](implementation.md) · [Architecture](architecture.md) · [Current validation](validation.md) · [Browser protocol](browser-protocol.md)
 
@@ -97,7 +97,7 @@ Create a local development archive after a successful build:
 ./scripts/package-app.sh
 ```
 
-This verifies the ad hoc signature and creates `.build/SurfMeter-0.2.0-development.zip`. It is not notarized or a production release. Signing, real-browser accuracy/privacy, supported OS versions, login items, lifecycle, resource limits, and clean installation remain open gates in [Validation](validation.md). Safari does not record anything in this build; see [its prerequisites](../extensions/safari/README.md).
+This verifies the ad hoc signature and creates a development DMG, checksum and ZIP using `version.txt`. Use `SURFMETER_BUILD_CONFIGURATION=release ./scripts/build-native.sh` for an optimized bundle before packaging. See [distribution](distribution.md) for contents, download installation and signing gates. It is not notarized or a production release. Signing, real-browser accuracy/privacy, supported OS versions, login items, lifecycle, resource limits, and clean installation remain open gates in [Validation](validation.md). Safari does not record anything in this build; see [its prerequisites](../extensions/safari/README.md).
 
 ## Remove the development integration
 

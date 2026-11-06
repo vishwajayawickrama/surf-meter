@@ -2,11 +2,15 @@
 
 This guide takes you from a checkout to recorded Chrome activity, then covers preferences, troubleshooting, updates, and removal.
 
-**Current build:** SurfMeter 0.2 development build. Chrome is the implemented adapter; Safari is not enabled. The deployment target is macOS 14+, but only Apple Silicon/macOS 27.2 has been exercised. Browser privacy/accuracy certification and signed, notarized distribution are still pending. See [validation](validation.md).
+**Current build:** SurfMeter 0.3 development build. Chrome is the implemented adapter; Safari is not enabled. The deployment target is macOS 14+, but only Apple Silicon/macOS 27.2 has been exercised. Browser privacy/accuracy certification and signed, notarized distribution are still pending. See [validation](validation.md).
 
 The annotated images use native SurfMeter UI renders and Google's official Chrome example screenshots. SurfMeter renders use sample data or the pre-connection state; greyed-out preview buttons are enabled in the real app. Google's screenshots show **Hello Extensions**, so use your **SurfMeter — Browser Bridge** card and its actual ID instead. Images are available as 2× PNGs and [editable annotation data with SVG exports](media/setup/README.md). Click any image to zoom.
 
 [Build and open](#1-build-and-open-the-app) · [Find setup](#2-open-browser-setup) · [Load Chrome](#3-load-the-chrome-extension) · [Connect](#4-register-the-local-connection) · [Pin](#5-pin-and-reconnect-the-extension) · [Record](#6-enable-recording) · [Preferences](#7-choose-your-preferences) · [Check results](#8-check-that-activity-is-being-recorded) · [Troubleshoot](#troubleshooting) · [Remove](#remove-surfmeter)
+
+## Download without build tools
+
+Use the [DMG installation and first-run guide](distribution.md) for the standalone Apple Silicon development app. The image includes an offline illustrated guide. Install in Applications, then follow the in-app walkthrough to connect Chrome and opt into recording. It is ad hoc signed and not notarized.
 
 ## 1. Build and open the app
 
@@ -57,7 +61,7 @@ cd ../..
 open .build/SurfMeter.app
 ```
 
-**Expected:** the extension builds into `extensions/chrome/dist`, the app is created at `.build/SurfMeter.app`, and a waves icon with a time label appears in your Mac's menu bar. SurfMeter is a menu bar app, so no main window or Dock icon is required. On a fresh setup, recording starts off; existing preferences are retained.
+**Expected:** the extension builds into `extensions/chrome/dist`, the app is created at `.build/SurfMeter.app`, and a waves icon with a time label appears in your Mac's menu bar. SurfMeter also opens its detailed window. Closing that window keeps the menu bar app running; its expand button opens the window again. On a fresh setup, recording starts off; existing preferences are retained.
 
 Keep the app in its current location while iterating. If you prefer another location, move/copy it there **before loading its bundled extension and connecting Chrome**, then open that copy. The helper records the app's location. The figures below show the popover, not the surrounding Mac menu bar.
 

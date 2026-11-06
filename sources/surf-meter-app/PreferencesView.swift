@@ -3,6 +3,8 @@ import SurfMeterCore
 
 struct PreferencesView: View {
     @ObservedObject var model: AppModel
+    var onBack: (() -> Void)? = nil
+    var onSetup: (() -> Void)? = nil
     @ViewState private var domain = ""
     @ViewState private var exclusionError: String?
     @ViewState private var confirmDelete = false
@@ -11,7 +13,7 @@ struct PreferencesView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 10) {
-                Button { model.screen = .activity } label: { Image(systemName: "chevron.left").frame(width: 29, height: 29).background(palette.control, in: Circle()) }
+                Button { if let onBack { onBack() } else { model.screen = .activity } } label: { Image(systemName: "chevron.left").frame(width: 29, height: 29).background(palette.control, in: Circle()) }
                     .buttonStyle(.plain).accessibilityLabel("Back to activity")
                 Text("Preferences").font(.system(size: 18, weight: .semibold))
             }.padding(.bottom, 25)
@@ -27,7 +29,7 @@ struct PreferencesView: View {
                         .buttonStyle(.plain).font(.system(size: 8)).foregroundStyle(palette.muted)
                 }
             }
-            Button { model.screen = .setup } label: {
+            Button { if let onSetup { onSetup() } else { model.screen = .setup } } label: {
                 HStack { Label("Connected browsers", systemImage: "globe"); Spacer(); Text(model.hasConnection ? "1 connected" : "Set up").foregroundStyle(palette.muted); Image(systemName: "chevron.right").font(.system(size: 8)) }
                     .font(.system(size: 11)).padding(.vertical, 16).contentShape(Rectangle())
             }.buttonStyle(.plain)
@@ -61,7 +63,7 @@ struct PreferencesView: View {
             Button("Delete all activity…", role: .destructive) { confirmDelete = true }.buttonStyle(.plain).font(.system(size: 11)).foregroundStyle(palette.red).padding(.vertical, 12)
             Label("Your activity stays on this Mac. No account, cloud sync, full URLs, page titles, or browsing content.", systemImage: "lock.shield")
                 .font(.system(size: 9)).foregroundStyle(palette.muted).fixedSize(horizontal: false, vertical: true).padding(.top, 15)
-            HStack { Text("SurfMeter 0.2 · Development build"); Spacer(); Button("Quit SurfMeter") { model.quit() }.buttonStyle(.plain) }.font(.system(size: 8)).foregroundStyle(palette.muted).padding(.top, 20)
+            HStack { Text("SurfMeter \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Development") · Development build"); Spacer(); Button("Quit SurfMeter") { model.quit() }.buttonStyle(.plain) }.font(.system(size: 8)).foregroundStyle(palette.muted).padding(.top, 20)
         }
         .alert("Delete all activity?", isPresented: $confirmDelete) {
             Button("Cancel", role: .cancel) {}
@@ -83,10 +85,12 @@ struct PreferencesView: View {
 
 struct BrowserSetupView: View {
     @ObservedObject var model: AppModel
+    var onBack: (() -> Void)? = nil
+    var showsBack = true
     @ViewState private var extensionID = ""
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack { Button { model.screen = .preferences } label: { Image(systemName: "chevron.left") }.buttonStyle(.plain).accessibilityLabel("Back to preferences"); Text("Browser setup").font(.system(size: 18, weight: .semibold)) }
+            HStack { if showsBack { Button { if let onBack { onBack() } else { model.screen = .preferences } } label: { Image(systemName: "chevron.left") }.buttonStyle(.plain).accessibilityLabel("Back to preferences") }; Text("Browser setup").font(.system(size: 18, weight: .semibold)) }
             Text("Your browser tells SurfMeter which website is active. The Mac app decides when time counts.").font(.callout).foregroundStyle(.secondary)
             HStack {
                 Image(systemName: "globe").font(.title2)
@@ -100,7 +104,7 @@ struct BrowserSetupView: View {
             Text("DEVELOPMENT SETUP").font(.system(size: 10, weight: .semibold)).tracking(1).foregroundStyle(.secondary)
             Text("1. Open chrome://extensions. Turn on Developer mode and choose Load unpacked.").font(.callout)
             Button("Show Chrome extension folder") { model.revealExtension() }.disabled(model.demo)
-            Text("2. Load the dist folder, then paste its extension ID below to register the local connection.").font(.callout)
+            Text("2. Select the ChromeExtension folder just revealed, then paste its extension ID below to register the local connection.").font(.callout)
             TextField("32-letter extension ID", text: $extensionID).textFieldStyle(.roundedBorder).accessibilityLabel("Chrome extension ID")
             Button("Connect Chrome") { model.registerChrome(extensionID.trimmingCharacters(in: .whitespacesAndNewlines)) }
                 .buttonStyle(.bordered).disabled(model.demo)

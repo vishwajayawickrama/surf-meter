@@ -6,7 +6,7 @@ Status: Native Chrome development app implemented; real-browser, Safari, OS, and
 
 ## Current implementation
 
-The repository contains a Swift Package with a SwiftUI menu bar shell, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. The deterministic accounting engine, local hourly aggregate store, and native Daily/Weekly/detail/preferences/setup UI are now implemented. See [validation](validation.md) for tested behavior and remaining gates.
+The repository contains a Swift Package with a SwiftUI menu bar shell and AppKit-hosted desktop window, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. The deterministic accounting engine, local hourly aggregate store, and native Daily/Weekly/detail/preferences/setup UI are now implemented. See [validation](validation.md) for tested behavior and remaining gates.
 
 The approved interactive UI prototype is built with HTML, CSS, and vanilla JavaScript. It runs with a local Python HTTP server, uses sample activity, and stores preview preferences in browser local storage. Browser connections and system settings are simulated.
 
@@ -17,6 +17,9 @@ The SwiftUI implementation follows the approved prototype, which remains the ref
 | Layer | Technology | Responsibility |
 | --- | --- | --- |
 | Application | Swift and SwiftUI | Daily/Weekly dashboard, Yesterday shortcut, platform details, preferences, and setup. |
+| Desktop | AppKit `NSWindow` with SwiftUI and Swift Charts | Detailed activity, date selection, website search and chart filtering. One shared model/store/bridge with the menu panel. |
+| Onboarding | SwiftUI sheet and separate setup-completion preference | Four-step install/browser/privacy/appearance walkthrough, recording opt-in, and safe existing-user migration. |
+| Distribution | Self-contained app bundle and compressed DMG | Bundled helper, extension, icon and offline illustrated setup; development signing today, Developer ID/notarization pending. |
 | Menu bar | SwiftUI `MenuBarExtra`, with AppKit where needed | Today's usage label, application lifecycle, and popover presentation. |
 | Appearance | SwiftUI system materials and window-scoped AppKit appearance | Liquid Glass-inspired translucent panels, explicit Light/Dark/System modes, and opaque accessibility fallbacks. |
 | Browser extensions | TypeScript and WebExtensions | Observe the active website, selected tab, and browser-window focus. Share browser-independent logic and keep browser-specific adapters small. |
@@ -103,6 +106,8 @@ Use AppKit workspace notifications for app activation and relevant lifecycle sig
 FR-33 was revised on 2026-11-06 to allow the minimum hourly aggregates required by FR-39. No raw browsing-event history is stored. The original SwiftData proposal was replaced by programmatic Core Data after the CLT failed to provide its model macro plugin; transaction and query boundaries remain in `UsageStore`.
 
 ## Native interface
+
+The app retains one desktop `NSWindow` through `DesktopController`. Menu and desktop navigation are independent; preferences and activity remain shared. Dock presence follows desktop visibility, and closing it does not quit recording. Native-host launches pass `--background`; login launches are detected through the launch Apple event.
 
 Use `MenuBarExtra` as the starting point for the menu bar application and evaluate its window-style presentation against the approved popover. Add AppKit presentation support if required by behavior that SwiftUI alone does not cover.
 

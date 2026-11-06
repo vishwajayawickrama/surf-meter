@@ -50,6 +50,11 @@ final class AppModel: ObservableObject {
     private var lastMono = ProcessInfo.processInfo.systemUptime
     private let bridgeDirectory: URL
 
+    var needsOnboarding: Bool {
+        !preferences.enabled && !(defaults?.bool(forKey: "setupCompleted") ?? false)
+    }
+    func completeOnboarding() { defaults?.set(true, forKey: "setupCompleted") }
+
     var calendar: Calendar { Calendar.autoupdatingCurrent }
     var today: String { LocalDay.key(now, calendar: calendar) }
     var yesterday: String { LocalDay.recent(2, now: now, calendar: calendar)[0] }

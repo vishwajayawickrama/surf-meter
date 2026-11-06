@@ -26,6 +26,16 @@ import SurfMeterCore
             print("PASS: \(name)")
         }
         do {
+            let fresh = AppModel(verificationDirectory: directory.appendingPathComponent("fresh"), verificationDefaults: defaults, startsServices: false)
+            check(fresh.needsOnboarding, "fresh install requires walkthrough")
+            fresh.completeOnboarding()
+            check(!fresh.needsOnboarding, "deferred setup persists without enabling recording")
+            check(!fresh.preferences.enabled, "walkthrough does not opt into recording")
+            defaults.removeObject(forKey: "setupCompleted")
+            fresh.changePreferences { $0.enabled = true }
+            check(!fresh.needsOnboarding, "existing recording users skip first-run walkthrough")
+            fresh.changePreferences { $0.enabled = false }
+            defaults.removeObject(forKey: "preferences")
             let calendar = Calendar.autoupdatingCurrent
             let days = LocalDay.recent(16, now: Date(), calendar: calendar)
             var seed = UsageLedger()

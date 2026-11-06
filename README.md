@@ -4,15 +4,23 @@
 
 ### Your browsing. A little clearer.
 
-A quiet place in your Mac’s menu bar for where your time goes.
+Your browser time, in the menu bar and a detailed Mac app.
 
-[Setup guide](docs/setup.md) · [Functional audit](docs/qa-audit.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
+[Download the Mac app](https://github.com/vishwajayawickrama/surf-meter/releases) · [Install the DMG](docs/distribution.md) · [Setup guide](docs/setup.md) · [Functional audit](docs/qa-audit.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
 </div>
 
 ![SurfMeter — a translucent menu bar dashboard showing daily website usage and changes from yesterday](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
 
-> **Native development build available.** SurfMeter now has a SwiftUI dashboard, Chrome tracking engine, and local aggregate storage. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The original hero and GIFs show the interactive UI prototype; native previews below use labeled sample data.
+> **Native development build available.** SurfMeter 0.3 adds a resizable desktop window and first-run setup walkthrough alongside its SwiftUI menu bar dashboard, Chrome tracking engine, and local aggregate storage. The Apple Silicon DMG is an ad hoc signed, unnotarized development prerelease. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The original hero and GIFs show the interactive UI prototype; native previews below use labeled sample data.
+
+## Open the bigger picture
+
+![SurfMeter’s detailed Mac window with hourly activity and website comparisons, using sample data](docs/media/desktop/desktop-daily-light-2x.png)
+
+Browse dates, search websites, and select a platform to explore its chart. Daily has a dedicated Yesterday button; Weekly shows seven calendar days. Close the window to keep SurfMeter in your menu bar, then reopen it whenever you need more detail.
+
+**[Download the development DMG](https://github.com/vishwajayawickrama/surf-meter/releases)** · Apple Silicon · [Installation and first-run walkthrough](docs/distribution.md). Includes the app, Chrome extension and offline illustrated guide. No developer tools needed to run it. Chrome setup is still manual; Safari and production signing/notarization remain pending.
 
 ## Know where the hours went
 
@@ -73,7 +81,7 @@ open .build/SurfMeter.app
 
 Requires macOS 14+, Swift 6, and Node/npm to build. Open **Browser setup** in the app, load its bundled Chrome extension, paste the extension ID, connect, and enable recording. Safari is not enabled yet. See the [annotated setup guide](docs/setup.md) and [tested capabilities and remaining gates](docs/validation.md).
 
-The native app includes Daily/Weekly views, Yesterday, website details, green/red comparisons, pause/resume, exclusions, retention, confirmed deletion, and appearance preferences. Activity stays in a local aggregate store; there is no backend or account. A self-contained, ad hoc signed development archive can be built with `./scripts/package-app.sh`; it is not a notarized release.
+The native app includes Daily/Weekly views, Yesterday, website details, green/red comparisons, pause/resume, exclusions, retention, confirmed deletion, and appearance preferences. Activity stays in a local aggregate store; there is no backend or account. Build a self-contained development DMG and ZIP with `./scripts/package-app.sh`; see [distribution](docs/distribution.md) for the installation walkthrough and signing limitations.
 
 <p align="center">
   <img src="docs/media/native/native-daily-light@2x.png" alt="Native SwiftUI daily dashboard using labeled preview data" width="42%">
