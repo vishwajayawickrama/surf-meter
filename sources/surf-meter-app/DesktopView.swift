@@ -56,7 +56,7 @@ struct DesktopView: View {
             ZStack {
                 (scheme == .dark ? Color(hex: 0x121D30) : Color(hex: 0xEEF3FB))
                 LinearGradient(colors: [palette.accent.opacity(0.09), .clear], startPoint: .topLeading, endPoint: .bottomTrailing)
-            }
+            }.ignoresSafeArea(.container, edges: .top)
         }
         .onAppear { date = model.now; onboarding = model.needsOnboarding }
         .sheet(isPresented: $onboarding) { OnboardingView(model: model) { onboarding = false }
