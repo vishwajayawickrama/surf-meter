@@ -1,5 +1,21 @@
 # SurfMeter marketing infographic
 
+## Current revision: product visual v2
+
+[PNG](surf-meter-product-visual-v2.png) · [Self-contained SVG](surf-meter-product-visual-v2.svg)
+
+A 2800 × 2100 composition with minimal copy, original desktop and menu screenshots, and the exact app WaveMark geometry. The interface is neither generated nor retouched. The source PNGs are retained in `sources/`; they use sample activity and offscreen native renders, so live glass composition and native window chrome are not reproduced. App views are reduced proportionally, never enlarged. The SVG embeds the source images and retains editable text and layout.
+
+Regenerate on macOS from the repository root:
+
+```sh
+swift -module-cache-path /private/tmp/surfmeter-swift-cache scripts/render-marketing-graphic.swift
+```
+
+The original generated infographic below was rejected in design review and is retained only as an earlier version. Use v2 for the current design.
+
+## Earlier generated concept
+
 Created 2026-11-06 using the built-in image generation tool. The portrait PNG is a marketing illustration, not an app screenshot. Usage figures are sample data: 3h 10m today versus 4h 2m yesterday, a difference of 52 minutes. The illustrated menu panel and wave mark are interpretations rather than pixel-exact reproductions of the app. No real browsing data was used.
 
 ## Deliverable
