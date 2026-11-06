@@ -1,0 +1,20 @@
+{
+  "scope": "single post-run file-size observation; not a recovered start/end database snapshot",
+  "database_files": {
+    "logical_bytes": 2607584,
+    "allocated_bytes": 3219456,
+    "file_count": 3
+  },
+  "installed_helper_copy": {
+    "logical_bytes": 523280,
+    "allocated_bytes": 524288,
+    "file_count": 1
+  },
+  "preferences_file": {
+    "logical_bytes": 142,
+    "allocated_bytes": 4096,
+    "file_count": 1
+  },
+  "file_contents_read": false,
+  "paths_and_precise_timestamps_omitted": true
+}

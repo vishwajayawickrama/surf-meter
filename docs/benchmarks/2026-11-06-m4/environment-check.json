@@ -1,0 +1,8 @@
+{
+  "scope": "build metadata observed after the resource run",
+  "python_version": "3.13.18",
+  "chrome_bundle_version": "157.0.8103.38",
+  "installed_helper_sha256": "0a22ac6420411d0708baffce4c24921e32a2a3eef24387201c72a7aebf32de7c",
+  "bundled_helper_sha256": "57c0095f41caa3ea9bbed013a83f364a13a2e3749fe1458ac5d24f7cda1cc5b3",
+  "helper_files_identical": false
+}

@@ -10,6 +10,7 @@ SurfMeter is a native macOS development app with Chrome tracking and local aggre
 | [Requirements](srs.md) | Product scope, functional requirements, quality targets, and acceptance criteria. |
 | [Implementation](implementation.md) | The five delivery tasks, current progress, and next work. |
 | [Browser protocol](browser-protocol.md) | Hostname-only snapshots, framing, validation, and adapter boundaries. |
+| [Resource measurements](performance.md) | CPU, RSS, charged footprint, disk counters, plots, raw results, and reproducible measurement tooling. |
 | [Validation](validation.md) | Current verification summary and release gates. |
 | [Functional and visual audit](qa-audit.md) | Detailed findings, regressions, screenshots, and native interaction evidence. |
 | [Repository conventions](repository.md) | Folder structure, naming, publication hygiene, and documentation maintenance. |

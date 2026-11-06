@@ -1,0 +1,2 @@
+# Optional, report generation only. Native app and measurement harness do not use it.
+matplotlib==3.11.2

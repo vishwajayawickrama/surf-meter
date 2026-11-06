@@ -1,0 +1,9 @@
+{
+  "tool": "Apple footprint",
+  "command": "footprint --noCategories -f bytes -p PID",
+  "process": "installed native helper",
+  "phys_footprint_bytes": 1177863440,
+  "captured_during_reference_run": true,
+  "memory_contents_dumped": false,
+  "pid_and_local_timestamps_omitted": true
+}

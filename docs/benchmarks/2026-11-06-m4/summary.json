@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "source_revision": "08a855272559b0829efb030c8f386818ab0a52d7",
+  "app_version": "0.2.0",
+  "binary_sha256": "dbe8a837c38d1e63413fc190a3a53b460a8627d6e7e84d876ed861d071f41edb",
+  "measurement_script_sha256": "8b3461bf8def83a0c09265c8372aa9366b98c6cdb43ac868ac5a776230f1e0d8",
+  "hardware": {
+    "hw.model": "Mac16,1",
+    "hw.memsize": "17179869184",
+    "hw.logicalcpu": "10",
+    "machdep.cpu.brand_string": "Apple M4"
+  },
+  "macos": "27.2",
+  "macos_build": "26B123",
+  "duration_requested_seconds": 1800,
+  "actual_measured_seconds": 1799.999718,
+  "warmup_seconds": 30,
+  "sample_interval_seconds": 5,
+  "mach_timebase": {
+    "numer": 125,
+    "denom": 3
+  },
+  "cpu_calibration_seconds": {
+    "kernel_converted": 158.90397845833334,
+    "ps_time": 158.9
+  },
+  "bundle_size": {
+    "logical_bytes": 3976352,
+    "allocated_bytes": 4005888
+  },
+  "units": {
+    "cpu": "percent of one logical core",
+    "memory": "bytes",
+    "disk": "kernel-counter bytes / file-size bytes"
+  },
+  "scope": "native app and native messaging helper only; Chrome, extension worker, WindowServer, and observer excluded from app totals",
+  "workload": "user-directed normal Chrome use plus concurrent isolated 1 Hz active and unavailable snapshot workloads; five synthetic platforms, changed every 60 seconds; panels requested closed",
+  "wall_clock_discontinuities": 0,
+  "heartbeat_late_over_500ms": 0,
+  "process_events": null,
+  "storage_start": null,
+  "storage_end": null,
+  "results": {
+    "active-app": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 5.40166064024163,
+      "cpu_p95_percent_one_core": 5.763955849639437,
+      "cpu_max_percent_one_core": 6.672727626911295,
+      "rss_mean_bytes": 68653680.04432133,
+      "rss_peak_sampled_bytes": 88096768.0,
+      "footprint_mean_bytes": 38041231.53462604,
+      "footprint_peak_sampled_bytes": 53134368.0,
+      "kernel_read_bytes": 12288.0,
+      "kernel_written_bytes": 4124672.0,
+      "idle_wakeups": 1236.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": false,
+      "sampled_rss_below_100_MB": true
+    },
+    "active-helper": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 0.03652268396262776,
+      "cpu_p95_percent_one_core": 0.04574208705492081,
+      "cpu_max_percent_one_core": 0.05864917138419554,
+      "rss_mean_bytes": 7534869.983379502,
+      "rss_peak_sampled_bytes": 10420224.0,
+      "footprint_mean_bytes": 33662211.12465374,
+      "footprint_peak_sampled_bytes": 63668680.0,
+      "kernel_read_bytes": 0.0,
+      "kernel_written_bytes": 0.0,
+      "idle_wakeups": 0.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": true,
+      "sampled_rss_below_100_MB": true
+    },
+    "active-native-total": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 5.438183324204257,
+      "cpu_p95_percent_one_core": 5.797883990508973,
+      "cpu_max_percent_one_core": 6.716368232662924,
+      "rss_mean_bytes": 76188550.02770083,
+      "rss_peak_sampled_bytes": 95404032.0,
+      "footprint_mean_bytes": 71703442.65927978,
+      "footprint_peak_sampled_bytes": 116803048.0,
+      "kernel_read_bytes": 12288.0,
+      "kernel_written_bytes": 4124672.0,
+      "idle_wakeups": 1236.0,
+      "process_count_min": 2.0,
+      "process_count_max": 2.0,
+      "cpu_mean_below_one_percent": false,
+      "sampled_rss_below_100_MB": true
+    },
+    "idle-app": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 3.7147198203986846,
+      "cpu_p95_percent_one_core": 4.036572070622297,
+      "cpu_max_percent_one_core": 4.670847616529577,
+      "rss_mean_bytes": 68162296.19944598,
+      "rss_peak_sampled_bytes": 89096192.0,
+      "footprint_mean_bytes": 37844259.922437675,
+      "footprint_peak_sampled_bytes": 52921376.0,
+      "kernel_read_bytes": 65536.0,
+      "kernel_written_bytes": 0.0,
+      "idle_wakeups": 1215.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": false,
+      "sampled_rss_below_100_MB": true
+    },
+    "idle-helper": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 0.02034357494641926,
+      "cpu_p95_percent_one_core": 0.02853908977204984,
+      "cpu_max_percent_one_core": 0.03872409604522387,
+      "rss_mean_bytes": 7555747.102493075,
+      "rss_peak_sampled_bytes": 10387456.0,
+      "footprint_mean_bytes": 33560684.587257616,
+      "footprint_peak_sampled_bytes": 63537608.0,
+      "kernel_read_bytes": 0.0,
+      "kernel_written_bytes": 0.0,
+      "idle_wakeups": 0.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": true,
+      "sampled_rss_below_100_MB": true
+    },
+    "idle-native-total": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 3.735063395345104,
+      "cpu_p95_percent_one_core": 4.066424536927243,
+      "cpu_max_percent_one_core": 4.694995884525698,
+      "rss_mean_bytes": 75718043.30193906,
+      "rss_peak_sampled_bytes": 96501760.0,
+      "footprint_mean_bytes": 71404944.50969529,
+      "footprint_peak_sampled_bytes": 116458984.0,
+      "kernel_read_bytes": 65536.0,
+      "kernel_written_bytes": 0.0,
+      "idle_wakeups": 1215.0,
+      "process_count_min": 2.0,
+      "process_count_max": 2.0,
+      "cpu_mean_below_one_percent": false,
+      "sampled_rss_below_100_MB": true
+    },
+    "installed-app": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 10.085367438837158,
+      "cpu_p95_percent_one_core": 11.232623317731797,
+      "cpu_max_percent_one_core": 13.60019872726477,
+      "rss_mean_bytes": 59877166.09418283,
+      "rss_peak_sampled_bytes": 66912256.0,
+      "footprint_mean_bytes": 84413926.82548477,
+      "footprint_peak_sampled_bytes": 99812408.0,
+      "kernel_read_bytes": 110592.0,
+      "kernel_written_bytes": 1769472.0,
+      "idle_wakeups": 1678.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": false,
+      "sampled_rss_below_100_MB": true
+    },
+    "installed-helper": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 0.07827353772581695,
+      "cpu_p95_percent_one_core": 0.09581961296132595,
+      "cpu_max_percent_one_core": 0.10903103690994517,
+      "rss_mean_bytes": 8590117.584487535,
+      "rss_peak_sampled_bytes": 11632640.0,
+      "footprint_mean_bytes": 1199367897.5512466,
+      "footprint_peak_sampled_bytes": 1230308672.0,
+      "kernel_read_bytes": 0.0,
+      "kernel_written_bytes": 0.0,
+      "idle_wakeups": 0.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": true,
+      "sampled_rss_below_100_MB": true
+    },
+    "installed-native-total": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 10.163640976562974,
+      "cpu_p95_percent_one_core": 11.32902456834341,
+      "cpu_max_percent_one_core": 13.70686383353488,
+      "rss_mean_bytes": 68467283.67867036,
+      "rss_peak_sampled_bytes": 74874880.0,
+      "footprint_mean_bytes": 1283781824.3767314,
+      "footprint_peak_sampled_bytes": 1330121080.0,
+      "kernel_read_bytes": 110592.0,
+      "kernel_written_bytes": 1769472.0,
+      "idle_wakeups": 1678.0,
+      "process_count_min": 2.0,
+      "process_count_max": 2.0,
+      "cpu_mean_below_one_percent": false,
+      "sampled_rss_below_100_MB": true
+    },
+    "observer": {
+      "samples": 361,
+      "measured_seconds": 1799.9997180000064,
+      "cpu_mean_percent_one_core": 0.10681966488322858,
+      "cpu_p95_percent_one_core": 0.13720448630473311,
+      "cpu_max_percent_one_core": 0.18633348694360644,
+      "rss_mean_bytes": 21808964.7867036,
+      "rss_peak_sampled_bytes": 23019520.0,
+      "footprint_mean_bytes": 16138765.385041552,
+      "footprint_peak_sampled_bytes": 17252832.0,
+      "kernel_read_bytes": 212992.0,
+      "kernel_written_bytes": 8605696.0,
+      "idle_wakeups": 0.0,
+      "process_count_min": 1.0,
+      "process_count_max": 1.0,
+      "cpu_mean_below_one_percent": true,
+      "sampled_rss_below_100_MB": true
+    }
+  },
+  "complete": false,
+  "resource_counter_recovery": {
+    "status": "deadline-counter-window-recovered",
+    "original_run_complete": false,
+    "original_summary_sha256": "5ac1b517f6290f9784263d8f0834fb46a89614e2fd1990a8d4198346238468ca",
+    "nominal_window_shortfall_seconds": 0.00028199999997013947,
+    "failure": "Negative sleep at final deadline; resource counter samples preserved",
+    "unavailable_checks": [
+      "database file sizes at start/end",
+      "post-run synthetic SQL totals",
+      "final process-event list"
+    ],
+    "fixed_harness_retest": {
+      "complete": true,
+      "actual_measured_seconds": 35.02789491601288,
+      "end_storage_captured": true
+    }
+  },
+  "measurement_date": "2026-11-06",
+  "sample_data_sha256": "47342bccca31113b18314c2e7c7391cbc28074d5c8e10cf9c45fa6bfdfc02768",
+  "controlled_recording_delta_seconds": {
+    "active": null,
+    "idle": null
+  },
+  "installed_helper_age_at_start_hours_approximate": 9.377776431296386,
+  "helper_footprint_growth": {
+    "installed": {
+      "start_bytes": 1166394640.0,
+      "end_bytes": 1230308672.0,
+      "change_bytes": 63914032.0,
+      "linear_fit_MB_per_minute": 2.098586208514842
+    },
+    "active": {
+      "start_bytes": 3637680.0,
+      "end_bytes": 63668680.0,
+      "change_bytes": 60031000.0,
+      "linear_fit_MB_per_minute": 2.0003784402150195
+    },
+    "idle": {
+      "start_bytes": 3539376.0,
+      "end_bytes": 63537608.0,
+      "change_bytes": 59998232.0,
+      "linear_fit_MB_per_minute": 1.9998342194057643
+    }
+  },
+  "app_footprint_growth": {
+    "installed": {
+      "start_bytes": 67093536.0,
+      "end_bytes": 99812408.0,
+      "change_bytes": 32718872.0,
+      "linear_fit_MB_per_minute": 1.0575493992882625
+    },
+    "active": {
+      "start_bytes": 22709256.0,
+      "end_bytes": 53134368.0,
+      "change_bytes": 30425112.0,
+      "linear_fit_MB_per_minute": 1.005323327257778
+    },
+    "idle": {
+      "start_bytes": 22561800.0,
+      "end_bytes": 52921376.0,
+      "change_bytes": 30359576.0,
+      "linear_fit_MB_per_minute": 1.0041614194587727
+    }
+  },
+  "plot_matplotlib_version": "3.11.2"
+}

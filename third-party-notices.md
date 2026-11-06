@@ -11,3 +11,7 @@ The architecture diagram fonts and icons retain their respective license files i
 ## Chrome setup screenshots
 
 The three Chrome screenshots in `docs/media/setup/sources/chrome-*.png` are from Google's [Hello World extension tutorial](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world), Chrome for Developers. The page identifies its content as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), except where otherwise noted. The documentation figures add numbered vector callouts and layout around the original screenshots; the sources are retained unchanged. They depict Google's Hello Extensions example, not an installed SurfMeter extension. See `docs/media/setup/README.md` for individual asset URLs and modifications.
+
+## Performance report tooling
+
+The resource figures are generated from the project's numeric measurements using optional [Matplotlib](https://pypi.org/project/matplotlib/), pinned in `scripts/requirements-resource-report.txt`. This is report-generation tooling, not a dependency bundled into the native app. The measurement harness itself uses the Python standard library and macOS system counters.

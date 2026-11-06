@@ -45,7 +45,7 @@ The preview exporter uses offscreen AppKit-hosted SwiftUI windows and captures t
 - Production IPC authentication/code-signature identities, Developer ID signing, notarization, distribution channel, clean installation/onboarding/removal, and update process. Current UID checks are a development boundary.
 - macOS 14 and Intel execution. macOS 27.2/Apple Silicon is the only exercised machine configuration.
 - Real login-item enable/approval/disable behavior, settings persistence across bundle relocation, and actual keyboard/VoiceOver/contrast/transparency/motion checks. Native fallbacks and accessible names are implemented; they are not manually certified.
-- Thirty-minute CPU/memory measurement, dashboard-open latency, forced-crash checkpoint-loss measurement, disk-full/write-failure/retry behavior. Invalid-path failure is tested, but is not a substitute for a runtime disk-full experiment.
+- Resource findings: the nominal thirty-minute counter run is documented in [Performance](performance.md), including a recovered finalizer error. CPU exceeded the goal and charged memory grew. Optimized-release/long-run remeasurement, dashboard-open latency, forced-crash checkpoint-loss measurement, and disk-full/write-failure/retry behavior remain open. Invalid-path failure is tested, but is not a substitute for a runtime disk-full experiment.
 
 ## Reproduction order
 
@@ -64,3 +64,9 @@ The writer lease is acquired before Core Data opens. A second service-enabled pr
 ## Repository maintenance
 
 The source/test directories use explicit kebab-case Swift Package paths. Markdown links, exact path casing, heading anchors, and publication hygiene are checked by `python3 scripts/check-repo.py`; the full audit runs this check before building. `--history` additionally scans reachable text blobs for common credential and machine-specific path patterns. The cleanup check found no matches, preserved upstream notices/data, and passed the full native/extension audit after the directory moves.
+
+## Resource measurement evidence
+
+[Performance](performance.md) and its [numeric dataset](benchmarks/2026-11-06-m4/README.md) document a nominal 30-minute Apple M4 run of the installed app plus separate fresh active/idle processes. Installed native CPU averaged 10.16% of one core and combined sampled RSS peaked at 74.9 MB; combined charged footprint peaked at 1,330.1 MB. The already-long-running helper increased its charged footprint by 63.9 MB during the observed span. The CPU budget is not met; resident memory alone does not establish acceptable memory behavior.
+
+The retained CSV covers 1,799.999718 seconds. A deadline-rounding finalizer exception was corrected and separately regression-tested; resource counters were explicitly recovered with their exact executed harness digest. Missing database-size/SQL endpoint checks remain unavailable. Neither that recovery nor the resource findings close the release performance gate. Nine measurement/reporting/recovery tooling tests pass.

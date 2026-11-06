@@ -83,6 +83,28 @@ The native app includes Daily/Weekly views, Yesterday, website details, green/re
 
 *Native SwiftUI previews at 2× resolution. Sample activity, with transparency disabled for reproducible captures. Live system materials appear in the running Mac app.*
 
+<!-- resource-results:start -->
+## Measured resource use
+
+30.0-minute native development-build run on Apple M4, 16 GiB RAM, macOS 27.2 (2026-11-06). CPU is percent of **one logical core**; memory uses decimal MB. Chrome processes are excluded.
+
+| Workload | App + helper mean CPU | Peak sampled app + helper RSS | Peak app + helper charged footprint |
+| --- | ---: | ---: | ---: |
+| Installed · normal Chrome use | 10.16% | 74.9 MB | 1,330.1 MB |
+| Controlled active · synthetic | 5.44% | 95.4 MB | 116.8 MB |
+| Controlled idle · unavailable | 3.74% | 96.5 MB | 116.5 MB |
+
+The installed helper was already about 9.4 hours old at the start; controlled helpers were fresh.
+
+Counter samples cover 1,799.999718 seconds of the nominal 30-minute run. A finalizer error was explicitly recovered; end-of-run database-size/accounting checks were not captured.
+
+App bundle: **4.0 MB logical** (4.0 MB allocated file blocks); local activity data and the installed helper copy are separate.
+
+**The CPU goal is not met in this run. Charged-memory growth needs investigation.** These are measured development-build results, not an optimized release claim.
+
+[Method, plots, disk usage, raw results, and limitations](docs/performance.md).
+<!-- resource-results:end -->
+
 ## Try the first look
 
 You only need Python 3 and a browser. No packages, account, or build step.

@@ -155,6 +155,6 @@ Next work:
 1. Complete the controlled real-browser accuracy/privacy/profile/lifecycle matrix.
 2. Verify actual menu-panel placement, full keyboard/VoiceOver behavior, and accessibility settings.
 3. Implement and package Safari with full Xcode; validate its sandbox-compatible integration.
-4. Complete production identity/signing/notarization, supported-platform, clean-install, login/reboot, and performance gates.
+4. Profile and correct the CPU/charged-memory findings in [Performance](performance.md), repeat the full measurement after any fix, and complete the remaining signing/distribution/platform/performance gates.
 
 Keep the five task IDs stable. Update this handoff and the validation evidence when behavior or acceptance status changes; use Git history for earlier session details.

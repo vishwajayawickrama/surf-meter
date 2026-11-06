@@ -3,6 +3,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 scripts/check-repo.py
+python3 tests/tooling/test-resource-metrics.py
 (cd extensions/chrome && npm test)
 ./scripts/build-native.sh
 ./scripts/test-native.sh
