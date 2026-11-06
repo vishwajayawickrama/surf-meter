@@ -12,6 +12,10 @@ struct SurfMeterApp: App {
         if let index = CommandLine.arguments.firstIndex(of: "--verify-menu-panel"), CommandLine.arguments.indices.contains(index + 1) {
             MenuPanelAudit.verify(directory: URL(fileURLWithPath: CommandLine.arguments[index + 1])); exit(0)
         }
+        if CommandLine.arguments.contains("--verify-calendar") { ActivityCalendarAudit.verify(); exit(0) }
+        if let index = CommandLine.arguments.firstIndex(of: "--render-calendar"), CommandLine.arguments.indices.contains(index + 1) {
+            PreviewExport.renderCalendar(directory: URL(fileURLWithPath: CommandLine.arguments[index + 1])); exit(0)
+        }
         if CommandLine.arguments.contains("--verify-site-icons") { SiteIconAudit.verify(); exit(0) }
         if let index = CommandLine.arguments.firstIndex(of: "--render-site-icons"), CommandLine.arguments.indices.contains(index + 1) {
             PreviewExport.renderSiteIcons(directory: URL(fileURLWithPath: CommandLine.arguments[index + 1])); exit(0)

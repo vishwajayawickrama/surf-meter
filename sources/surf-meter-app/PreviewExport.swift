@@ -4,6 +4,22 @@ import SurfMeterCore
 
 @MainActor
 enum PreviewExport {
+    static func renderCalendar(directory: URL) {
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            let calendar = Calendar.autoupdatingCurrent
+            let latest = calendar.date(from: DateComponents(year: 2026, month: 11, day: 6, hour: 12))!
+            let selection = calendar.date(byAdding: .day, value: -2, to: latest)!
+            for dark in [false, true] {
+                for weekly in [false, true] {
+                    let view = ActivityCalendar(date: .constant(selection), latest: latest, weekly: weekly, done: {})
+                        .environment(\.colorScheme, dark ? .dark : .light)
+                    try capture(view, dark: dark, destination: directory.appendingPathComponent("calendar-\(weekly ? "weekly" : "daily")-\(dark ? "dark" : "light")-2x.png"))
+                }
+            }
+            print("Rendered calendar layouts in both appearances at 2× scale.")
+        } catch { fputs("Calendar rendering failed: \(error)\n", stderr); exit(1) }
+    }
     static func renderSiteIcons(directory: URL) {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

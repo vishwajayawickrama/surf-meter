@@ -20,6 +20,20 @@ struct DesktopView: View {
         let prior = model.calendar.date(byAdding: .day, value: weekly ? -7 : -1, to: date) ?? date
         return LocalDay.recent(weekly ? 7 : 1, now: prior, calendar: model.calendar)
     }
+    private var isToday: Bool { model.calendar.isDate(date, inSameDayAs: model.now) }
+    private var isYesterday: Bool {
+        let yesterday = model.calendar.date(byAdding: .day, value: -1, to: model.now) ?? model.now
+        return model.calendar.isDate(date, inSameDayAs: yesterday)
+    }
+    private var currentViewLabel: String {
+        let format = Date.FormatStyle.dateTime.day().month(.abbreviated).year()
+        if weekly {
+            let start = model.calendar.date(byAdding: .day, value: -6, to: date) ?? date
+            return "7 days · \(start.formatted(format)) – \(date.formatted(format))"
+        }
+        let prefix = isToday ? "Today" : isYesterday ? "Yesterday" : date.formatted(.dateTime.weekday(.wide))
+        return "\(prefix) · \(date.formatted(format))"
+    }
     private var rows: [UsageRow] {
         model.ledger.rows(days: days, compare: previous).filter {
             search.isEmpty || $0.platform.displayName.localizedCaseInsensitiveContains(search) || $0.id.localizedCaseInsensitiveContains(search)
@@ -107,14 +121,14 @@ struct DesktopView: View {
                 DesktopDateButton(date: $date, latest: model.now, weekly: weekly)
                 Spacer()
                 if !weekly {
-                    Button { date = model.calendar.date(byAdding: .day, value: -1, to: model.now) ?? model.now } label: {
-                        Label("Yesterday", systemImage: "clock.arrow.circlepath").font(.system(size: 13, weight: .medium)).foregroundStyle(palette.text).padding(.vertical, 3)
+                    DesktopDateShortcut(title: "Yesterday", symbol: "clock.arrow.circlepath", selected: isYesterday) {
+                        date = model.calendar.date(byAdding: .day, value: -1, to: model.now) ?? model.now
                     }
                 }
-                Button { date = model.now } label: {
-                    Label("Today", systemImage: "calendar.badge.clock").font(.system(size: 13, weight: .medium)).foregroundStyle(palette.text).padding(.vertical, 3)
-                }
+                DesktopDateShortcut(title: "Today", symbol: "calendar.badge.clock", selected: isToday) { date = model.now }
             }.font(.callout)
+            Text(currentViewLabel).font(.system(size: 13, weight: .medium)).foregroundStyle(palette.muted)
+                .accessibilityLabel("Currently viewing: \(currentViewLabel)")
             if let error = model.storageError { issue(error) { model.retryStorage() } }
             if let error = model.bridgeError { issue(error) { model.retryBridge() } }
             VStack(alignment: .leading, spacing: 20) {

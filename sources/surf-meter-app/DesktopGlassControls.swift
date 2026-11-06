@@ -125,12 +125,32 @@ struct DesktopDateButton: View {
         .accessibilityLabel(weekly ? "Choose week ending date" : "Choose date")
         .accessibilityValue(date.formatted(date: .complete, time: .omitted))
         .popover(isPresented: $showCalendar, arrowEdge: .bottom) {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(weekly ? "Week ending" : "Choose a day").font(.headline)
-                DatePicker("Activity date", selection: $date, in: ...latest, displayedComponents: .date)
-                    .datePickerStyle(.graphical).labelsHidden()
-                HStack { Spacer(); Button { showCalendar = false } label: { Text("Done").foregroundStyle(palette.text) }.keyboardShortcut(.defaultAction) }
-            }.padding(20).modifier(DesktopGlassButtons())
+            ActivityCalendar(date: $date, latest: latest, weekly: weekly) { showCalendar = false }
         }
+    }
+}
+
+/// Derive selection from the displayed date so calendar and shortcuts stay in sync.
+struct DesktopDateShortcut: View {
+    let title: String
+    let symbol: String
+    let selected: Bool
+    let action: () -> Void
+    @ViewBuilder var body: some View {
+        if selected {
+            button.modifier(DesktopGlassProminentButton())
+        } else {
+            button.modifier(DesktopGlassButtons())
+        }
+    }
+    private var button: some View {
+        Button(action: action) {
+            HStack(spacing: 7) {
+                Image(systemName: selected ? "checkmark.circle.fill" : symbol)
+                Text(title)
+            }.font(.system(size: 13, weight: selected ? .semibold : .medium))
+                .padding(.vertical, 3).contentShape(Capsule())
+        }.accessibilityLabel(title).accessibilityValue(selected ? "Selected" : "Not selected")
+            .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
