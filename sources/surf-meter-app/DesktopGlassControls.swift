@@ -40,34 +40,24 @@ struct DesktopGlassSurface: ViewModifier {
     }
 }
 
-/// Keep a clear window behind this surface so glass can sample the desktop.
+/// A continuous macOS sidebar with one boundary against the content pane.
 struct DesktopSidebarSurface: ViewModifier {
     @Environment(\.colorScheme) private var scheme
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var contrast
-    @ViewBuilder private var surface: some View {
-        if reduceTransparency || contrast == .increased {
-            SurfPalette(dark: scheme == .dark).solid
-        } else if #available(macOS 26, *) {
-            Color.clear.glassEffect(.regular, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-        } else {
-            Rectangle().fill(.ultraThinMaterial)
-        }
-    }
+    private var palette: SurfPalette { SurfPalette(dark: scheme == .dark) }
     func body(content: Content) -> some View {
         content.background {
-            ZStack {
-                Group {
-                    if reduceTransparency || contrast == .increased {
-                        SurfPalette(dark: scheme == .dark).solid
-                    } else {
-                        SidebarBackdrop()
-                    }
-                }.ignoresSafeArea(.container, edges: [.top, .bottom]).allowsHitTesting(false)
-                // Only the backdrop extends into the titlebar. Keep the inset
-                // glass edge below the native traffic-light controls.
-                surface.padding(.horizontal, 8).padding(.vertical, 8).allowsHitTesting(false)
-            }
+            Group {
+                if reduceTransparency || contrast == .increased {
+                    palette.solid
+                } else {
+                    SidebarBackdrop()
+                }
+            }.ignoresSafeArea(.container, edges: [.top, .bottom]).allowsHitTesting(false)
+        }.overlay(alignment: .trailing) {
+            Rectangle().fill(palette.line).frame(width: 1)
+                .ignoresSafeArea(.container, edges: [.top, .bottom]).allowsHitTesting(false)
         }
     }
 }

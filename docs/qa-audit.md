@@ -167,3 +167,10 @@ Verified in a separate sample-only native app: Yesterday selection, custom-day s
 The sidebar background previously applied `ignoresSafeArea` to both its backdrop and inset glass plate. This extended the rounded top edge into the native close/minimize/full-screen controls. Only the backdrop now extends behind the titlebar; the plate respects the native top safe area and keeps its eight-point inset below it. The title remains hidden.
 
 Reviewed the live sample-only window in dark Activity and light Preferences: the plate starts below the titlebar with a clear gap. The capture system's sharing indicator obscures the traffic-light pixels themselves, so this is a check of the glass boundary and reserved titlebar area, not a pixel inspection of those buttons. All seven existing appearance checks passed.
+
+
+## Finder-style sidebar structure — 2026-11-06
+
+Updated the sidebar to follow the supplied Finder reference: a continuous edge-to-edge AppKit sidebar material, one thin semantic separator against the content pane, and compact rounded-rectangle navigation selections. Removed the inset floating glass plate and capsule outlines. Navigation labels and icons now use the normal semantic label color in every selection state; the SurfMeter brand mark retains its accent. Content respects the native titlebar safe area. Reduced transparency and increased contrast keep the existing opaque fallback.
+
+Inspected the live sample-only desktop in dark and light appearances. Verified Activity, Browser setup and Preferences navigation and their selected accessibility traits. All seven appearance checks and repository hygiene checks passed. The capture sharing indicator still obscures native traffic-light pixels. This update supersedes the earlier inset glass plate design and its top-edge adjustment.

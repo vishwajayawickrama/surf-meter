@@ -79,7 +79,7 @@ struct DesktopView: View {
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 10) { WaveMark().stroke(palette.accent, style: StrokeStyle(lineWidth: 2.7, lineCap: .round)).frame(width: 28, height: 23); Text("SurfMeter").font(.system(size: 19, weight: .semibold)) }
-                .padding(.bottom, 34)
+                .padding(.horizontal, 10).padding(.bottom, 24)
             nav("Activity", symbol: "chart.bar.xaxis", value: "activity")
             nav("Browser setup", symbol: "globe", value: "setup")
             nav("Preferences", symbol: "slider.horizontal.3", value: "preferences")
@@ -92,17 +92,17 @@ struct DesktopView: View {
             }
                 .disabled(!model.preferences.enabled).controlSize(.small)
             Button("Setup walkthrough") { onboarding = true }.buttonStyle(.plain).font(.system(size: 11)).padding(.top, 12)
-        }.padding(22).padding(.top, 16)
+        }.padding(.horizontal, 12).padding(.bottom, 22).padding(.top, 32)
             .modifier(DesktopSidebarSurface())
     }
     private func nav(_ title: String, symbol: String, value: String) -> some View {
         Button { page = value } label: {
             Label(title, systemImage: symbol).font(.system(size: 13, weight: page == value ? .semibold : .regular))
-                .foregroundStyle(page == value ? palette.accent : palette.text)
-                .frame(maxWidth: .infinity, alignment: .leading).padding(11)
-                .background(page == value ? palette.selected : hoveredPage == value ? palette.control : .clear, in: Capsule())
-                .overlay(Capsule().strokeBorder(page == value ? .white.opacity(scheme == .dark ? 0.18 : 0.65) : .clear, lineWidth: 1))
-                .contentShape(Capsule())
+                .foregroundStyle(palette.text)
+                .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 10).padding(.vertical, 9)
+                .background(page == value ? palette.selected : hoveredPage == value ? palette.control : .clear,
+                            in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }.buttonStyle(.plain)
             .onHover { hoveredPage = $0 ? value : nil }
             .accessibilityAddTraits(page == value ? .isSelected : [])
