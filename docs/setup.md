@@ -2,7 +2,7 @@
 
 This guide takes you from a checkout to recorded Chrome activity, then covers preferences, troubleshooting, updates, and removal.
 
-**Current build:** SurfMeter 0.2 development build. Chrome is the implemented adapter; Safari is not enabled. The deployment target is macOS 14+, but only Apple Silicon/macOS 27.2 has been exercised. Browser privacy/accuracy certification and signed, notarized distribution are still pending. See [validation](VALIDATION.md).
+**Current build:** SurfMeter 0.2 development build. Chrome is the implemented adapter; Safari is not enabled. The deployment target is macOS 14+, but only Apple Silicon/macOS 27.2 has been exercised. Browser privacy/accuracy certification and signed, notarized distribution are still pending. See [validation](validation.md).
 
 The annotated images use native SurfMeter UI renders and Google's official Chrome example screenshots. SurfMeter renders use sample data or the pre-connection state; greyed-out preview buttons are enabled in the real app. Google's screenshots show **Hello Extensions**, so use your **SurfMeter — Browser Bridge** card and its actual ID instead. Images are available as 2× PNGs and [editable annotation data with SVG exports](media/setup/README.md). Click any image to zoom.
 
@@ -95,7 +95,7 @@ For repository-based extension development, you may instead select `extensions/c
 
 Chrome may describe these capabilities as **“Read your browsing history”** (`tabs`) and **“Communicate with cooperating native applications”** (`nativeMessaging`). These are broad API permission warnings; SurfMeter's current code reads selected-tab state and does not use Chrome's history API. See [Chrome's official permission descriptions](https://developer.chrome.com/docs/extensions/reference/permissions-list).
 
-No account or backend is involved. These setup steps do not request Full Disk Access, Accessibility access, or screen recording. Real private-window/focus/permission behavior still needs release validation; see [the acceptance record](VALIDATION.md).
+No account or backend is involved. These setup steps do not request Full Disk Access, Accessibility access, or screen recording. Real private-window/focus/permission behavior still needs release validation; see [the acceptance record](validation.md).
 
 ## 4. Register the local connection
 
@@ -165,7 +165,7 @@ Use **Pause tracking** in the footer for a temporary stop. Use **Resume tracking
 
 **Expected:** rows and totals reflect recorded activity. Daily compares today so far with yesterday's complete day: green/↓ means less, red/↑ means more, and equal values are neutral. A first run can show **No data recorded yesterday**. Missing records or partial coverage are not proof that the browser was unused.
 
-This is a functional setup check, not the controlled ten-minute accuracy/private-window acceptance experiment. Record formal browser/OS checks in [Validation](VALIDATION.md) before advertising the integration as release-certified.
+This is a functional setup check, not the controlled ten-minute accuracy/private-window acceptance experiment. Record formal browser/OS checks in [Validation](validation.md) before advertising the integration as release-certified.
 
 ## Troubleshooting
 
@@ -173,7 +173,7 @@ This is a functional setup check, not the controlled ten-minute accuracy/private
 | --- | --- |
 | No waves/time item | Open the app, not the prototype website. Check the right side of the menu bar; SurfMeter does not require a Dock window. Close other SurfMeter development instances if the bridge reports a conflict. |
 | `npm: command not found` | Install Node.js with npm, reopen Terminal, and check `node --version` / `npm --version`. |
-| Swift/package build fails | Check Swift 6 and the selected developer directory. Keep the first error output. Use the current build script and [development notes](DEVELOPMENT.md); installing only an old toolchain is insufficient. |
+| Swift/package build fails | Check Swift 6 and the selected developer directory. Keep the first error output. Use the current build script and [development notes](development.md); installing only an old toolchain is insufficient. |
 | Finder cannot reveal the extension | Rebuild the extension first, then the app. The bundle must contain `Contents/Resources/ChromeExtension/manifest.json`. |
 | Chrome cannot load the folder | Select `ChromeExtension` or the built `extensions/chrome/dist` containing `manifest.json`. Do not select a source directory or file. Review Chrome's displayed manifest error. |
 | ID rejected | Copy only the actual 32 lowercase letters from the SurfMeter card. Do not paste the sample screenshot's ID or a `chrome-extension://.../` URL. |
@@ -258,4 +258,4 @@ The Remove/toggle controls are shown in the last annotated figure. No Safari ext
 
 ## More detail and image sources
 
-[Developer commands](DEVELOPMENT.md) · [Validation status](VALIDATION.md) · [Implementation tracker](IMPLEMENTATION.md) · [Architecture](ARCHITECTURE.md) · [Image sources, attribution, and regeneration](media/setup/README.md)
+[Developer commands](development.md) · [Validation status](validation.md) · [Implementation tracker](implementation.md) · [Architecture](architecture.md) · [Image sources, attribution, and regeneration](media/setup/README.md)

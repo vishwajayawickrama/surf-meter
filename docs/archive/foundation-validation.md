@@ -1,6 +1,6 @@
 # Native foundation validation
 
-Historical foundation session: 2026-11-05. For the expanded 2026-11-06 app, see [Current validation](VALIDATION.md). Task 1 remains **In progress**. Synthetic tests prove the native path works; they do not certify Safari/Chrome integration or accurate time accounting.
+Historical foundation session: 2026-11-05. For the expanded 2026-11-06 app, see [Current validation](../validation.md). Task 1 remains **In progress**. Synthetic tests prove the native path works; they do not certify Safari/Chrome integration or accurate time accounting.
 
 ## Environment
 
@@ -8,7 +8,7 @@ Historical foundation session: 2026-11-05. For the expanded 2026-11-06 app, see 
 - Apple Swift 6.4, Command Line Tools. Full Xcode is absent.
 - Installed Safari 27.2; Google Chrome 156.0.8078.80. Installed versions are not a verified support guarantee.
 - Deployment target: macOS 14 for the foundation (SwiftData planned in Task 3). macOS 14 execution and Intel builds are unverified.
-- No Node/npm on the shell PATH. For this session, the bundled Codex Node runtime ran the pinned TypeScript 5.9.3 compiler downloaded from npm with SHA-512 integrity verification. Normal development uses Node + `npm ci`.
+- The feasibility check used the pinned TypeScript 5.9.3 compiler with npm integrity verification. Current development uses Node and `npm ci` as described in the development guide.
 
 ## Recorded checks
 
@@ -30,7 +30,7 @@ Historical foundation session: 2026-11-05. For the expanded 2026-11-06 app, see 
 
 ## Reproduce
 
-Follow [Development](DEVELOPMENT.md) for build, tests, and Chrome setup. A constrained coding sandbox may need approval to launch the native UI and bind the local socket. The integration test cleans up the app, helper, and temporary socket directory when finished.
+Follow [Development](../development.md) for build, tests, and Chrome setup. A constrained coding sandbox may need approval to launch the native UI and bind the local socket. The integration test cleans up the app, helper, and temporary socket directory when finished.
 
 Swift 6.4 CLT's default build system omitted the Swift Testing macro plugin. `scripts/test-native.sh` supplies the installed plugin path explicitly when using CLT and disables XCTest (not installed here). The six tests then pass. Initial XCTest and unconfigured Swift Testing attempts failed; those failures were toolchain setup issues and are not reported as passes.
 

@@ -1,6 +1,6 @@
 # Browser state protocol v1
 
-Implemented boundaries: `extensions/chrome/src/state.ts` and `Sources/SurfMeterCore/BrowserState.swift`. Safari is not implemented. This is an ephemeral connection snapshot, not a browsing-history or duration record.
+Implemented boundaries: `extensions/chrome/src/state.ts` and `sources/surf-meter-core/BrowserState.swift`. Safari is not implemented. This is an ephemeral connection snapshot, not a browsing-history or duration record.
 
 ```json
 {

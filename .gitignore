@@ -1,12 +1,41 @@
+# macOS and editor state
 .DS_Store
-.build/
 DerivedData/
 xcuserdata/
 *.xcuserstate
+
+# Generated builds, dependencies, and reports
+.build/
+.swiftpm/xcode/
+node_modules/
+extensions/*/dist/
+artifacts/
+coverage/
+*.log
+__pycache__/
+.pytest_cache/
+.venv/
+
+# Local credentials, signing material, and agent state
 .env
 .env.*
 !.env.example
-node_modules/
-extensions/*/dist/
+.npmrc
+.netrc
+.aws/
+.codex/
+*.key
+*.pem
+*.p12
+*.pfx
+*.mobileprovision
+*.provisionprofile
 
-__pycache__/
+# Personal activity and native host configuration
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+host-config.json

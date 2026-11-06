@@ -6,26 +6,26 @@ Status: Native Chrome development app implemented; real-browser, Safari, OS, and
 
 ## Current implementation
 
-The repository contains a Swift Package with a SwiftUI menu bar shell, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. The deterministic accounting engine, local hourly aggregate store, and native Daily/Weekly/detail/preferences/setup UI are now implemented. See [validation](VALIDATION.md) for tested behavior and remaining gates.
+The repository contains a Swift Package with a SwiftUI menu bar shell, shared protocol/IPC core, Swift Chrome native host, and strict TypeScript Chrome extension. Local app/helper IPC and protocol checks pass; real-browser validation and Safari packaging are pending. The deterministic accounting engine, local hourly aggregate store, and native Daily/Weekly/detail/preferences/setup UI are now implemented. See [validation](validation.md) for tested behavior and remaining gates.
 
 The approved interactive UI prototype is built with HTML, CSS, and vanilla JavaScript. It runs with a local Python HTTP server, uses sample activity, and stores preview preferences in browser local storage. Browser connections and system settings are simulated.
 
-The production direction is a native macOS app. The approved prototype provides the screen designs and interaction reference; those screens will be recreated in SwiftUI.
+The SwiftUI implementation follows the approved prototype, which remains the reference for screen layout and interactions.
 
-## Proposed stack
+## Technology stack
 
 | Layer | Technology | Responsibility |
 | --- | --- | --- |
 | Application | Swift and SwiftUI | Daily/Weekly dashboard, Yesterday shortcut, platform details, preferences, and setup. |
 | Menu bar | SwiftUI `MenuBarExtra`, with AppKit where needed | Today's usage label, application lifecycle, and popover presentation. |
-| Appearance | Apple's system Liquid Glass APIs | Native materials and controls on supported macOS versions, with compatible material fallbacks. Honor accessibility and appearance preferences. |
+| Appearance | SwiftUI system materials and window-scoped AppKit appearance | Liquid Glass-inspired translucent panels, explicit Light/Dark/System modes, and opaque accessibility fallbacks. |
 | Browser extensions | TypeScript and WebExtensions | Observe the active website, selected tab, and browser-window focus. Share browser-independent logic and keep browser-specific adapters small. |
 | Extension/app communication | Browser native messaging and a local Swift bridge | Deliver browser state to the app without a remote service. Safari and Chrome use different native integration mechanisms. |
 | Tracking engine | Swift concurrency, AppKit, and macOS system APIs | Combine browser state with foreground-app, idle, sleep, lock, pause, and permission state; accumulate eligible time once. |
-| Persistence | Core Data, programmatic schema with local SQLite storage | Persist daily platform totals and minimal coverage metadata. The native app owns writes. |
-| Preferences | SwiftUI `@AppStorage` / `UserDefaults` | Small settings such as pause state, appearance preference, and exclusions. No secrets belong here. |
+| Persistence | Core Data, programmatic schema with local SQLite storage | Persist hourly platform aggregates and minimal coverage metadata; derive daily and weekly totals. The native app owns writes. |
+| Preferences | Observable SwiftUI model and Codable `UserDefaults` preferences | Small settings such as pause state, appearance preference, and exclusions. No secrets belong here. |
 | Build and dependencies | Xcode and Swift Package Manager; TypeScript compiler for extensions | Build the app, extension targets, and native messaging helper. Use dependencies only when needed. |
-| Validation | Swift Testing / XCTest and browser integration checks | Verify duration accounting, grouping, rollover, persistence, and real browser behavior. |
+| Validation | Swift Testing, isolated app-model checks, and browser integration checks | Verify duration accounting, grouping, rollover, persistence, and real browser behavior. |
 | Distribution | Apple code signing and notarization | Prepare a distributable Mac app and the appropriate browser extension packages; finalize the delivery channel after the integration prototype. |
 
 No backend, account system, cloud database, or cloud synchronization is planned for the MVP.
@@ -71,10 +71,10 @@ The extension reports browser state. The native engine determines whether that s
 
 - **Safari:** package a Safari Web Extension with the Mac app. Its native extension handler receives messages and relays the needed state to the app.
 - **Chrome:** use an extension and registered native messaging host implemented in Swift. The host relays validated browser state to the running app.
-- **Shared contract:** v1 carries browser, worker session UUID, sequence, eligibility state, and optional normalized hostname. Tab/window identifiers are unnecessary for the current snapshot path and are omitted. See [protocol](BROWSER-PROTOCOL.md).
+- **Shared contract:** v1 carries browser, worker session UUID, sequence, eligibility state, and optional normalized hostname. Tab/window identifiers are unnecessary for the current snapshot path and are omitted. See [protocol](browser-protocol.md).
 - **Connection lifecycle:** on startup or reconnection, request a current-state snapshot. Do not replay disconnected intervals as measured usage. Detect stale or disconnected integrations and stop affected attribution.
 
-Native messaging is the extension-to-native boundary. The development Chrome host relays to the app using a private same-user Unix domain socket with framed JSON, restrictive filesystem permissions, peer UID validation, and an exclusive server lock. This path is tested with the actual app/helper and synthetic snapshots. Exact origin registration restricts extension access, but UID checks do not authenticate same-user processes by code signature. Safari sandbox compatibility, production authentication, packaging, and launch behavior remain unverified. An installed helper can reopen its configured app; real-Chrome launch/recovery remains to be validated. See [validation](FOUNDATION-VALIDATION.md).
+Native messaging is the extension-to-native boundary. The development Chrome host relays to the app using a private same-user Unix domain socket with framed JSON, restrictive filesystem permissions, peer UID validation, and an exclusive server lock. This path is tested with the actual app/helper and synthetic snapshots. Exact origin registration restricts extension access, but UID checks do not authenticate same-user processes by code signature. Safari sandbox compatibility, production authentication, packaging, and launch behavior remain unverified. An installed helper can reopen its configured app; real-Chrome launch/recovery remains to be validated. See [current validation](validation.md).
 
 Only the main app should write usage records. Browser adapters should not independently open and mutate the same model store. Limit native messaging access to the intended extension and validate incoming messages before accepting them.
 
@@ -126,7 +126,7 @@ Safari and Chrome are initial targets, not a published support guarantee. Extens
 
 ## Implementation sequence
 
-The [implementation tracker](IMPLEMENTATION.md) is the source of truth for delivery order and progress. It divides the native app into five tasks: foundation/browser feasibility, tracking engine, storage/summaries, native UI/integration, and release validation/packaging. Each task includes completion criteria and session handoff notes.
+The [implementation tracker](implementation.md) is the source of truth for delivery order and progress. It divides the native app into five tasks: foundation/browser feasibility, tracking engine, storage/summaries, native UI/integration, and release validation/packaging. Each task includes completion criteria and session handoff notes.
 
 ## Primary references
 
@@ -135,10 +135,10 @@ The [implementation tracker](IMPLEMENTATION.md) is the source of truth for deliv
 - [Apple Human Interface Guidelines: Materials](https://developer.apple.com/design/human-interface-guidelines/materials)
 - [Messaging between a Safari Web Extension and its app](https://developer.apple.com/documentation/safariservices/messaging-between-the-app-and-javascript-in-a-safari-web-extension)
 - [Chrome native messaging](https://developer.chrome.com/docs/extensions/develop/concepts/native-messaging)
-- [Persisting model data with Core Data](https://developer.apple.com/documentation/swiftdata/preserving-your-apps-model-data-across-launches)
+- [Persisting model data with Core Data](https://developer.apple.com/documentation/coredata)
 - [App activation notifications](https://developer.apple.com/documentation/appkit/nsworkspace/didactivateapplicationnotification)
 
-See the [SRS](SRS.md) for product requirements and the [development guide](DEVELOPMENT.md) to run the current prototype.
+See the [SRS](srs.md) for product requirements and the [development guide](development.md) to run the current prototype.
 
 ## Implemented development flow
 
@@ -151,3 +151,9 @@ The bundled Public Suffix List includes private suffixes, wildcards, and excepti
 The app bundles its Chrome extension and helper; GUI setup installs an exact-origin per-user registration. User settings are separate from usage records. Demo rendering and test simulation never access the normal store. `SMAppService` provides opt-in login registration; the UI reports failures or required system approval.
 
 Lock detection combines workspace/session/screen notifications with distributed lock notifications and a supplemental CGSession dictionary key. The latter signals are not a certified public API contract; actual lock/unlock/startup behavior is a release gate. The same-user socket is still development IPC, not code-signature authentication. Safari sandbox IPC, production identities, notarization, and the real-browser accuracy/privacy matrix remain unfinished.
+
+## Repository layout
+
+Project-owned directories use kebab-case. Swift module/product names retain their language identifiers; `Package.swift` supplies explicit source paths. See [repository conventions](repository.md) for the directory map and hygiene checks.
+
+The app acquires `activity.lock` before opening Core Data; `bridge.lock` separately protects the Unix socket. A duplicate service-enabled app exits with status 75 before it can save stale aggregates. The OS releases leases when the owning process terminates.

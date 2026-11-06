@@ -6,7 +6,7 @@
 
 A quiet place in your Mac’s menu bar for where your time goes.
 
-[Setup guide](docs/SETUP.md) · [Functional audit](docs/QA-AUDIT.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
+[Setup guide](docs/setup.md) · [Functional audit](docs/qa-audit.md) · [Try the Mac app](#try-the-native-development-build) · [Explore the prototype](#try-the-first-look) · [Screenshots](#a-closer-look) · [Roadmap](#whats-next)
 
 </div>
 
@@ -71,7 +71,7 @@ cd ../..
 open .build/SurfMeter.app
 ```
 
-Requires macOS 14+, Swift 6, and Node/npm to build. Open **Browser setup** in the app, load its bundled Chrome extension, paste the extension ID, connect, and enable recording. Safari is not enabled yet. See the [annotated setup guide](docs/SETUP.md) and [tested capabilities and remaining gates](docs/VALIDATION.md).
+Requires macOS 14+, Swift 6, and Node/npm to build. Open **Browser setup** in the app, load its bundled Chrome extension, paste the extension ID, connect, and enable recording. Safari is not enabled yet. See the [annotated setup guide](docs/setup.md) and [tested capabilities and remaining gates](docs/validation.md).
 
 The native app includes Daily/Weekly views, Yesterday, website details, green/red comparisons, pause/resume, exclusions, retention, confirmed deletion, and appearance preferences. Activity stays in a local aggregate store; there is no backend or account. A self-contained, ad hoc signed development archive can be built with `./scripts/package-app.sh`; it is not a notarized release.
 
@@ -99,9 +99,9 @@ The browser connections, activity, and system settings are simulated. Preview pr
 
 ## What’s next
 
-Try the [native development build](docs/DEVELOPMENT.md#native-foundation), or read the [current validation results](docs/FOUNDATION-VALIDATION.md). The native app now includes accounting, persistence, and the dashboard. Original marketing GIFs remain the web prototype; the native previews are labeled separately.
+Try the [native development build](docs/development.md#build-the-native-app), or read the [current validation results](docs/validation.md). The native app now includes accounting, persistence, and the dashboard. Original marketing GIFs remain the web prototype; the native previews are labeled separately.
 
-Native implementation is organized into [five tasks](docs/IMPLEMENTATION.md), with completion criteria and handoff notes for work across sessions.
+Native implementation is organized into [five tasks](docs/implementation.md), with completion criteria and handoff notes for work across sessions.
 
 - [ ] Native foundation and browser feasibility
 - [ ] Accurate activity tracking engine
@@ -113,4 +113,4 @@ Want to shape the next iteration? [Open an issue](https://github.com/vishwajayaw
 
 ---
 
-[Implementation](docs/IMPLEMENTATION.md) · [Requirements](docs/SRS.md) · [Technology stack and architecture](docs/ARCHITECTURE.md) · [Development guide](docs/DEVELOPMENT.md) · [Media and capture notes](docs/media/README.md)
+[Documentation](docs/README.md) · [Implementation](docs/implementation.md) · [Requirements](docs/srs.md) · [Technology stack and architecture](docs/architecture.md) · [Development guide](docs/development.md) · [Media and capture notes](docs/media/README.md)

@@ -4,7 +4,7 @@ Updated: 2026-11-06
 
 This is the implementation tracker for the native macOS app. The five tasks retain their acceptance dependencies; each may span multiple sessions. On 2026-11-06 the user authorized whole-app development, so independent engine, storage, and UI work proceeded while real-browser feasibility gates stayed open. The web prototype remains the approved UI reference. A native development implementation now exists; it is not a certified release.
 
-Setup: [annotated guide](SETUP.md) · Requirements: [SRS](SRS.md) · Technical direction: [Architecture](ARCHITECTURE.md) · Run the prototype: [Development guide](DEVELOPMENT.md)
+Setup: [annotated guide](setup.md) · Requirements: [SRS](srs.md) · Technical direction: [Architecture](architecture.md) · Run the prototype: [Development guide](development.md)
 
 ## Progress
 
@@ -16,7 +16,7 @@ Setup: [annotated guide](SETUP.md) · Requirements: [SRS](SRS.md) · Technical d
 | 4 | Native UI and complete app integration | In progress | 3 |
 | 5 | Validation, packaging, and first release | In progress | 4 |
 
-**Next action:** Run the native app, connect Chrome through Browser setup, and record the real-browser privacy/accuracy/lifecycle matrix in [Validation](VALIDATION.md). Install full Xcode for Safari packaging. Complete production identity/signing/notarization and clean-install/performance checks before calling this a release.
+**Next action:** Run the native app, connect Chrome through Browser setup, and record the real-browser privacy/accuracy/lifecycle matrix in [Validation](validation.md). Install full Xcode for Safari packaging. Complete production identity/signing/notarization and clean-install/performance checks before calling this a release.
 
 ## Task 1 — Native foundation and browser feasibility
 
@@ -38,7 +38,7 @@ Setup: [annotated guide](SETUP.md) · Requirements: [SRS](SRS.md) · Technical d
 - Safari and Chrome have a recorded pass/fail result for the required signals, private-window exclusion, and connection recovery. Any support reduction is explicitly resolved in the SRS before moving on.
 - The architecture and development guide describe the chosen bridge, permissions, support matrix, and reproducible integration checks. A dependency requiring user setup is recorded as pending, not as a passed check.
 
-**Evidence / handoff — 2026-11-06:** Buildable app, shared core, exact-origin Chrome helper/extension, bundled resources, same-user socket, GUI registration, reconnect action, and app launch attempt on a new helper session are implemented. The expanded app/helper synthetic tests pass. Native foreground/idle/screen/session signals are connected, with lock-specific supplemental signals still requiring validation. Real Chrome privacy/focus/recovery, multiple profiles, Safari packaging/sandbox IPC, production identities, and supported OS execution remain pending. Full Xcode is absent. See [current validation](VALIDATION.md), [historical foundation checks](FOUNDATION-VALIDATION.md), and [setup](DEVELOPMENT.md).
+**Evidence / handoff — 2026-11-06:** Buildable app, shared core, exact-origin Chrome helper/extension, bundled resources, same-user socket, GUI registration, reconnect action, and app launch attempt on a new helper session are implemented. The expanded app/helper synthetic tests pass. Native foreground/idle/screen/session signals are connected, with lock-specific supplemental signals still requiring validation. Real Chrome privacy/focus/recovery, multiple profiles, Safari packaging/sandbox IPC, production identities, and supported OS execution remain pending. Full Xcode is absent. See [current validation](validation.md), [historical foundation checks](archive/foundation-validation.md), and [setup](development.md).
 
 ## Task 2 — Accurate activity tracking engine
 
@@ -58,7 +58,7 @@ Setup: [annotated guide](SETUP.md) · Requirements: [SRS](SRS.md) · Technical d
 - Domain checks distinguish platform subdomains from lookalikes and unrelated sites under public suffixes.
 - A controlled real-browser session demonstrates attribution within the SRS accuracy target. Record any failing case rather than relaxing the target silently.
 
-**Evidence / handoff — 2026-11-06:** `TrackingEngine`, `TrackingEligibility`, `DomainClassifier`, and `UsageLedger` are implemented and wired into the native app. Monotonic samples, idle/freshness cutoff, generation-based invalidation, pause/system/exclusion gates, domain aliases and bundled PSL, hour/midnight/DST splitting, and clock/gap resets have automated checks. A real app/helper synthetic recording test verifies accounting and database updates. Actual browser accuracy, multiple profiles, lock/session behavior, and recovery timing remain pending. See [validation](VALIDATION.md).
+**Evidence / handoff — 2026-11-06:** `TrackingEngine`, `TrackingEligibility`, `DomainClassifier`, and `UsageLedger` are implemented and wired into the native app. Monotonic samples, idle/freshness cutoff, generation-based invalidation, pause/system/exclusion gates, domain aliases and bundled PSL, hour/midnight/DST splitting, and clock/gap resets have automated checks. A real app/helper synthetic recording test verifies accounting and database updates. Actual browser accuracy, multiple profiles, lock/session behavior, and recovery timing remain pending. See [validation](validation.md).
 
 ## Task 3 — Local storage and usage summaries
 
@@ -122,7 +122,7 @@ Setup: [annotated guide](SETUP.md) · Requirements: [SRS](SRS.md) · Technical d
 - Release documentation represents the native app's verified capabilities and distinguishes any remaining prototype-only behavior.
 - The release version, commit, artifact location, and validation results are recorded below.
 
-**Evidence / handoff — 2026-11-06:** Automated core/extension checks, actual app/helper tests, native preview rendering, ad hoc signature verification, and `.build/SurfMeter-0.2.0-development.zip` packaging are available. [Validation](VALIDATION.md) separates simulated checks from outstanding real-browser acceptance. No public release, notarization, Safari package, minimum-OS/Intel guarantee, performance certification, or clean-install certification is claimed. Next: complete the manual matrix and signing prerequisites; do not mark the release Done based on development packaging.
+**Evidence / handoff — 2026-11-06:** Automated core/extension checks, actual app/helper tests, native preview rendering, ad hoc signature verification, and `.build/SurfMeter-0.2.0-development.zip` packaging are available. [Validation](validation.md) separates simulated checks from outstanding real-browser acceptance. No public release, notarization, Safari package, minimum-OS/Intel guarantee, performance certification, or clean-install certification is claimed. Next: complete the manual matrix and signing prerequisites; do not mark the release Done based on development packaging.
 
 ## Continuing across sessions
 
@@ -142,20 +142,19 @@ Exact next action:
 
 Keep the five task IDs stable. Add detail within the appropriate task rather than creating another top-level task. Update the SRS or architecture when implementation evidence changes a requirement or technical decision.
 
-## Latest session handoff — 2026-11-06
+## Current handoff
 
-Implemented the native development app through accounting, persistence, and interface integration. Run commands and data/setup/removal locations are in [Development](DEVELOPMENT.md). Current automated and pending manual evidence is in [Validation](VALIDATION.md). All five tasks retain open acceptance gates rather than claiming Done from synthetic tests. The current checkpoint is identifiable by the Git commit titled “Build native tracking, storage, and dashboard”.
+Updated: 2026-11-06. All five tasks remain **In progress** because their release acceptance gates are still open.
 
-### Local install follow-up — 2026-11-06
+The native Chrome development app includes accounting, local persistence, a prototype-aligned dashboard, and browser setup. The audited build passes 21 Swift tests, 3 extension tests, 21 isolated model assertions, 6 same-panel appearance checks, and native bridge/recording/crash-recovery checks. A sample-data native window passed 41 UI interaction assertions. See [validation](validation.md) for the current summary and [the audit](qa-audit.md) for detailed evidence.
 
-The app and bundled Chrome extension are installed and connected on the development Mac. Recording and login registration were explicitly enabled by the user. A live Chrome-to-store smoke check and a background no-increase check passed; this does not close the remaining browser accuracy/privacy, Safari, lifecycle, or distribution gates. Added a validated installed-app setup command for a menu-only app and preference reload notifications. Setup/development documentation describes its explicit recording/login flags and partial-login exit status.
+Storage uses an exclusive writer lease before Core Data opens. Duplicate launches are rejected; retention changes persist immediately, and crash/reopen checks verify durable totals without downtime backfill. Normal recording remains off until setup and explicit opt-in.
 
-### Prototype appearance follow-up — 2026-11-06
+Next work:
 
-Fixed live panel appearance switching with a window-scoped AppKit bridge, restored prototype typography/layout/charts/vector marks, and refreshed native previews plus setup annotations. The isolated same-panel theme regression and 20 Swift tests pass. No acceptance gate for Safari, distribution, or full browser/lifecycle accuracy is closed by this UI work.
+1. Complete the controlled real-browser accuracy/privacy/profile/lifecycle matrix.
+2. Verify actual menu-panel placement, full keyboard/VoiceOver behavior, and accessibility settings.
+3. Implement and package Safari with full Xcode; validate its sandbox-compatible integration.
+4. Complete production identity/signing/notarization, supported-platform, clean-install, login/reboot, and performance gates.
 
-### Functional/visual audit follow-up — 2026-11-06
-
-Added [QA audit evidence and handoff](QA-AUDIT.md) plus a repeatable audit script. Corrected retention persistence, unknown-baseline comparisons, bridge retry wiring, equal-time wording, tiny-duration progress, recording-off status, and weekly labels/averages. Automated/core/model/integration/theme/package checks pass. Native interaction was initially blocked by the locked Mac, then resumed: 41 actual sample-window assertions passed. Corrected hourly accessibility labels and restored paired detail statistics plus weekly labels/averages. Next action: inspect the installed menu panel, then complete the remaining real-browser and accessibility matrix before claiming every acceptance gate passes. All five implementation tasks retain their open release gates.
-
-Final storage-safety follow-up: reproduced the duplicate-writer startup bug in disposable input, added an exclusive activity lease before Core Data opens, and extended recording integration to check duplicate rejection and crash/reopen/helper recovery. This is separate from production crash-loss/performance certification.
+Keep the five task IDs stable. Update this handoff and the validation evidence when behavior or acceptance status changes; use Git history for earlier session details.

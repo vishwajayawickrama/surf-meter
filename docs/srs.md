@@ -170,7 +170,7 @@ Persist only the minimum coverage detail needed to describe incomplete days. Thi
 
 ## 8. Technical discovery and release gates
 
-The proposed implementation direction is Swift and SwiftUI, `MenuBarExtra`, system Liquid Glass where supported, TypeScript browser extensions with native messaging, and local Core Data/SQLite persistence. See [Technology stack and architecture](ARCHITECTURE.md) for component responsibilities, data flow, and validation gates. The macOS deployment target, exact browser support matrix, local IPC mechanism, and distribution details remain subject to technical discovery.
+The proposed implementation direction is Swift and SwiftUI, `MenuBarExtra`, system Liquid Glass where supported, TypeScript browser extensions with native messaging, and local Core Data/SQLite persistence. See [Technology stack and architecture](architecture.md) for component responsibilities, data flow, and validation gates. The macOS deployment target, exact browser support matrix, local IPC mechanism, and distribution details remain subject to technical discovery.
 
 Before accepting the MVP for release:
 
@@ -207,7 +207,7 @@ Before accepting the MVP for release:
 
 ## 10. Suggested delivery order
 
-See the [five-task implementation tracker](IMPLEMENTATION.md) for delivery order, dependencies, completion criteria, and current progress. It covers the native foundation/browser feasibility, tracking engine, storage/summaries, native UI/integration, and release validation/packaging in that order.
+See the [five-task implementation tracker](implementation.md) for delivery order, dependencies, completion criteria, and current progress. It covers the native foundation/browser feasibility, tracking engine, storage/summaries, native UI/integration, and release validation/packaging in that order.
 
 ## 11. Decisions to confirm before implementation
 

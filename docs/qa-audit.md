@@ -1,6 +1,6 @@
 # Functional and visual audit — 2026-11-06
 
-The automated development audit passes, and **41 assertions passed through the actual sample-data UI** after the Mac became available. The first two computer-control attempts were blocked by the locked Mac; the interaction pass was then resumed. The installed menu-panel check and real-browser/release matrix remain separate gates. This document does not certify every browser scenario or accessibility configuration.
+The automated development audit passes, and **41 assertions passed through the actual sample-data UI** in the isolated test workflow. The installed menu-panel check and real-browser/release matrix remain separate gates. This document does not certify every browser scenario or accessibility configuration.
 
 Environment: Apple Silicon, macOS 27.2, Swift 6.4 Command Line Tools, Node 24.22.2. The baseline was commit `5b626d3`; this audit adds the fixes and repeatable checks below. Full Xcode and Safari packaging remain unavailable.
 
@@ -70,10 +70,10 @@ Use `.build/SurfMeter.app/Contents/MacOS/SurfMeter --ui-audit` for sample-data i
 | Pause/resume from status and footer; keyboard shortcut | Controls stay consistent and no paused time accumulates. | **Pass**: footer Pause, status Resume, and Command-Shift-P twice. Eligibility exclusion passes core tests. |
 | Delete activity → Cancel; then confirm in sample window | Cancel preserves totals; confirm clears them. Never run this on personal history for testing. | **Pass**: actual Cancel preserves 3h 10m; confirmation produces 0m and empty state. Durable deletion/reopen passes model checks. |
 | Preferences → Connected browsers → Back; scroll setup | All setup controls reachable; Safari clearly unavailable. | **Pass**: actual route, Back, and scrolling to Safari status; recording toggle off/on and Pause disabled state checked. |
-| Open/close the installed menu panel and change appearance | Correct screen placement and real material; no duplicate app or reset state. | **Tool blocked**: user opened the installed panel, but native attachment still timed out. The menu-only app is absent from the tool’s regular app inventory. No installed-panel placement pass is claimed. |
+| Open/close the installed menu panel and change appearance | Correct screen placement and real material; no duplicate app or reset state. | **Tool blocked**: the menu-only panel was not exposed by the native automation service. No installed-panel placement pass is claimed. |
 | Tab/Shift-Tab/Space/Enter, VoiceOver, contrast/transparency/motion settings | Controls reachable and correctly named; readable fallbacks. | **Partial**: Return submission, Command-Shift-P, and hour/duration accessibility entries pass. Full Tab order, spoken VoiceOver and system accessibility settings remain pending. |
 
-Real-browser gates remain the ones in [Validation](VALIDATION.md): a controlled ten-minute accuracy session; real private/minimized/internal pages and multiple profiles/windows; permission loss; idle/sleep/unlock/recovery; login/reboot; performance; supported older OS/Intel; and Safari implementation. A green automated run does not close these gates.
+Real-browser gates remain the ones in [Validation](validation.md): a controlled ten-minute accuracy session; real private/minimized/internal pages and multiple profiles/windows; permission loss; idle/sleep/unlock/recovery; login/reboot; performance; supported older OS/Intel; and Safari implementation. A green automated run does not close these gates.
 
 ## Reproduce
 

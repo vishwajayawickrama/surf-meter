@@ -2,6 +2,7 @@
 # Repeatable local development audit. Browser/OS interaction gates remain manual.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+python3 scripts/check-repo.py
 (cd extensions/chrome && npm test)
 ./scripts/build-native.sh
 ./scripts/test-native.sh
@@ -17,4 +18,4 @@ RENDERS="$(mktemp -d "${TMPDIR:-/private/tmp}/surfmeter-audit-renders.XXXXXX")"
 "$APP" --render-previews "$RENDERS/standard"
 "$APP" --render-audit-previews "$RENDERS/edge-cases"
 printf 'Inspect the rendered screens in %s\n' "$RENDERS"
-printf 'Manual interaction and release gates: docs/QA-AUDIT.md\n'
+printf 'Manual interaction and release gates: docs/qa-audit.md\n'

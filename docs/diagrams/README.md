@@ -1,6 +1,6 @@
 # Architecture diagrams
 
-The icon-led reference architecture (A) is the selected visual direction in [ARCHITECTURE.md](../ARCHITECTURE.md). B and C are retained as collapsed comparisons.
+The icon-led reference architecture (A) is the selected visual direction in [architecture.md](../architecture.md). B and C are retained as collapsed comparisons.
 
 | Option | View | PNG size | Best use |
 | --- | --- | --- | --- |
@@ -21,7 +21,7 @@ Open a `.drawio` file in diagrams.net or its desktop editor to edit the shapes, 
 - **Layered responsibility view:** Option C groups UI, application logic, and platform/persistence adapters. Its solid arrows indicate calls/dependencies between layers; its dashed browser connections indicate incoming messages. It is deliberately not a process-deployment diagram.
 - **Editable delivery:** [draw.io's architecture documentation](https://www.drawio.com/docs/diagram-types/aws-diagrams/) describes icon libraries, grouping, routing, and documentation exports. All three alternatives have editable source files alongside their image exports.
 
-The comparison varies layout, notation, information density, and shape treatment rather than only changing colors. The browser/IPC integration remains subject to Task 1 in the [implementation tracker](../IMPLEMENTATION.md).
+The comparison varies layout, notation, information density, and shape treatment rather than only changing colors. The browser/IPC integration remains subject to Task 1 in the [implementation tracker](../implementation.md).
 
 ## Regenerate
 

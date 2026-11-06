@@ -2,7 +2,7 @@
 
 SurfMeter 0.2 is a native macOS development build with Chrome activity accounting, a local aggregate store, and a SwiftUI menu bar dashboard. Safari integration and release certification remain unfinished. The web prototype is retained as the visual reference.
 
-[Annotated setup guide](SETUP.md) · [Implementation tracker](IMPLEMENTATION.md) · [Architecture](ARCHITECTURE.md) · [Current validation](VALIDATION.md) · [Browser protocol](BROWSER-PROTOCOL.md)
+[Annotated setup guide](setup.md) · [Implementation tracker](implementation.md) · [Architecture](architecture.md) · [Current validation](validation.md) · [Browser protocol](browser-protocol.md)
 
 ## Build the native app
 
@@ -20,13 +20,13 @@ cd ../..
 open .build/SurfMeter.app
 ```
 
-The build bundles the compiled Chrome extension, native helper, and Public Suffix List into the app and ad hoc signs it. The build has no external Swift dependencies. It disables nested SwiftPM sandboxing for this coding environment; the Swift 6.4 CLT testing script also supplies the installed Testing macro plugin path. `ViewState` is a type alias for the existing SwiftUI property wrapper, avoiding macOS 27 SDK's new `State` macro dependency under CLT.
+The build bundles the compiled Chrome extension, native helper, and Public Suffix List into the app and ad hoc signs it. The build has no external Swift dependencies. The scripts use temporary module caches and disable nested SwiftPM sandboxing. The Swift 6.4 CLT testing script also supplies the installed Testing macro plugin path. `ViewState` is a type alias for the existing SwiftUI property wrapper, avoiding macOS 27 SDK's new `State` macro dependency under CLT.
 
 Click the waves icon in the menu bar. Recording is **off until setup is completed and explicitly enabled**. Daily, Yesterday, Weekly, website details, pause/resume, appearance, exclusions, retention, deletion, and browser setup use native views and actual aggregate data. The preview mode below is separate from recording.
 
 ## Connect Chrome
 
-For the full walkthrough with numbered screenshot callouts, expected results, and troubleshooting, see [Set up SurfMeter](SETUP.md).
+For the full walkthrough with numbered screenshot callouts, expected results, and troubleshooting, see [Set up SurfMeter](setup.md).
 
 1. Open **Browser setup** via **gear → Connected browsers** in SurfMeter. Choose **Show Chrome extension folder**.
 2. Open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select that `ChromeExtension` folder. The repository's `extensions/chrome/dist` also works for iterative development.
@@ -77,7 +77,7 @@ python3 scripts/verify-native-bridge.py
 python3 scripts/verify-recording.py
 ```
 
-`verify-recording.py` runs about 22 seconds. It starts the real app and helper with **synthetic browser input in a temporary directory**, verifies native accounting and SQLite totals, and verifies that unavailable input adds no time. It does not inspect your browser or alter normal preferences. `--simulate-chrome` is honored only with an explicit `--bridge-directory`; the app labels this mode Simulation.
+`verify-recording.py` runs about 35 seconds. It starts the real app and helper with **synthetic browser input in a temporary directory**, verifies native accounting and SQLite totals, rejects duplicate writers, and verifies crash/reopen/helper recovery without unavailable time or downtime backfill. It does not inspect your browser or alter normal preferences. `--simulate-chrome` is honored only with an explicit `--bridge-directory`; the app labels this mode Simulation.
 
 For the accelerated ten-minute deterministic accounting/disk/reopen/retention/deletion check, run the built `SurfMeterVerification` executable at the bin directory reported by `swift build --show-bin-path`. This is a simulated timeline, not a real-browser accuracy certification.
 
@@ -89,7 +89,7 @@ open -n .build/SurfMeter.app --args --demo
 .build/SurfMeter.app/Contents/MacOS/SurfMeter --render-previews /private/tmp/surfmeter-native-previews
 ```
 
-The exporter renders native AppKit-hosted SwiftUI views at 828×1320 (2×), in both appearances. Sample data is labeled Preview. Transparency is disabled for reproducible layout captures; inspect the running app for live system glass and accessibility behavior.
+The exporter renders native AppKit-hosted SwiftUI views at 2× in both appearances. Panel widths are 780 pixels (390 points); heights vary by screen. Full setup/preferences captures use their content height. Sample data is labeled Preview. Transparency is disabled for reproducible layout captures; inspect the running app for live system glass and accessibility behavior.
 
 Create a local development archive after a successful build:
 
@@ -97,7 +97,7 @@ Create a local development archive after a successful build:
 ./scripts/package-app.sh
 ```
 
-This verifies the ad hoc signature and creates `.build/SurfMeter-0.2.0-development.zip`. It is not notarized or a production release. Signing, real-browser accuracy/privacy, supported OS versions, login items, lifecycle, resource limits, and clean installation remain open gates in [Validation](VALIDATION.md). Safari does not record anything in this build; see [its prerequisites](../extensions/safari/README.md).
+This verifies the ad hoc signature and creates `.build/SurfMeter-0.2.0-development.zip`. It is not notarized or a production release. Signing, real-browser accuracy/privacy, supported OS versions, login items, lifecycle, resource limits, and clean installation remain open gates in [Validation](validation.md). Safari does not record anything in this build; see [its prerequisites](../extensions/safari/README.md).
 
 ## Remove the development integration
 
@@ -129,9 +129,6 @@ The prototype follows an Apple Liquid Glass direction: a translucent floating po
 
 This is a browser approximation of the material for UI review. The native macOS implementation should adopt Apple's system Liquid Glass APIs where supported, with an appropriate fallback on older macOS versions. See [Apple's materials guidance](https://developer.apple.com/design/human-interface-guidelines/materials).
 
-Appearance verification uses an isolated demo model and one persistent NSPanel, checking Light → Dark → Light → Dark → System against both AppKit effective appearance and the SwiftUI environment. It does not modify normal preferences or activity. Manual display/accessibility testing remains necessary.
-
-
 ## Repeatable functional and visual audit
 
 ```sh
@@ -140,6 +137,6 @@ Appearance verification uses an isolated demo model and one persistent NSPanel, 
 .build/SurfMeter.app/Contents/MacOS/SurfMeter --ui-audit
 ```
 
-The audit script uses temporary databases and a unique temporary preferences suite, which is removed afterward. `--verify-model` checks app-level persistence and recovery; `--verify-appearance` now checks explicit and System modes against both simulated system appearances. `--render-audit-previews DIRECTORY` writes comparison edge cases and genuine isolated first-run screens. Normal browsing history is never seeded or cleared by these commands. See [QA audit](QA-AUDIT.md) for completed evidence and remaining manual checks.
+The audit script uses temporary databases and a unique temporary preferences suite, which is removed afterward. `--verify-model` checks app-level persistence and recovery; `--verify-appearance` now checks explicit and System modes against both simulated system appearances. `--render-audit-previews DIRECTORY` writes comparison edge cases and genuine isolated first-run screens. Normal browsing history is never seeded or cleared by these commands. See [QA audit](qa-audit.md) for completed evidence and remaining manual checks.
 
 Only one service-enabled app may own an activity directory. The app acquires `activity.lock` (mode 0600) before opening Core Data; a duplicate exits with status 75. `bridge.lock` separately protects the socket endpoint. The OS releases both locks if the process exits or crashes; do not delete a lock file to bypass an active instance. The recording integration check now exercises duplicate rejection and crash/restart recovery in a temporary directory.

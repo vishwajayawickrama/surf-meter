@@ -1,6 +1,6 @@
 # Annotated setup screenshots
 
-Used by [the setup guide](../../SETUP.md). Eight figures are supplied as readable 2× PNG exports and self-contained SVGs. The SVGs embed their source PNGs, so annotations remain editable without broken image references.
+Used by [the setup guide](../../setup.md). Eight figures are supplied as readable 2× PNG exports and self-contained SVGs. The SVGs embed their source PNGs, so annotations remain editable without broken image references.
 
 ## What the images show
 
@@ -35,7 +35,7 @@ cp /private/tmp/surfmeter-setup-sources/native-preferences-content-light@2x.png 
 swift -module-cache-path /private/tmp/surfmeter-swift-cache scripts/render-setup-guide.swift
 ```
 
-The first command expects the extension build prerequisites described in [Development](../../DEVELOPMENT.md). The native exporter uses an isolated demo model; it does not connect a browser, enable login, delete records, or access the normal activity store. It now emits full setup/preferences content in addition to the existing popover previews.
+The first command expects the extension build prerequisites described in [Development](../../development.md). The native exporter uses an isolated demo model; it does not connect a browser, enable login, delete records, or access the normal activity store. It now emits full setup/preferences content in addition to the existing popover previews.
 
 `annotations.json` defines the source, display width, optional pixel crop, and numbered rectangle/title/explanation for each figure. Coordinates use original source pixels, including for cropped figures. The Swift renderer validates crop and annotation bounds, writes PNG/SVG pairs, and preserves the original screenshot pixels in the SVG.
 
