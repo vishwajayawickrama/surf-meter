@@ -10,7 +10,7 @@ Your browser time, in the menu bar and a detailed Mac app.
 
 </div>
 
-![SurfMeter — the current native Mac dashboard with website usage and a Finder-style sidebar](https://raw.githubusercontent.com/vishwajayawickrama/surf-meter/main/docs/media/cover-2x.png)
+[![SurfMeter — Make time visible. Actual desktop and menu-bar views with sample activity.](docs/media/marketing/surf-meter-product-visual-v2.png)](docs/media/marketing/surf-meter-product-visual-v2.png)
 
 > **Native development build available.** SurfMeter 0.1.1 Alpha 1 includes a resizable desktop window and first-run setup walkthrough alongside its SwiftUI menu bar dashboard, Chrome tracking engine, and local aggregate storage. The Apple Silicon DMG is an ad hoc signed, unnotarized development prerelease. Real-browser accuracy/privacy certification, Safari, and signed distribution are still in progress. The screenshots and GIF state tours show the current native development UI with labeled sample data. They may include improvements made after the downloadable Alpha 1 build.
 

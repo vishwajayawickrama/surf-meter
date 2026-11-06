@@ -2,9 +2,22 @@
 
 Refreshed on 2026-11-06 from the native app at source revision `127abbd`. All activity is labeled sample data; no recorded browser history is used. These images show the current development UI, which can be newer than the published Alpha 1 DMG.
 
+## Current product visual
+
+[![SurfMeter desktop and menu-bar views with sample activity](marketing/surf-meter-product-visual-v2.png)](marketing/surf-meter-product-visual-v2.png)
+
+The main README uses this 2800 × 2100 composition of original app renders and the app's exact wave mark. [Download PNG](marketing/surf-meter-product-visual-v2.png) · [Editable SVG](marketing/surf-meter-product-visual-v2.svg) · [Source and regeneration notes](marketing/README.md).
+
+Regenerate it after refreshing its source screenshots:
+
+```sh
+swift -module-cache-path /private/tmp/surfmeter-swift-cache scripts/render-marketing-graphic.swift
+```
+
 ## Assets
 
-- `cover-2x.png`: 2400 × 1880 cover containing the original 2200 × 1560 desktop render without upscaling.
+- `marketing/surf-meter-product-visual-v2.png`: current README hero showing the desktop and menu bar with minimal copy; editable SVG and original screenshot sources are alongside it.
+- `cover-2x.png`: earlier 2400 × 1880 desktop cover, retained but no longer used as the README hero.
 - `daily-2x.png`, `yesterday-2x.png`, `weekly-2x.png`, `daily-dark-2x.png`: current 780 × 1532 native menu layouts.
 - `preferences-dark-2x.png`: current 780 × 1380 preferences layout.
 - `activity-tour-2x.gif`: Daily, Yesterday, Weekly and weekly platform detail; 12 seconds.
@@ -28,4 +41,4 @@ python3 scripts/build-readme-media.py /private/tmp/surfmeter-readme-current
 cp /private/tmp/surfmeter-readme-current/calendar-*-2x.png docs/media/desktop/
 ```
 
-The composition script requires FFmpeg and the macOS system Arial font. It replaces the README cover, menu stills, native/desktop/onboarding galleries and both GIFs. Calendar images are copied separately. Review output visually before committing. Historical audit evidence and annotated setup captures are kept separately and are not overwritten by this workflow.
+The composition script requires FFmpeg and the macOS system Arial font. It replaces the earlier desktop cover, menu stills, native/desktop/onboarding galleries and both GIFs. The current product hero is composed separately with the Swift renderer above. Calendar images are copied separately. Review output visually before committing. Historical audit evidence and annotated setup captures are kept separately and are not overwritten by this workflow.

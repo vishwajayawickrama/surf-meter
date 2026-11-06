@@ -1,6 +1,8 @@
-# SurfMeter marketing infographic
+# SurfMeter product visuals
 
 ## Current revision: product visual v2
+
+[![SurfMeter — Make time visible](surf-meter-product-visual-v2.png)](surf-meter-product-visual-v2.png)
 
 [PNG](surf-meter-product-visual-v2.png) · [Self-contained SVG](surf-meter-product-visual-v2.svg)
 

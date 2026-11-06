@@ -16,7 +16,7 @@ SurfMeter is a native macOS development app with Chrome tracking and local aggre
 | [Validation](validation.md) | Current verification summary and release gates. |
 | [Functional and visual audit](qa-audit.md) | Detailed findings, regressions, screenshots, and native interaction evidence. |
 | [Repository conventions](repository.md) | Folder structure, naming, publication hygiene, and documentation maintenance. |
-| [Media](media/README.md) | Prototype capture sources, native previews, and screenshot regeneration. |
+| [Media](media/README.md) | Current product visual, native screenshots, GIFs, and regeneration guides. |
 | [Third-party notices](../third-party-notices.md) | Bundled data and documentation asset attribution. |
 
 Historical evidence is kept in [the archive](archive/README.md). It records earlier states and does not override the current validation summary.
