@@ -61,6 +61,6 @@ struct OnboardingView: View {
         }.padding(32).frame(width: 580, height: 650)
             .modifier(DesktopGlassButtons())
             .foregroundStyle(SurfPalette(dark: scheme == .dark).text)
-            .background(scheme == .dark ? Color(hex: 0x182337) : Color(hex: 0xF3F6FC))
+            .background(SurfPalette(dark: scheme == .dark).solid)
     }
 }

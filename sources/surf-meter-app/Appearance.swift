@@ -28,15 +28,15 @@ private struct AppearanceWindow: NSViewRepresentable {
 
 struct SurfPalette {
     let dark: Bool
-    var text: Color { Color(hex: dark ? 0xEEF3FC : 0x202B3B) }
-    var muted: Color { Color(hex: dark ? 0xB1BED2 : 0x65758B) }
-    var line: Color { Color(hex: dark ? 0xCDE1FF : 0x506D93).opacity(0.12) }
-    var control: Color { Color.white.opacity(dark ? 0.09 : 0.38) }
-    var selected: Color { Color.white.opacity(dark ? 0.18 : 0.82) }
-    var solid: Color { Color(hex: dark ? 0x263248 : 0xEDF3FC) }
+    var text: Color { Color(nsColor: .labelColor) }
+    var muted: Color { Color(nsColor: .secondaryLabelColor) }
+    var line: Color { Color(nsColor: .separatorColor) }
+    var control: Color { Color(nsColor: .quaternaryLabelColor) }
+    var selected: Color { Color(nsColor: .unemphasizedSelectedContentBackgroundColor) }
+    var solid: Color { Color(nsColor: .windowBackgroundColor) }
     var green: Color { Color(hex: dark ? 0x83DAB1 : 0x18704E) }
     var red: Color { Color(hex: dark ? 0xFFA69B : 0xB3433E) }
-    var accent: Color { Color(hex: dark ? 0x94B8FF : 0x326DF1) }
+    var accent: Color { Color(nsColor: .controlAccentColor) }
     func delta(_ seconds: Double) -> Color { abs(seconds) < 0.000_001 ? muted : seconds < 0 ? green : red }
 }
 extension Color {

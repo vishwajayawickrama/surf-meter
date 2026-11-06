@@ -144,6 +144,7 @@ enum PreviewExport {
         let measured = size ?? host.fittingSize
         let fitted = NSSize(width: measured.width, height: ceil(measured.height))
         let window = NSWindow(contentRect: NSRect(origin: .zero, size: fitted), styleMask: [.borderless], backing: .buffered, defer: false)
+        window.appearance = NSAppearance(named: dark ? .darkAqua : .aqua)
         window.contentView = host
         window.setFrameOrigin(NSPoint(x: -10000, y: -10000))
         window.orderFrontRegardless()

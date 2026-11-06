@@ -132,7 +132,7 @@ struct DashboardView: View {
                             .contentShape(Rectangle())
                     }.buttonStyle(.plain).accessibilityValue(period == item ? "Selected" : "")
                 }
-            }.padding(4).background(Color(hex: colorScheme == .dark ? 0xB9D1FF : 0x6D8DB7).opacity(colorScheme == .dark ? 0.09 : 0.08), in: Capsule())
+            }.padding(4).background(palette.control, in: Capsule())
                 .accessibilityElement(children: .contain).accessibilityLabel("Activity period")
             HStack {
                 VStack(alignment: .leading, spacing: 4) {

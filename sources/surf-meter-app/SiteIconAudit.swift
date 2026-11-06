@@ -54,6 +54,6 @@ struct SiteIconGallery: View {
             }
             Spacer(minLength: 0)
         }.padding(32).foregroundStyle(SurfPalette(dark: dark).text)
-            .background(dark ? Color(hex: 0x182337) : Color(hex: 0xF3F6FC))
+            .background(SurfPalette(dark: dark).solid)
     }
 }

@@ -52,10 +52,7 @@ struct DesktopView: View {
                 }.padding(32).frame(maxWidth: .infinity, alignment: .leading)
             }
             .background {
-                ZStack {
-                    (scheme == .dark ? Color(hex: 0x121D30) : Color(hex: 0xEEF3FB))
-                    LinearGradient(colors: [palette.accent.opacity(0.09), .clear], startPoint: .topLeading, endPoint: .bottomTrailing)
-                }.ignoresSafeArea(.container, edges: .top)
+                palette.solid.ignoresSafeArea(.container, edges: .top)
             }
         }
         .foregroundStyle(palette.text)
