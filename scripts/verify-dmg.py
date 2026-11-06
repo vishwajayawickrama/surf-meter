@@ -27,6 +27,10 @@ with tempfile.TemporaryDirectory(prefix="surfmeter-dmg-check-") as temp:
             assert (mount / f"setup-images/onboarding-{step}-light-2x.png").is_file()
         assert (app / "Contents/Helpers/SurfMeterNativeHost").is_file()
         assert (app / "Contents/Resources/AppIcon.icns").is_file()
+        brands = app / "Contents/Resources/SurfMeter_SurfMeterApp.bundle/Contents/Resources/site-icons/brands.json"
+        assert len(json.loads(brands.read_text())) >= 48
+        assert (brands.parent / "simple-icons-license.txt").is_file()
+        assert (brands.parent / "font-awesome-license.txt").is_file()
         manifest = json.loads((app / "Contents/Resources/ChromeExtension/manifest.json").read_text())
         assert manifest["manifest_version"] == 3
         # Do not follow the Applications symlink when inspecting artifact files.

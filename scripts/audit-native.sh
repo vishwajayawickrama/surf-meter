@@ -12,6 +12,7 @@ python3 scripts/verify-recording.py
 APP="$PWD/.build/SurfMeter.app/Contents/MacOS/SurfMeter"
 "$APP" --verify-model
 "$APP" --verify-appearance
+"$APP" --verify-site-icons
 BIN="$(swift build --disable-sandbox --show-bin-path)"
 "$BIN/SurfMeterVerification"
 ./scripts/package-app.sh

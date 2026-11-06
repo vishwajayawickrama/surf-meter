@@ -100,3 +100,10 @@ The menu panel clipped its SwiftUI contents to a rounded rectangle, but the nati
 `MenuPanelSurface` now clears the window container on macOS 15+, clears the AppKit window backing (including the macOS 14 path), and masks the content layer to the same 26-point continuous corners as the SwiftUI fill and border. The modifier is attached only to the menu dashboard. Shadow invalidation runs only when surface properties change, rather than on every activity tick.
 
 The existing appearance verification now asserts native transparency, layer masking, radius and corner curve across six light/dark/system transitions. An additional check confirms the desktop keeps its native window backing. Sample previews were rendered again and the installed app was updated with unchanged preferences and preserved aggregate totals. The actual macOS 14 fallback still requires a supported-OS test. This fix is committed after the original Alpha 1 tag; the published Alpha 1 assets remain unchanged.
+
+
+## Website brand icons — 2026-11-06, after Alpha 1
+
+Replaced the five illustrative native brand drawings and generic brand symbols with bundled upstream vector artwork for 48 website identities / 67 domain aliases, including ChatGPT, Google, the social platforms, developer tools, streaming and productivity sites. The menu panel, desktop, detail headings and accessibility labels use consistent display names; unknown sites receive initials. No icon lookup sends browsing domains off the Mac, and neither accounting classification nor existing totals change.
+
+The isolated `--verify-site-icons` check validates every bundled vector's geometry, required familiar sites, unique aliases, subdomain normalization, more-specific service matching, deceptive suffix rejection, fallback initials and unchanged accounting grouping. The light/dark 2× galleries were rendered and reviewed. Artwork is decoded and converted to paths once per process; no image request or repeated SVG parsing occurs during recording. The app build and DMG verifier now check the app's additional resource bundle and retained licenses. Published Alpha 1 assets remain unchanged.

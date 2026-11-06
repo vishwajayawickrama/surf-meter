@@ -4,6 +4,17 @@ import SurfMeterCore
 
 @MainActor
 enum PreviewExport {
+    static func renderSiteIcons(directory: URL) {
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            for dark in [false, true] {
+                try capture(SiteIconGallery(dark: dark).environment(\.colorScheme, dark ? .dark : .light),
+                            size: NSSize(width: 1050, height: 840), dark: dark,
+                            destination: directory.appendingPathComponent("site-icons-\(dark ? "dark" : "light")-2x.png"))
+            }
+            print("Rendered bundled website icon galleries at 2× scale.")
+        } catch { fputs("Icon rendering failed: \(error)\n", stderr); exit(1) }
+    }
     static func render(model: AppModel, directory: URL) {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

@@ -20,7 +20,7 @@ struct DesktopView: View {
     }
     private var rows: [UsageRow] {
         model.ledger.rows(days: days, compare: previous).filter {
-            search.isEmpty || $0.platform.name.localizedCaseInsensitiveContains(search) || $0.id.localizedCaseInsensitiveContains(search)
+            search.isEmpty || $0.platform.displayName.localizedCaseInsensitiveContains(search) || $0.id.localizedCaseInsensitiveContains(search)
         }
     }
     private var total: Double { model.ledger.total(days: days, platform: platform) }
@@ -107,7 +107,7 @@ struct DesktopView: View {
             VStack(alignment: .leading, spacing: 20) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(platform.map { Platform.named($0).name } ?? "All websites").font(.headline)
+                        Text(platform.map { Platform.named($0).displayName } ?? "All websites").font(.headline)
                         Text(UsageFormat.duration(total)).font(.system(size: 42, weight: .semibold, design: .rounded)).monospacedDigit()
                         if hasComparison {
                             Text("\(UsageFormat.change(total - comparison)) than \(weekly ? "previous 7 days" : "previous day")")
@@ -143,7 +143,7 @@ struct DesktopView: View {
                     Button { platform = platform == row.id ? nil : row.id } label: {
                         HStack(spacing: 12) {
                             PlatformIcon(platform: row.platform, size: 35)
-                            VStack(alignment: .leading, spacing: 4) { Text(row.platform.name).font(.system(size: 13, weight: .medium)); Text(row.id).font(.caption).foregroundStyle(palette.muted) }
+                            VStack(alignment: .leading, spacing: 4) { Text(row.platform.displayName).font(.system(size: 13, weight: .medium)); Text(row.id).font(.caption).foregroundStyle(palette.muted) }
                             Spacer()
                             VStack(alignment: .trailing, spacing: 4) {
                                 Text(UsageFormat.duration(row.seconds)).font(.system(size: 14, weight: .semibold)).monospacedDigit()
@@ -152,13 +152,13 @@ struct DesktopView: View {
                             Text(hasComparison ? UsageFormat.change(row.delta) : "—").font(.caption).foregroundStyle(hasComparison ? deltaColor(row.delta) : palette.muted).frame(width: 120, alignment: .trailing)
                         }.padding(.vertical, 13).padding(.horizontal, 8).contentShape(Rectangle())
                             .background(platform == row.id ? palette.control : .clear, in: RoundedRectangle(cornerRadius: 12))
-                    }.buttonStyle(.plain).accessibilityLabel("\(row.platform.name), \(UsageFormat.duration(row.seconds)). Show breakdown.")
+                    }.buttonStyle(.plain).accessibilityLabel("\(row.platform.displayName), \(UsageFormat.duration(row.seconds)). Show breakdown.")
                     Divider()
                 }
             }
             if let platform {
                 HStack {
-                    Label("\(Platform.named(platform).name) · selected in chart", systemImage: "chart.bar")
+                    Label("\(Platform.named(platform).displayName) · selected in chart", systemImage: "chart.bar")
                     Spacer()
                     let excluded = model.preferences.excluded.contains(platform)
                     Button(excluded ? "Include in future tracking" : "Exclude from future tracking") {

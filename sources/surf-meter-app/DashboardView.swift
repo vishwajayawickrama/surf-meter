@@ -89,7 +89,7 @@ struct DashboardView: View {
             HStack(spacing: 12) {
                 PlatformIcon(platform: .named(id), size: 41)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(Platform.named(id).name).font(.system(size: 17, weight: .semibold))
+                    Text(Platform.named(id).displayName).font(.system(size: 17, weight: .semibold))
                     Text(id).font(.system(size: 10)).foregroundStyle(palette.muted)
                 }
             }
@@ -204,7 +204,7 @@ struct DashboardView: View {
         HStack(spacing: 11) {
             PlatformIcon(platform: row.platform, size: 31)
             VStack(alignment: .leading, spacing: 5) {
-                Text(row.platform.name).font(.system(size: 11, weight: .medium)).lineLimit(1)
+                Text(row.platform.displayName).font(.system(size: 11, weight: .medium)).lineLimit(1)
                 GeometryReader { geometry in
                     Capsule().fill(Color(hex: row.platform.hex).opacity(0.12)).overlay(alignment: .leading) {
                         Capsule().fill(Color(hex: row.platform.hex).opacity(0.75)).frame(width: max(0, geometry.size.width * row.seconds / max(0.000_001, rows.first?.seconds ?? 1)))
@@ -326,11 +326,24 @@ struct DashboardView: View {
 struct PlatformIcon: View {
     let platform: Platform
     let size: CGFloat
-    private var color: Color { Color(red: Double((platform.hex >> 16) & 255) / 255, green: Double((platform.hex >> 8) & 255) / 255, blue: Double(platform.hex & 255) / 255) }
+    @Environment(\.colorScheme) private var scheme
+    private var artwork: SiteIconCatalog.Artwork? { SiteIconCatalog.match(platform.id) }
+    private var color: Color {
+        if artwork?.metadata.monochrome == true { return SurfPalette(dark: scheme == .dark).text }
+        let hex = artwork.flatMap { UInt32($0.metadata.hex, radix: 16) } ?? SiteIconCatalog.fallbackColor(platform.id)
+        if scheme == .dark {
+            // Lift colored marks against the glass without changing their silhouette.
+            let amount = 0.22
+            return Color(red: Double((hex >> 16) & 255) / 255 * (1-amount) + amount,
+                         green: Double((hex >> 8) & 255) / 255 * (1-amount) + amount,
+                         blue: Double(hex & 255) / 255 * (1-amount) + amount)
+        }
+        return Color(hex: hex)
+    }
     var body: some View {
-        BrandMark(id: platform.id, fallback: platform.symbol).frame(width: size * 0.65, height: size * 0.65)
+        BrandMark(id: platform.id, fallback: platform.symbol).frame(width: size * 0.62, height: size * 0.62)
             .foregroundStyle(color).frame(width: size, height: size)
-            .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: size * 0.29))
+            .background(color.opacity(0.10), in: RoundedRectangle(cornerRadius: size * 0.29))
             .accessibilityHidden(true)
     }
 }

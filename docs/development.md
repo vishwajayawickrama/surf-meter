@@ -144,3 +144,15 @@ Only one service-enabled app may own an activity directory. The app acquires `ac
 ## Resource measurement
 
 See [Performance](performance.md) for the installed-process/controlled workloads, CPU timebase calibration, publication scope, plots, raw data, and exact reproduction commands. The measurement harness uses only the Python standard library and macOS counters; optional pinned Matplotlib is needed only for report generation. Run plotting/dependency installation after collection ends. Tooling math and report-safety tests run with `python3 tests/tooling/test-resource-metrics.py` and are included in `scripts/audit-native.sh`.
+
+
+## Website icon assets
+
+The native app bundles 48 website identities for 67 domain aliases. See [asset provenance and regeneration](../sources/surf-meter-app/resources/site-icons/README.md). Authoring dependencies are optional; ordinary app builds consume the checked-in vectors and do not fetch icons. Both the menu panel and desktop use the same catalog, and unknown websites use a domain initial. Artwork and display names do not change stored platform grouping.
+
+```sh
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --verify-site-icons
+.build/SurfMeter.app/Contents/MacOS/SurfMeter --render-site-icons /private/tmp/surfmeter-icon-previews
+```
+
+[Light gallery](media/native/site-icons-light-2x.png) · [Dark gallery](media/native/site-icons-dark-2x.png). The gallery uses known site identities and reserved example domains, not a user's history.

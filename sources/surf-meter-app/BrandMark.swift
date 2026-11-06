@@ -1,38 +1,77 @@
 import SwiftUI
+import SurfMeterCore
 
-/// Vector marks from the approved prototype, drawn at the display's native scale.
+/// Bundled upstream artwork, decoded and converted to paths once per process.
+/// Website history never leaves the Mac to resolve an icon.
+enum SiteIconCatalog {
+    struct Metadata: Decodable {
+        let slug: String
+        let title: String
+        let domains: [String]
+        let hex: String
+        let monochrome: Bool
+        let commands: [[Double]]
+    }
+    struct Artwork {
+        let metadata: Metadata
+        let path: Path
+    }
+    static let artwork: [Artwork] = {
+        guard let url = Bundle.module.url(forResource: "brands", withExtension: "json", subdirectory: "site-icons"),
+              let data = try? Data(contentsOf: url),
+              let records = try? JSONDecoder().decode([Metadata].self, from: data) else { return [] }
+        return records.map { metadata in
+            let path = Path { path in
+                for values in metadata.commands {
+                    switch values.first {
+                    case 0 where values.count == 3: path.move(to: CGPoint(x: values[1], y: values[2]))
+                    case 1 where values.count == 3: path.addLine(to: CGPoint(x: values[1], y: values[2]))
+                    case 2 where values.count == 7:
+                        path.addCurve(to: CGPoint(x: values[5], y: values[6]), control1: CGPoint(x: values[1], y: values[2]), control2: CGPoint(x: values[3], y: values[4]))
+                    case 3 where values.count == 5:
+                        path.addQuadCurve(to: CGPoint(x: values[3], y: values[4]), control: CGPoint(x: values[1], y: values[2]))
+                    case 4: path.closeSubpath()
+                    default: break
+                    }
+                }
+            }
+            return Artwork(metadata: metadata, path: path)
+        }
+    }()
+    private static let domains: [(String, Artwork)] = artwork.flatMap { item in item.metadata.domains.map { ($0, item) } }
+        .sorted { $0.0.count > $1.0.count }
+
+    static func match(_ hostname: String) -> Artwork? {
+        let hostname = hostname.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "."))
+        return domains.first { DomainClassifier.matches(hostname, domain: $0.0) }?.1
+    }
+    static func fallbackInitial(_ hostname: String) -> String {
+        let value = hostname.lowercased().hasPrefix("www.") ? String(hostname.dropFirst(4)) : hostname
+        return value.first(where: { $0.isLetter || $0.isNumber }).map { String($0).uppercased() } ?? "?"
+    }
+    static func fallbackColor(_ hostname: String) -> UInt32 {
+        let colors: [UInt32] = [0x376DA3, 0x7B539D, 0x297A73, 0xA85B38, 0x5165A8, 0x9C4874]
+        let hash = hostname.lowercased().utf8.reduce(UInt32(5381)) { ($0 &* 33) &+ UInt32($1) }
+        return colors[Int(hash % UInt32(colors.count))]
+    }
+}
+
+extension Platform {
+    var displayName: String { SiteIconCatalog.match(id)?.metadata.title ?? name }
+}
+
 struct BrandMark: View {
     let id: String
     let fallback: String
     var body: some View {
-        if ["youtube.com", "instagram.com", "reddit.com", "x.com", "github.com"].contains(id) {
-            Canvas { context, size in
+        Canvas { context, size in
+            if let artwork = SiteIconCatalog.match(id) {
                 context.scaleBy(x: size.width / 24, y: size.height / 24)
-                let ink = GraphicsContext.Shading.foreground
-                func stroke(_ path: Path) { context.stroke(path, with: ink, style: StrokeStyle(lineWidth: 1.65, lineCap: .round, lineJoin: .round)) }
-                func line(_ points: [CGPoint]) -> Path { Path { p in p.addLines(points) } }
-                func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
-                switch id {
-                case "youtube.com":
-                    context.fill(Path(roundedRect: CGRect(x: 2, y: 5, width: 20, height: 14), cornerRadius: 5), with: ink)
-                    var p = line([pt(10,9),pt(16,12),pt(10,15)]); p.closeSubpath(); context.fill(p, with: .color(.white))
-                case "instagram.com":
-                    stroke(Path(roundedRect: CGRect(x: 3, y: 3, width: 18, height: 18), cornerRadius: 5))
-                    stroke(Path(ellipseIn: CGRect(x: 8, y: 8, width: 8, height: 8)))
-                    context.fill(Path(ellipseIn: CGRect(x: 16.6, y: 5.6, width: 1.8, height: 1.8)), with: ink)
-                case "x.com":
-                    stroke(line([pt(4,3),pt(20,21),pt(15,21),pt(3,3),pt(8,3),pt(21,21)])); stroke(line([pt(20,3),pt(4,21)]))
-                case "reddit.com":
-                    stroke(line([pt(12,7),pt(14,3),pt(19,4)]))
-                    stroke(Path(ellipseIn: CGRect(x: 18,y: 2,width: 4,height: 4)))
-                    stroke(Path(ellipseIn: CGRect(x: 3,y: 8,width: 18,height: 12)))
-                    var p = Path(); p.move(to: pt(4,10)); p.addCurve(to: pt(3,14), control1: pt(0,5), control2: pt(0,14)); p.move(to: pt(20,10)); p.addCurve(to: pt(21,14),control1: pt(24,5),control2: pt(24,14)); p.move(to: pt(8,17)); p.addCurve(to: pt(16,17),control1: pt(10,19),control2: pt(14,19)); stroke(p)
-                    for x: CGFloat in [7,15] { context.fill(Path(ellipseIn: CGRect(x: x,y: 12,width: 2,height: 2)),with: ink) }
-                default:
-                    var p = Path(); p.move(to: pt(8,20)); p.addCurve(to: pt(1,17),control1: pt(3,21),control2: pt(3,17))
-                    p.move(to: pt(14,22)); p.addLine(to: pt(14,18)); p.addCurve(to: pt(13.5,16),control1: pt(14,17),control2: pt(14.1,16.4)); p.addCurve(to: pt(19.5,11),control1: pt(17.5,15.5),control2: pt(19.5,14)); p.addCurve(to: pt(18,7.5),control1: pt(19.5,9.5),control2: pt(19,8.5)); p.addCurve(to: pt(18,4),control1: pt(18.3,6.5),control2: pt(18.3,5)); p.addCurve(to: pt(14,5.5),control1: pt(16,4),control2: pt(15,5)); p.addQuadCurve(to: pt(7,5.5),control: pt(10.5,4.5)); p.addCurve(to: pt(3,4),control1: pt(6,5),control2: pt(5,4)); p.addCurve(to: pt(3,7.5),control1: pt(2.7,5),control2: pt(2.7,6.5)); p.addCurve(to: pt(1.5,11),control1: pt(2,8.5),control2: pt(1.5,9.5)); p.addCurve(to: pt(7.5,16),control1: pt(1.5,14),control2: pt(3.5,15.5)); p.addCurve(to: pt(7,18),control1: pt(6.9,16.4),control2: pt(7,17)); p.addLine(to: pt(7,22)); stroke(p.applying(CGAffineTransform(a: 0.9,b: 0,c: 0,d: 0.9,tx: 2,ty: -1)))
-                }
+                context.fill(artwork.path, with: .foreground)
+            } else {
+                let letter = Text(SiteIconCatalog.fallbackInitial(id)).font(.system(size: size.height * 0.82, weight: .semibold, design: .rounded))
+                context.draw(letter.foregroundColor(.primary), at: CGPoint(x: size.width / 2, y: size.height / 2))
             }
-        } else { Image(systemName: fallback).resizable().scaledToFit() }
+        }
     }
 }

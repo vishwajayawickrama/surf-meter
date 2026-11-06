@@ -11,7 +11,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "SurfMeterCore", path: "sources/surf-meter-core", resources: [.copy("resources/public_suffix_list.dat")]),
-        .executableTarget(name: "SurfMeterApp", dependencies: ["SurfMeterCore"], path: "sources/surf-meter-app"),
+        .executableTarget(name: "SurfMeterApp", dependencies: ["SurfMeterCore"], path: "sources/surf-meter-app", resources: [.copy("resources/site-icons")]),
         .executableTarget(name: "SurfMeterVerification", dependencies: ["SurfMeterCore"], path: "sources/surf-meter-verification"),
         .executableTarget(name: "SurfMeterNativeHost", dependencies: ["SurfMeterCore"], path: "sources/surf-meter-native-host"),
         .testTarget(name: "SurfMeterCoreTests", dependencies: ["SurfMeterCore"], path: "tests/surf-meter-core-tests")

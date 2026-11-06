@@ -10,8 +10,10 @@ swift build --configuration "$CONFIGURATION" --disable-sandbox --cache-path /pri
 BIN="$(swift build --configuration "$CONFIGURATION" --disable-sandbox --show-bin-path)"
 APP="$PWD/.build/SurfMeter.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Helpers" "$APP/Contents/Resources"
-rm -rf "$APP/Contents/Resources/SurfMeter_SurfMeterCore.bundle"
-cp -R "$BIN/SurfMeter_SurfMeterCore.bundle" "$APP/Contents/Resources/"
+for MODULE in SurfMeterCore SurfMeterApp; do
+  rm -rf "$APP/Contents/Resources/SurfMeter_${MODULE}.bundle"
+  cp -R "$BIN/SurfMeter_${MODULE}.bundle" "$APP/Contents/Resources/"
+done
 if [[ -f extensions/chrome/dist/manifest.json ]]; then
   rm -rf "$APP/Contents/Resources/ChromeExtension"
   cp -R extensions/chrome/dist "$APP/Contents/Resources/ChromeExtension"

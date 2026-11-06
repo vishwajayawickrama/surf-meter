@@ -9,6 +9,10 @@ struct SurfMeterApp: App {
         if CommandLine.arguments.contains("--configure-chrome") {
             SetupCommand.run(arguments: Array(CommandLine.arguments.dropFirst()))
         }
+        if CommandLine.arguments.contains("--verify-site-icons") { SiteIconAudit.verify(); exit(0) }
+        if let index = CommandLine.arguments.firstIndex(of: "--render-site-icons"), CommandLine.arguments.indices.contains(index + 1) {
+            PreviewExport.renderSiteIcons(directory: URL(fileURLWithPath: CommandLine.arguments[index + 1])); exit(0)
+        }
         if CommandLine.arguments.contains("--verify-model") { AuditSupport.verifyModel(); exit(0) }
         let demo = CommandLine.arguments.contains("--desktop-audit") || CommandLine.arguments.contains("--render-audit-previews") || CommandLine.arguments.contains("--ui-audit") || CommandLine.arguments.contains("--verify-appearance") || CommandLine.arguments.contains("--demo") || CommandLine.arguments.contains("--render-previews")
         let model = AppModel(demo: demo)

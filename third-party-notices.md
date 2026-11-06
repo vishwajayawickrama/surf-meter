@@ -6,7 +6,7 @@
 
 ## Documentation assets
 
-The architecture diagram fonts and icons retain their respective license files in `docs/diagrams`. TypeScript is a development dependency; its license is supplied by its npm package. General interface symbols use Apple SF Symbols through system APIs. Platform brand marks are code-native vectors adapted from the project prototype; the associated marks remain the property of their respective owners.
+The architecture diagram fonts and icons retain their respective license files in `docs/diagrams`. TypeScript is a development dependency; its license is supplied by its npm package. General interface symbols use Apple SF Symbols through system APIs. Website marks in the current native app use bundled Simple Icons 16.36.0 (CC0) and Font Awesome Free Brands 7.3.1 (CC BY 4.0, Fonticons, Inc.) artwork, converted to cached native vector paths. Source SVGs, source URLs, retained licenses, conversion details and regeneration instructions are in [the website-icon resources](sources/surf-meter-app/resources/site-icons/README.md). The associated marks remain the property of their respective owners. Historical prototype screenshots retain their original illustrative marks.
 
 ## Chrome setup screenshots
 
